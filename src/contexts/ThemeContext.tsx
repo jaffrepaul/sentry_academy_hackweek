@@ -17,22 +17,34 @@ export const useTheme = () => {
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isDark, setIsDark] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setIsDark(savedTheme === 'dark');
     }
+    setIsInitialized(true);
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = React.useCallback(() => {
     const newTheme = !isDark;
     setIsDark(newTheme);
     localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-  };
+  }, [isDark]);
+
+  const contextValue = React.useMemo(() => ({
+    isDark,
+    toggleTheme
+  }), [isDark, toggleTheme]);
+
+  // Prevent rendering until theme is initialized to avoid flicker
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

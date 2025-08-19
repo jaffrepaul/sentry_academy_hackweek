@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useTheme } from './contexts/ThemeContext';
 import { getBackgroundStyle } from './utils/styles';
@@ -28,12 +28,30 @@ function App() {
   return (
     <div 
       className="min-h-screen relative overflow-hidden"
-      style={backgroundStyle}
+      style={{
+        ...backgroundStyle,
+        contain: 'layout style paint',
+        transform: 'translate3d(0, 0, 0)'
+      }}
     >
       {/* Animated background elements */}
       <div className={`absolute inset-0 ${gradientClasses.primary}`} />
-      <div className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse ${gradientClasses.accent1}`} />
-      <div className={`absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse delay-1000 ${gradientClasses.accent2}`} />
+      <div 
+        className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl ${gradientClasses.accent1}`}
+        style={{
+          animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          transform: 'translate3d(0, 0, 0)',
+          willChange: 'auto'
+        }}
+      />
+      <div 
+        className={`absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl ${gradientClasses.accent2}`}
+        style={{
+          animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s',
+          transform: 'translate3d(0, 0, 0)',
+          willChange: 'auto'
+        }}
+      />
       <Header />
       <div className="pt-20">
         <Routes>
