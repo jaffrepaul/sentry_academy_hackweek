@@ -107,10 +107,10 @@ const CourseDetail: React.FC = memo(() => {
         <div className="flex items-center space-x-4 mb-8">
           <button 
             onClick={goBack}
-            className={`p-2 rounded-lg transition-all duration-200 ${
+            className={`p-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg backdrop-blur-sm ${
               isDark
-                ? 'bg-slate-800/50 hover:bg-slate-700/50 text-gray-300 hover:text-white'
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
+                ? 'bg-slate-800/50 hover:bg-slate-700/50 text-gray-300 hover:text-white border border-purple-500/30 hover:border-purple-400/60 hover:shadow-purple-500/20'
+                : 'bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 hover:text-gray-900 border border-purple-300/30 hover:border-purple-400/60 hover:shadow-purple-300/20'
             }`}
           >
             <ArrowLeft className="w-5 h-5" />
