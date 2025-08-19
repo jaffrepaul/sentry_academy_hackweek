@@ -1,9 +1,10 @@
 import React, { useState, useEffect, memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users } from 'lucide-react';
+import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users, Monitor } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getTextClasses } from '../utils/styles';
 import { courseModules } from '../data/courses';
+import { Arcade } from './Arcade';
 
 interface ContentModuleProps {
   title: string;
@@ -350,6 +351,35 @@ const CourseDetail: React.FC = memo(() => {
                       <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysOnErrorSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
                     </div>
                     <div>{'}'});</div>
+                  </div>
+                </div>
+
+                {/* Interactive Demo */}
+                <div className={`border rounded-xl p-6 ${
+                  isDark 
+                    ? 'border-blue-500/30 bg-blue-900/10'
+                    : 'border-blue-300/30 bg-blue-50/30'
+                }`}>
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Monitor className="w-5 h-5 text-blue-400" />
+                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      Interactive Sentry UI Demo
+                    </h4>
+                  </div>
+                  <div className="space-y-4">
+                    <div className={`max-w-4xl border rounded-xl overflow-hidden ${
+                      isDark 
+                        ? 'border-slate-700/50 bg-slate-800/30' 
+                        : 'border-gray-200 bg-gray-50/50'
+                    }`}>
+                      <Arcade 
+                        src="https://demo.arcade.software/PalOCHofpcO3DqvA4Rzr?embed&hidechrome=true"
+                      />
+                    </div>
+                    <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                      💡 <strong>Try it yourself:</strong> Navigate through the Sentry interface, filter logs by level, 
+                      and see how structured logging makes debugging faster and more effective.
+                    </div>
                   </div>
                 </div>
 
