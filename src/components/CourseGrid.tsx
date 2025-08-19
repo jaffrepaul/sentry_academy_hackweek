@@ -5,9 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getCardClasses, getTextClasses, getButtonClasses } from '../utils/styles';
 import { courses, type Course } from '../data/courses';
 
-interface CourseCardProps extends Course {}
-
-const CourseCard: React.FC<CourseCardProps> = memo(({ 
+const CourseCard: React.FC<Course> = memo(({ 
   id,
   title, 
   description, 
