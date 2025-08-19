@@ -4,17 +4,18 @@
 
 - **Front End**
 
-  - Next.js (App Router)
+  <!-- - Next.js (App Router)
   - Tailwind CSS (most stable version)
   - MDX files in-repo (no CMS)
 
+
 - **Back End**
 
-  - Next.js Server Actions (no separate API server)
+  <!-- - Next.js Server Actions (no separate API server)
   - ORM & Migrations: Drizzle ORM + drizzle-kit
   - Neon Postgres (serverless free tier)
   - Node.js (as needed)
-  - Optional AI: OpenAI API for summaries/recommendations (behind server actions)
+  - Optional AI: OpenAI API for summaries/recommendations (behind server actions) -->
 
 - **Tooling**
 

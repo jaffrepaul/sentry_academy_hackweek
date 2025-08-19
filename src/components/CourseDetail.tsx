@@ -1,6 +1,6 @@
 import React, { useState, useEffect, memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users, Monitor } from 'lucide-react';
+import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users, Monitor, Github } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getTextClasses } from '../utils/styles';
 import { courseModules } from '../data/courses';
@@ -379,6 +379,57 @@ const CourseDetail: React.FC = memo(() => {
                     <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                       💡 <strong>Try it yourself:</strong> Navigate through the Sentry interface, filter logs by level, 
                       and see how structured logging makes debugging faster and more effective.
+                    </div>
+                  </div>
+                </div>
+
+                {/* GitHub Repository Callout */}
+                <div className={`border rounded-xl p-6 ${
+                  isDark 
+                    ? 'border-green-500/30 bg-green-900/10'
+                    : 'border-green-300/30 bg-green-50/30'
+                }`}>
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Github className="w-5 h-5 text-green-400" />
+                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      Code Along with This Course
+                    </h4>
+                  </div>
+                  <div className="space-y-4">
+                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                      If you'd like to code along and implement this yourself, fork this repo to get started with 
+                      the complete course implementation and examples.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <a
+                        href="https://github.com/getsentry/sentry-academy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 ${
+                          isDark
+                            ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-green-500/30'
+                            : 'bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-green-500/30'
+                        }`}
+                      >
+                        <Github className="w-4 h-4" />
+                        <span>Fork Repository</span>
+                      </a>
+                      <a
+                        href="https://github.com/getsentry/sentry-academy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                          isDark
+                            ? 'border border-green-500/50 text-green-400 hover:bg-green-500/10 hover:border-green-400/70'
+                            : 'border border-green-500/50 text-green-600 hover:bg-green-50 hover:border-green-500/70'
+                        }`}
+                      >
+                        View Repository
+                      </a>
+                    </div>
+                    <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                      💡 <strong>Repository includes:</strong> Complete Sentry setup, logging examples, 
+                      interactive demos, and step-by-step implementation guides.
                     </div>
                   </div>
                 </div>
