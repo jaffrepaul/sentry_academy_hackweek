@@ -233,6 +233,46 @@ const CourseDetail: React.FC = memo(() => {
                   </ul>
                 </div>
 
+                {/* Real World Scenario */}
+                <div className={`border rounded-xl p-6 ${
+                  isDark 
+                    ? 'border-green-500/30 bg-green-900/10'
+                    : 'border-green-300/30 bg-green-50/30'
+                }`}>
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Users className="w-5 h-5 text-green-400" />
+                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      Real World Scenario
+                    </h4>
+                  </div>
+                  <div className={`${isDark ? 'text-gray-300' : 'text-gray-600'} space-y-4`}>
+                    <div className={`p-4 rounded-lg ${
+                      isDark ? 'bg-slate-800/30' : 'bg-white/50'
+                    }`}>
+                      <h5 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                        E-commerce Checkout Process
+                      </h5>
+                      <p className="mb-3">
+                        Your online store processes hundreds of orders daily. When payment processing starts failing 
+                        intermittently, traditional logs only show generic "payment failed" messages without context.
+                      </p>
+                      <div className={`p-3 rounded border-l-4 border-green-400 ${
+                        isDark ? 'bg-green-900/20' : 'bg-green-50'
+                      }`}>
+                        <p className="text-sm">
+                          <strong>With Sentry structured logging:</strong> You can capture user ID, cart value, 
+                          payment method, and session state. This allows you to quickly identify that the issue 
+                          only affects credit card payments over $500 for users in specific regions.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-sm">
+                      <strong>Result:</strong> What would have taken hours of investigation now takes minutes, 
+                      preventing revenue loss and improving customer experience.
+                    </div>
+                  </div>
+                </div>
+
                 {/* Code Example */}
                 <div className={`border rounded-xl p-6 ${
                   isDark 
@@ -322,13 +362,51 @@ const CourseDetail: React.FC = memo(() => {
                   <div className="flex items-center space-x-2 mb-4">
                     <FileText className="w-5 h-5 text-orange-400" />
                     <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      Real World Application
+                      People Like Us!
                     </h4>
                   </div>
-                  <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <strong>Case Study:</strong> Teams using Sentry Logs report 60% faster debugging cycles by viewing logs 
-                    alongside errors and performance data in a single unified interface.
-                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className={`flex items-center space-x-3 px-4 py-2 rounded-lg ${
+                        isDark 
+                          ? 'bg-slate-800/50 border border-slate-700/50' 
+                          : 'bg-gray-50 border border-gray-200'
+                      }`}>
+                        <img 
+                          src={isDark ? "/logos/rootly-logo-light.svg" : "/logos/rootly-logo.svg"}
+                          alt="Rootly Logo" 
+                          className="h-6 w-auto"
+                        />
+                      </div>
+                      <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                        AI-native incident response platform
+                      </span>
+                    </div>
+                    <h5 className={`font-semibold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      How Rootly Reduces MTTR by 50% with Sentry
+                    </h5>
+                    <div className={`${isDark ? 'text-gray-300' : 'text-gray-600'} space-y-3`}>
+                      <div className="flex flex-wrap gap-2">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          isDark ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'
+                        }`}>Error Monitoring</span>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          isDark ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-700'
+                        }`}>Performance Monitoring</span>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          isDark ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700'
+                        }`}>Alerts</span>
+                      </div>
+                      <p>
+                        Rootly achieved <strong>50% faster MTTR</strong> and avoided <strong>$100,000+ ARR impact</strong> 
+                        by integrating Sentry's monitoring stack into their incident response platform.
+                      </p>
+                      <p className="italic text-sm">
+                        "We deploy 10-20 times a day—only possible with Sentry pinpointing issues down to the commit. 
+                        Instead of hours, fixes take minutes." — Dan Sadler, VP of Engineering
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
