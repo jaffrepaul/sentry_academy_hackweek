@@ -63,8 +63,8 @@ const UserInputForm: React.FC = () => {
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <div className="inline-flex items-center space-x-3 mb-6">
-          <User className="w-8 h-8 text-purple-400" />
-          <span className="text-2xl md:text-3xl font-bold text-white">I am a...</span>
+          <User className={`w-8 h-8 ${isDark ? 'text-purple-400' : 'text-purple-700'}`} />
+          <span className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>I am a...</span>
         </div>
       </div>
 
@@ -87,10 +87,10 @@ const UserInputForm: React.FC = () => {
                   selectedRole === option.value
                     ? isDark 
                       ? 'border-purple-400/80 bg-slate-900/80 shadow-lg shadow-purple-500/25'
-                      : 'border-purple-400/80 bg-white/80 shadow-lg shadow-purple-300/25'
+                      : 'border-purple-500/80 bg-white/85 shadow-lg shadow-purple-400/25'  // Improved border and shadow contrast
                     : isDark
                       ? 'border-purple-500/30 bg-slate-900/40 hover:border-purple-400/60 hover:bg-slate-900/60 hover:shadow-purple-500/20'
-                      : 'border-purple-300/30 bg-white/60 hover:border-purple-400/60 hover:bg-white/80 hover:shadow-purple-300/20'
+                      : 'border-purple-400/40 bg-white/75 hover:border-purple-500/60 hover:bg-white/85 hover:shadow-purple-400/20'  // Improved border and background opacity
                 }`}
               >
                 <div className="text-center">
@@ -107,14 +107,14 @@ const UserInputForm: React.FC = () => {
                   </div>
                   <h3 className={`text-lg font-bold mb-2 transition-colors duration-300 ${
                     selectedRole === option.value 
-                      ? isDark ? 'text-purple-300' : 'text-purple-600'
+                      ? isDark ? 'text-purple-300' : 'text-purple-700'  // Improved from purple-600 to purple-700
                       : isDark 
                         ? 'text-white group-hover:text-purple-300' 
-                        : 'text-gray-900 group-hover:text-purple-600'
+                        : 'text-gray-900 group-hover:text-purple-700'   // Improved from purple-600 to purple-700
                   }`}>
                     {option.label}
                   </h3>
-                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
                     {option.description}
                   </p>
                 </div>
@@ -135,7 +135,7 @@ const UserInputForm: React.FC = () => {
                 <label className={`flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-all duration-300 cursor-pointer ${
                   isDark 
                     ? 'bg-slate-900/40 border-purple-500/30 hover:border-purple-400/60 hover:bg-slate-900/60'
-                    : 'bg-white/60 border-purple-300/30 hover:border-purple-400/60 hover:bg-white/80'
+                    : 'bg-white/75 border-purple-400/40 hover:border-purple-500/60 hover:bg-white/85'  // Improved opacity and border contrast
                 }`}>
                   <input
                     type="checkbox"
@@ -145,13 +145,13 @@ const UserInputForm: React.FC = () => {
                     className={`w-4 h-4 text-purple-500 rounded focus:ring-purple-400 focus:ring-2 focus:ring-offset-0 accent-purple-500 ${
                       isDark 
                         ? 'bg-slate-900/60 border-purple-500/50' 
-                        : 'bg-white border-purple-300/50'
+                        : 'bg-white border-purple-400/60'  // Improved border contrast from purple-300/50 to purple-400/60
                     }`}
                   />
                   <span className={`transition-colors duration-300 ${
                     isDark 
                       ? 'text-gray-300 group-hover:text-purple-300' 
-                      : 'text-gray-700 group-hover:text-purple-600'
+                      : 'text-gray-800 group-hover:text-purple-700'  // Improved from gray-700 to gray-800 and purple-600 to purple-700
                   }`}>
                     {feature.label}
                   </span>

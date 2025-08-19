@@ -22,7 +22,7 @@ const Header: React.FC = memo(() => {
     `p-2 rounded-lg transition-all duration-200 ${
       isDark
         ? 'bg-slate-800/50 hover:bg-slate-700/50 text-yellow-400'
-        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'  // Improved from gray-700 to gray-800 for better contrast
     }`, [isDark]
   );
 

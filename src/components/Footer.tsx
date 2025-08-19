@@ -12,7 +12,7 @@ const Footer: React.FC = memo(() => {
     `transition-colors duration-200 ${
       isDark 
         ? 'text-gray-300 hover:text-purple-400' 
-        : 'text-gray-600 hover:text-purple-600'
+        : 'text-gray-700 hover:text-purple-700'  // Improved from gray-600 to gray-700 and purple-600 to purple-700
     }`, [isDark]
   );
 
@@ -41,7 +41,7 @@ const Footer: React.FC = memo(() => {
     <footer className={`backdrop-blur-xl border-t ${
       isDark 
         ? 'bg-slate-950/80 border-purple-500/30' 
-        : 'bg-white/80 border-purple-300/30'
+        : 'bg-white/80 border-purple-400/40'  // Improved border contrast
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid lg:grid-cols-4 gap-12">
@@ -55,7 +55,7 @@ const Footer: React.FC = memo(() => {
                 <h3 className={`text-xl font-bold ${titleClasses}`}>
                   Sentry Academy
                 </h3>
-                <p className={`text-xs ${isDark ? 'text-purple-400' : 'text-purple-600'}`}>
+                <p className={`text-xs ${isDark ? 'text-purple-400' : 'text-purple-700'}`}>
                   Master Application Observability
                 </p>
               </div>
