@@ -14,8 +14,8 @@ export const courses: Course[] = [
   {
     id: "sentry-fundamentals",
     title: "Sentry Fundamentals",
-    description: "Learn the core concepts of error monitoring, how to set up your first Sentry project, and capture your first errors.",
-    duration: "45 min",
+    description: "See Sentry in action through a comprehensive 10-minute demo. Learn how to efficiently identify and resolve errors and performance issues using Sentry's platform.",
+    duration: "10 min",
     level: "Beginner",
     rating: 4.9,
     students: 12500,
@@ -24,13 +24,13 @@ export const courses: Course[] = [
   },
   {
     id: "react-error-boundaries",
-    title: "React Error Boundaries",
-    description: "Master React-specific error handling, implement error boundaries, and integrate Sentry for comprehensive frontend monitoring.",
+    title: "Sentry Logging ",
+    description: "Master structured logging with Sentry. Learn to send, view, and query logs from your applications for better debugging and monitoring.",
     duration: "1.2 hrs",
     level: "Intermediate",
     rating: 4.8,
     students: 8900,
-    category: "Frontend"
+    category: "Monitoring"
   },
   {
     id: "performance-monitoring",
@@ -84,33 +84,33 @@ export interface CourseModule {
 
 export const courseModules: CourseModule[] = [
   {
-    title: "Logs",
-    description: "Understanding the fundamentals of logging and why logs are essential for debugging applications.",
+    title: "Introduction to Sentry Logs",
+    description: "Understanding structured logging and why logs are essential for debugging applications beyond errors.",
     duration: "8 min",
     isCompleted: true
   },
   {
-    title: "Code Intros",
-    description: "Learn how to instrument your code with Sentry SDK and capture meaningful error context.",
+    title: "Setting Up Sentry Logging",
+    description: "Learn how to enable logging in your Sentry SDK configuration and start capturing logs from your applications.",
     duration: "12 min",
     isCompleted: true
   },
   {
-    title: "Why it matters?",
-    description: "Discover the business impact of proper error monitoring and how it improves user experience.",
-    duration: "6 min",
+    title: "Structured Logging with Sentry.logger",
+    description: "Master the Sentry.logger API including trace, debug, info, warn, error, and fatal log levels with practical examples.",
+    duration: "18 min",
     isCompleted: false
   },
   {
-    title: "Key Message: Do XYZ with ABC!",
-    description: "Master the core concepts and best practices for effective error tracking implementation.",
+    title: "Advanced Logging Features",
+    description: "Explore console logging integration, Winston integration, and the beforeSendLog callback for filtering logs.",
     duration: "15 min",
     isCompleted: false
   },
   {
-    title: "Real World Example",
-    description: "Walk through a practical scenario: handling database timeouts and preventing error cascading.",
-    duration: "20 min",
+    title: "Viewing and Searching Logs in Sentry",
+    description: "Learn to navigate the Sentry Logs UI, search by text and properties, create alerts, and build dashboard widgets.",
+    duration: "19 min",
     isCompleted: false
   }
 ];

@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { BookOpen, Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getNavLinkClasses, scrollToSection } from '../utils/styles';
@@ -39,7 +40,7 @@ const Header: React.FC = memo(() => {
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/25">
               <BookOpen className="w-6 h-6 text-white" />
             </div>
@@ -51,7 +52,7 @@ const Header: React.FC = memo(() => {
                 Master Application Observability
               </p>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

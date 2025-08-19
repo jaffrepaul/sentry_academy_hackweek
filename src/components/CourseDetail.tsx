@@ -1,8 +1,8 @@
 import React, { useState, useEffect, memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Play, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users } from 'lucide-react';
+import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { getCardClasses, getTextClasses } from '../utils/styles';
+import { getTextClasses } from '../utils/styles';
 import { courseModules } from '../data/courses';
 
 interface ContentModuleProps {
@@ -96,7 +96,6 @@ const CourseDetail: React.FC = memo(() => {
 
   const currentModule = useMemo(() => courseModules[activeModule], [activeModule]);
   
-  const cardClasses = useMemo(() => getCardClasses(isDark), [isDark]);
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
 
@@ -117,7 +116,7 @@ const CourseDetail: React.FC = memo(() => {
           </button>
           <div>
             <h1 className={`text-3xl font-bold ${titleClasses}`}>
-              Sentry Fundamentals
+              Sentry Logging 
             </h1>
             <div className="flex items-center space-x-4 mt-2">
               <div className="flex items-center space-x-1">
@@ -180,20 +179,19 @@ const CourseDetail: React.FC = memo(() => {
                 : 'bg-white/60 border-purple-300/30'
             }`}>
               {/* Video/Content Player */}
-              <div className={`aspect-video rounded-xl mb-8 flex items-center justify-center ${
+              <div className={`aspect-video rounded-xl mb-8 overflow-hidden ${
                 isDark ? 'bg-slate-800/50' : 'bg-gray-100/50'
               }`}>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-400 rounded-full flex items-center justify-center mb-4 mx-auto">
-                    <Play className="w-8 h-8 text-white ml-1" />
-                  </div>
-                  <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {currentModule.title}
-                  </h3>
-                  <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                    Click to start this lesson
-                  </p>
-                </div>
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/06_whBhgPB0"
+                  title="Sentry Logging Demo"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="rounded-xl"
+                ></iframe>
               </div>
 
               {/* Module Content */}
@@ -222,15 +220,15 @@ const CourseDetail: React.FC = memo(() => {
                   <ul className={`space-y-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <span>Logs are essential for understanding application behavior</span>
+                      <span>Structured logs provide context beyond just errors</span>
                     </li>
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <span>They help you debug issues faster and more effectively</span>
+                      <span>Sentry.logger API supports multiple log levels and attributes</span>
                     </li>
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <span>Proper logging strategy prevents error cascading</span>
+                      <span>Logs can be searched, filtered, and used for alerts</span>
                     </li>
                   </ul>
                 </div>
@@ -250,18 +248,68 @@ const CourseDetail: React.FC = memo(() => {
                   <div className={`rounded-lg p-4 font-mono text-sm ${
                     isDark ? 'bg-slate-900/50 text-green-400' : 'bg-white/50 text-green-600'
                   }`}>
-                    <div className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// Your DB queries time out &</div>
-                    <div className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// prevent error from transcending</div>
+                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> * <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>as</span> Sentry <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'@sentry/react'</span>;</div>
+                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> {'{'} useEffect {'}'} <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'react'</span>;</div>
+                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> {'{'}</div>
+                    <div className="ml-2">useLocation,</div>
+                    <div className="ml-2">useNavigationType,</div>
+                    <div className="ml-2">createRoutesFromChildren,</div>
+                    <div className="ml-2">matchRoutes,</div>
+                    <div>{'}'} <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'react-router-dom'</span>;</div>
                     <br />
-                    <div className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>try</div> {'{'}
-                    <div className="ml-4">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>await</span> db.query(sql);
+                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>Sentry.init</span>({'{'}</div>
+                    <div className="ml-2">
+                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>dsn</span>: <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'&lt;Your Sentry DSN&gt;'</span>,
                     </div>
-                    {'}'} <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>catch</span> (error) {'{'}
-                    <div className="ml-4">
-                      Sentry.captureException(error);
+                    <div className="ml-2">
+                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>sendDefaultPii</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>true</span>,
                     </div>
-                    {'}'}
+                    <div className="ml-2">
+                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>integrations</span>: [
+                    </div>
+                    <div className="ml-4">Sentry.browserTracingIntegration(),</div>
+                    <div className="ml-4">Sentry.replayIntegration(),</div>
+                    <div className="ml-4">Sentry.reactRouterV7BrowserTracingIntegration({'{'}</div>
+                    <div className="ml-6">useEffect: useEffect,</div>
+                    <div className="ml-6">useLocation,</div>
+                    <div className="ml-6">useNavigationType,</div>
+                    <div className="ml-6">createRoutesFromChildren,</div>
+                    <div className="ml-6">matchRoutes,</div>
+                    <div className="ml-4">{'}'}),</div>
+                    <div className="ml-2">],</div>
+                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                      <div className="pl-2">
+                        <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// Enable logs to be sent to Sentry</span>
+                      </div>
+                    </div>
+                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                      <div className="pl-2">
+                        <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>_experiments</span>: {'{'}
+                      </div>
+                    </div>
+                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                      <div className="ml-2 pl-2">
+                        <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>enableLogs</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>true</span>,
+                      </div>
+                    </div>
+                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                      <div className="pl-2">
+                        {'}'},
+                      </div>
+                    </div>
+                    <div className="ml-2">
+                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>tracesSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                    </div>
+                    <div className="ml-2">
+                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>tracePropagationTargets</span>: [<span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'localhost:3001'</span>],
+                    </div>
+                    <div className="ml-2">
+                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysSessionSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                    </div>
+                    <div className="ml-2">
+                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysOnErrorSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                    </div>
+                    <div>{'}'});</div>
                   </div>
                 </div>
 
@@ -278,8 +326,8 @@ const CourseDetail: React.FC = memo(() => {
                     </h4>
                   </div>
                   <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <strong>Case Study:</strong> Pull quote from high-profile customer about how proper error monitoring 
-                    helped them reduce downtime by 80% and improve customer satisfaction scores.
+                    <strong>Case Study:</strong> Teams using Sentry Logs report 60% faster debugging cycles by viewing logs 
+                    alongside errors and performance data in a single unified interface.
                   </p>
                 </div>
               </div>
