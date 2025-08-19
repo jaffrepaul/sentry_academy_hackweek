@@ -1,0 +1,59 @@
+// Style utility functions for consistent theming
+export const getBackgroundStyle = (isDark: boolean) => ({
+  backgroundColor: isDark 
+    ? 'rgb(2 6 23 / var(--tw-bg-opacity, 1))'
+    : 'rgb(248 250 252 / var(--tw-bg-opacity, 1))',
+  '--tw-gradient-from': isDark
+    ? 'rgb(88 28 135 / 0.2) var(--tw-gradient-from-position)'
+    : 'rgb(196 181 253 / 0.3) var(--tw-gradient-from-position)',
+  '--tw-gradient-to': isDark
+    ? 'rgb(30 58 138 / 0.2) var(--tw-gradient-to-position)'
+    : 'rgb(251 207 232 / 0.3) var(--tw-gradient-to-position)',
+  '--tw-gradient-stops': isDark
+    ? 'var(--tw-gradient-from), #020617 var(--tw-gradient-via-position), var(--tw-gradient-to)'
+    : 'var(--tw-gradient-from), #f8fafc var(--tw-gradient-via-position), var(--tw-gradient-to)'
+});
+
+export const getCardClasses = (isDark: boolean, isHover = true) => 
+  `backdrop-blur-sm border rounded-2xl transition-all duration-300 ${
+    isHover ? 'transform hover:scale-105 hover:shadow-xl' : ''
+  } ${
+    isDark 
+      ? 'bg-slate-900/40 border-purple-500/30 hover:border-purple-400/60 hover:bg-slate-900/60 hover:shadow-purple-500/20'
+      : 'bg-white/60 border-purple-300/30 hover:border-purple-400/60 hover:bg-white/80 hover:shadow-purple-300/20'
+  }`;
+
+export const getTextClasses = (isDark: boolean, variant: 'primary' | 'secondary' | 'accent' = 'primary') => {
+  const variants = {
+    primary: isDark ? 'text-white' : 'text-gray-900',
+    secondary: isDark ? 'text-gray-300' : 'text-gray-600',
+    accent: isDark ? 'text-purple-400' : 'text-purple-600'
+  };
+  return variants[variant];
+};
+
+export const getButtonClasses = (isDark: boolean, variant: 'primary' | 'secondary' = 'primary') => {
+  if (variant === 'primary') {
+    return 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:from-purple-600 hover:to-violet-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-purple-500/30';
+  }
+  
+  return `backdrop-blur-sm border transition-all duration-200 shadow-lg ${
+    isDark 
+      ? 'bg-slate-900/50 border-purple-500/40 text-white hover:border-purple-400/60 hover:bg-slate-900/70 hover:shadow-purple-500/20'
+      : 'bg-white/50 border-purple-300/40 text-gray-900 hover:border-purple-400/60 hover:bg-white/70 hover:shadow-purple-300/20'
+  }`;
+};
+
+export const getNavLinkClasses = (isDark: boolean) => 
+  `transition-colors duration-200 ${
+    isDark 
+      ? 'text-gray-300 hover:text-purple-300' 
+      : 'text-gray-700 hover:text-purple-600'
+  }`;
+
+export const scrollToSection = (sectionId: string) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+};
