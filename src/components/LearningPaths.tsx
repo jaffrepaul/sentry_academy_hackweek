@@ -62,7 +62,7 @@ const UserInputForm: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center space-x-3 mb-6">
+        <div className="inline-flex items-center space-x-3">
           <User className={`w-8 h-8 ${isDark ? 'text-purple-400' : 'text-purple-700'}`} />
           <span className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>I am a...</span>
         </div>
@@ -127,7 +127,7 @@ const UserInputForm: React.FC = () => {
           <h3 className={`text-xl font-bold mb-6 text-center ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>
-            I currently use these Sentry features
+            I currently use these Sentry features...
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {sentryFeatures.map((feature) => (
