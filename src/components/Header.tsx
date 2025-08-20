@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { BookOpen, Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getNavLinkClasses, scrollToSection } from '../utils/styles';
@@ -7,10 +7,12 @@ import { getNavLinkClasses, scrollToSection } from '../utils/styles';
 const Header: React.FC = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Memoize style classes to prevent recalculation
   const headerClasses = useMemo(() => 
-    `fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-xl ${
+    `w-full border-b backdrop-blur-xl ${
       isDark 
         ? 'border-purple-500/30 bg-slate-950/90' 
         : 'border-purple-300/30 bg-white/90'
@@ -28,19 +30,49 @@ const Header: React.FC = memo(() => {
   );
 
   const handleScrollToSection = useCallback((sectionId: string) => {
-    scrollToSection(sectionId);
     setIsMenuOpen(false); // Close mobile menu after clicking
-  }, []);
+    
+    // If we're not on the homepage, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/', { replace: false });
+      // Use setTimeout to ensure the page has navigated before scrolling
+      setTimeout(() => {
+        scrollToSection(sectionId);
+      }, 100);
+    } else {
+      // We're already on the homepage, just scroll
+      scrollToSection(sectionId);
+    }
+  }, [location.pathname, navigate]);
 
   const toggleMenu = useCallback(() => {
     setIsMenuOpen(prev => !prev);
   }, []);
 
+  const handleLogoClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/');
+    } else {
+      // If we're already on homepage, scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location.pathname, navigate]);
+
   return (
-    <header className={headerClasses}>
+    <header 
+      className={headerClasses} 
+      style={{ 
+        position: 'fixed', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        zIndex: 9999 
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
+          <button onClick={handleLogoClick} className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/25">
               <BookOpen className="w-6 h-6 text-white" />
             </div>
@@ -52,7 +84,7 @@ const Header: React.FC = memo(() => {
                 Master Application Observability
               </p>
             </div>
-          </Link>
+          </button>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

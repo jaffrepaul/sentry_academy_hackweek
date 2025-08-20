@@ -26,48 +26,52 @@ function App() {
   }), [isDark]);
 
   return (
-    <div 
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        ...backgroundStyle,
-        contain: 'layout style paint',
-        transform: 'translate3d(0, 0, 0)'
-      }}
-    >
-      {/* Animated background elements */}
-      <div className={`absolute inset-0 ${gradientClasses.primary}`} />
-      <div 
-        className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl ${gradientClasses.accent1}`}
-        style={{
-          animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          transform: 'translate3d(0, 0, 0)',
-          willChange: 'auto'
-        }}
-      />
-      <div 
-        className={`absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl ${gradientClasses.accent2}`}
-        style={{
-          animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s',
-          transform: 'translate3d(0, 0, 0)',
-          willChange: 'auto'
-        }}
-      />
+    <>
+      {/* Header positioned outside main layout flow */}
       <Header />
-      <div className="pt-20">
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Hero />
-              <CourseGrid />
-              <LearningPaths />
-              <StatsSection />
-              <Footer />
-            </>
-          } />
-          <Route path="/course/:courseId" element={<CourseDetail />} />
-        </Routes>
+      
+      {/* Main content with background */}
+      <div 
+        className="min-h-screen relative"
+        style={{
+          ...backgroundStyle,
+          contain: 'layout style paint'
+        }}
+      >
+        {/* Animated background elements */}
+        <div className={`absolute inset-0 ${gradientClasses.primary}`} />
+        <div 
+          className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl ${gradientClasses.accent1}`}
+          style={{
+            animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            willChange: 'auto'
+          }}
+        />
+        <div 
+          className={`absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl ${gradientClasses.accent2}`}
+          style={{
+            animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s',
+            willChange: 'auto'
+          }}
+        />
+        
+        {/* Content with top padding for header */}
+        <div className="pt-20">
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Hero />
+                <CourseGrid />
+                <LearningPaths />
+                <StatsSection />
+                <Footer />
+              </>
+            } />
+            <Route path="/course/:courseId" element={<CourseDetail />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

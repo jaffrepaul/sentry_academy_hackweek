@@ -54,6 +54,13 @@ export const getNavLinkClasses = (isDark: boolean) =>
 export const scrollToSection = (sectionId: string) => {
   const element = document.getElementById(sectionId);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+    // Account for fixed header height (approximately 80px)
+    const elementPosition = element.offsetTop;
+    const offsetPosition = elementPosition - 80;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
   }
 };
