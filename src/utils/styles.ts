@@ -1,22 +1,10 @@
 // Style utility functions for consistent theming
-export const getBackgroundStyle = (isDark: boolean) => ({
-  backgroundColor: isDark 
-    ? 'rgb(2 6 23 / var(--tw-bg-opacity, 1))'
-    : 'rgb(248 250 252 / var(--tw-bg-opacity, 1))',
-  '--tw-gradient-from': isDark
-    ? 'rgb(88 28 135 / 0.2) var(--tw-gradient-from-position)'
-    : 'rgb(196 181 253 / 0.3) var(--tw-gradient-from-position)',
-  '--tw-gradient-to': isDark
-    ? 'rgb(30 58 138 / 0.2) var(--tw-gradient-to-position)'
-    : 'rgb(251 207 232 / 0.3) var(--tw-gradient-to-position)',
-  '--tw-gradient-stops': isDark
-    ? 'var(--tw-gradient-from), #020617 var(--tw-gradient-via-position), var(--tw-gradient-to)'
-    : 'var(--tw-gradient-from), #f8fafc var(--tw-gradient-via-position), var(--tw-gradient-to)'
-});
+import { backgroundOption4 } from './backgroundOptions'; // or 3, 4, 5
+export const getBackgroundStyle = backgroundOption4;
 
 export const getCardClasses = (isDark: boolean, isHover = true) => 
   `backdrop-blur-sm border rounded-2xl transition-all duration-300 ${
-    isHover ? 'transform hover:scale-105 hover:shadow-xl' : ''
+    isHover ? 'transform hover:scale-105 hover:shadow-xl' : ''          
   } ${
     isDark 
       ? 'bg-slate-900/40 border-purple-500/30 hover:border-purple-400/60 hover:bg-slate-900/60 hover:shadow-purple-500/20'

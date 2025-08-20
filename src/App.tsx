@@ -9,6 +9,7 @@ import CourseGrid from './components/CourseGrid';
 import StatsSection from './components/StatsSection';
 import Footer from './components/Footer';
 import CourseDetail from './components/CourseDetail';
+import SiteBackgroundDemo from './components/SiteBackgroundDemo';
 
 function App() {
   const { isDark } = useTheme();
@@ -68,6 +69,7 @@ function App() {
               </>
             } />
             <Route path="/course/:courseId" element={<CourseDetail />} />
+            <Route path="/demo/backgrounds" element={<SiteBackgroundDemo />} />
           </Routes>
         </div>
       </div>
