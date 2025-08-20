@@ -100,7 +100,7 @@ const CourseDetail: React.FC = memo(() => {
           scenario: {
             title: "Critical Production Bug Hunt",
             description: "Your e-commerce app suddenly experiences a 40% drop in conversions. Users report the checkout button \"doesn't work\" but traditional monitoring shows no obvious errors or server issues.",
-            solution: "With Sentry's complete monitoring stack: Session Replay shows users clicking the checkout button repeatedly. Error monitoring reveals a JavaScript exception in payment processing. Performance monitoring identifies slow API calls causing timeouts. User feedback widgets capture that users see \"loading forever\" with no error message.",
+            solution: "Sentry's monitoring stack reveals the full picture: Session Replay shows repeated checkout clicks, error monitoring catches JavaScript exceptions, performance monitoring identifies slow APIs, and user feedback confirms \"loading forever\" experiences.",
             result: "Instead of hours of guesswork, you identify and fix the root cause in 15 minutes, preventing thousands in lost revenue and customer frustration."
           },
           codeExample: {
@@ -205,7 +205,7 @@ Sentry.init({
         scenario: {
           title: "Critical Production Bug Hunt",
           description: "Your e-commerce app suddenly experiences a 40% drop in conversions. Users report the checkout button \"doesn't work\" but traditional monitoring shows no obvious errors or server issues.",
-          solution: "With Sentry's complete monitoring stack: Session Replay shows users clicking the checkout button repeatedly. Error monitoring reveals a JavaScript exception in payment processing. Performance monitoring identifies slow API calls causing timeouts. User feedback widgets capture that users see \"loading forever\" with no error message.",
+          solution: "Sentry's monitoring stack reveals the full picture: Session Replay shows repeated checkout clicks, error monitoring catches JavaScript exceptions, performance monitoring identifies slow APIs, and user feedback confirms \"loading forever\" experiences.",
           result: "Instead of hours of guesswork, you identify and fix the root cause in 15 minutes, preventing thousands in lost revenue and customer frustration."
         },
         codeExample: {
