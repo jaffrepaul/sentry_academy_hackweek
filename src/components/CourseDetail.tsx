@@ -90,6 +90,7 @@ const CourseDetail: React.FC = memo(() => {
         courseInfo: course || courses[0],
         contentConfig: {
           videoUrl: "https://www.youtube.com/embed/6NuusWkjvlw",
+          arcadeUrl: "https://demo.arcade.software/4z9l5xNZfpXFGAFc03az?embed",
           keyTakeaways: [
             "Automatic error detection and exception tracking across your application",
             "Performance monitoring with distributed tracing and custom spans",
@@ -136,6 +137,7 @@ Sentry.init({
         courseInfo: course || courses[1],
         contentConfig: {
           videoUrl: "https://www.youtube.com/embed/06_whBhgPB0",
+          arcadeUrl: "https://demo.arcade.software/PalOCHofpcO3DqvA4Rzr?embed&hidechrome=true",
           keyTakeaways: [
             "Structured logs provide context beyond just errors",
             "Sentry.logger API supports multiple log levels and attributes", 
@@ -193,6 +195,7 @@ Sentry.init({
       courseInfo: course || courses[0],
       contentConfig: {
         videoUrl: "https://www.youtube.com/embed/6NuusWkjvlw",
+        arcadeUrl: "https://demo.arcade.software/4z9l5xNZfpXFGAFc03az?embed",
         keyTakeaways: [
           "Automatic error detection and exception tracking across your application",
           "Performance monitoring with distributed tracing and custom spans", 
@@ -237,6 +240,16 @@ Sentry.init({
 
   const goBack = useCallback(() => {
     navigate('/');
+    // Use setTimeout to ensure navigation completes before scrolling
+    setTimeout(() => {
+      const coursesSection = document.getElementById('courses');
+      if (coursesSection) {
+        coursesSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 100);
   }, [navigate]);
 
   const handleModuleClick = useCallback((index: number) => {
@@ -459,7 +472,7 @@ Sentry.init({
                         : 'border-gray-200 bg-gray-50/50'
                     }`}>
                       <Arcade 
-                        src="https://demo.arcade.software/PalOCHofpcO3DqvA4Rzr?embed&hidechrome=true"
+                        src={contentConfig.arcadeUrl}
                       />
                     </div>
                     <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
