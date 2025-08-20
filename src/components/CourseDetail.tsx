@@ -449,7 +449,121 @@ Sentry.init({
                     isDark ? 'bg-slate-900/50 text-green-400' : 'bg-white/50 text-green-600'
                   }`}>
                     <div className={`${isDark ? 'text-gray-400' : 'text-gray-500'} mb-2`}>// {contentConfig.codeExample.filename}</div>
-                    <pre className="whitespace-pre-wrap">{contentConfig.codeExample.code}</pre>
+                    {/* Syntax-highlighted code for Sentry Fundamentals */}
+                    {courseId === 'sentry-fundamentals' ? (
+                      <>
+                        <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> * <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>as</span> Sentry <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>"@sentry/nextjs"</span>;</div>
+                        <br />
+                        <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>Sentry.init</span>({'{'}</div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>dsn</span>: <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>"https://examplePublicKey@o0.ingest.sentry.io/0"</span>,
+                        </div>
+                        <br />
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>sendDefaultPii</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>true</span>,
+                        </div>
+                        <br />
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>integrations</span>: [
+                        </div>
+                        <div className="ml-4">
+                          <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// Performance monitoring</span>
+                        </div>
+                        <div className="ml-4">Sentry.browserTracingIntegration(),</div>
+                        <div className="ml-4">
+                          <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// Session replay</span>
+                        </div>
+                        <div className="ml-4">Sentry.replayIntegration(),</div>
+                        <div className="ml-4">
+                          <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// User feedback</span>
+                        </div>
+                        <div className="ml-4">Sentry.feedbackIntegration({'{'}</div>
+                        <div className="ml-6">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>colorScheme</span>: <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>"system"</span>,
+                        </div>
+                        <div className="ml-4">{'}'}),</div>
+                        <div className="ml-2">],</div>
+                        <br />
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>tracesSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysSessionSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>0.1</span>,
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysOnErrorSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                        </div>
+                        <div>{'}'});</div>
+                      </>
+                    ) : courseId === 'react-error-boundaries' ? (
+                      <>
+                        <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> * <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>as</span> Sentry <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'@sentry/react'</span>;</div>
+                        <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> {'{'} useEffect {'}'} <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'react'</span>;</div>
+                        <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> {'{'}</div>
+                        <div className="ml-2">useLocation,</div>
+                        <div className="ml-2">useNavigationType,</div>
+                        <div className="ml-2">createRoutesFromChildren,</div>
+                        <div className="ml-2">matchRoutes,</div>
+                        <div>{'}'} <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'react-router-dom'</span>;</div>
+                        <br />
+                        <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>Sentry.init</span>({'{'}</div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>dsn</span>: <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'&lt;Your Sentry DSN&gt;'</span>,
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>sendDefaultPii</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>true</span>,
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>integrations</span>: [
+                        </div>
+                        <div className="ml-4">Sentry.browserTracingIntegration(),</div>
+                        <div className="ml-4">Sentry.replayIntegration(),</div>
+                        <div className="ml-4">Sentry.reactRouterV7BrowserTracingIntegration({'{'}</div>
+                        <div className="ml-6">useEffect: useEffect,</div>
+                        <div className="ml-6">useLocation,</div>
+                        <div className="ml-6">useNavigationType,</div>
+                        <div className="ml-6">createRoutesFromChildren,</div>
+                        <div className="ml-6">matchRoutes,</div>
+                        <div className="ml-4">{'}'}),</div>
+                        <div className="ml-2">],</div>
+                        <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                          <div className="pl-2">
+                            <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// Enable logs to be sent to Sentry</span>
+                          </div>
+                        </div>
+                        <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                          <div className="pl-2">
+                            <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>_experiments</span>: {'{'}
+                          </div>
+                        </div>
+                        <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                          <div className="ml-2 pl-2">
+                            <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>enableLogs</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>true</span>,
+                          </div>
+                        </div>
+                        <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
+                          <div className="pl-2">
+                            {'}'},
+                          </div>
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>tracesSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>tracePropagationTargets</span>: [<span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'localhost:3001'</span>],
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysSessionSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                        </div>
+                        <div className="ml-2">
+                          <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysOnErrorSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
+                        </div>
+                        <div>{'}'});</div>
+                      </>
+                    ) : (
+                      /* Fallback to plain text for other courses */
+                      <pre className="whitespace-pre-wrap">{contentConfig.codeExample.code}</pre>
+                    )}
                   </div>
                 </div>
 

@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { ArrowRight, Zap, Shield, Code } from 'lucide-react';
+import { ArrowRight, User, UserCog, Code, Globe, Rocket } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getTextClasses, scrollToSection } from '../utils/styles';
 
@@ -49,7 +49,7 @@ const Hero: React.FC = memo(() => {
                   : 'bg-white/60 border-purple-300/40 hover:border-purple-400/70 hover:bg-white/80 hover:shadow-purple-300/30'
               }`}>
                 <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:rotate-6 transition-transform duration-300">
-                  <Zap className="w-8 h-8 text-white" />
+                  <User className="w-8 h-8 text-white" />
                 </div>
                 <h3 className={`text-2xl font-bold mb-4 ${titleClasses}`}>
                   New to Sentry
@@ -70,7 +70,7 @@ const Hero: React.FC = memo(() => {
                   : 'bg-white/60 border-purple-300/40 hover:border-purple-400/70 hover:bg-white/80 hover:shadow-purple-300/30'
               }`}>
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-violet-500 rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:rotate-6 transition-transform duration-300">
-                  <Shield className="w-8 h-8 text-white" />
+                  <UserCog className="w-8 h-8 text-white" />
                 </div>
                 <h3 className={`text-2xl font-bold mb-4 ${titleClasses}`}>
                   Sentry Pro
@@ -92,11 +92,11 @@ const Hero: React.FC = memo(() => {
               <span>Hands-on Labs</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Zap className={`w-5 h-5 ${accentClasses}`} />
+              <Globe className={`w-5 h-5 ${accentClasses}`} />
               <span>Real-world Scenarios</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Shield className={`w-5 h-5 ${accentClasses}`} />
+              <Rocket className={`w-5 h-5 ${accentClasses}`} />
               <span>Production Ready</span>
             </div>
           </div>
