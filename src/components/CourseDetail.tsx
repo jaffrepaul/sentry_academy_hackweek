@@ -534,64 +534,71 @@ Sentry.init({
                 </div>
 
                 {/* Real World Application */}
-                <div className={`border rounded-xl p-6 ${
-                  isDark 
-                    ? 'border-orange-500/30 bg-orange-900/10'
-                    : 'border-orange-300/30 bg-orange-50/30'
-                }`}>
-                  <div className="flex items-center space-x-2 mb-4">
-                    <FileText className="w-5 h-5 text-orange-400" />
-                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      People Like Us!
-                    </h4>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <div className={`flex items-center space-x-3 px-4 py-2 rounded-lg ${
-                        isDark 
-                          ? 'bg-slate-800/50 border border-slate-700/50' 
-                          : 'bg-gray-50 border border-gray-200'
-                      }`}>
-                        <img 
-                          src={isDark ? "/logos/rootly-logo-light.svg" : "/logos/rootly-logo.svg"}
-                          alt="Rootly Logo" 
-                          className="h-6 w-auto"
-                        />
-                      </div>
-                      <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                        AI-native incident response platform
-                      </span>
+                <a
+                  href="https://sentry.io/customers/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block transition-all duration-200 hover:transform hover:scale-[1.025]"
+                >
+                  <div className={`border rounded-xl p-6 cursor-pointer transition-all duration-200 ${
+                    isDark 
+                      ? 'border-orange-500/30 bg-orange-900/10 hover:border-orange-400/50 hover:bg-orange-900/20'
+                      : 'border-orange-300/30 bg-orange-50/30 hover:border-orange-400/50 hover:bg-orange-50/50'
+                  }`}>
+                    <div className="flex items-center space-x-2 mb-4">
+                      <FileText className="w-5 h-5 text-orange-400" />
+                      <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                        People Like Us!
+                      </h4>
                     </div>
-                    <h5 className={`font-semibold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      How Rootly Reduces MTTR by 50% with Sentry's Complete Stack
-                    </h5>
-                    <div className={`${isDark ? 'text-gray-300' : 'text-gray-600'} space-y-3`}>
-                      <div className="flex flex-wrap gap-2">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          isDark ? 'bg-red-500/20 text-red-300' : 'bg-red-100 text-red-700'
-                        }`}>Error Monitoring</span>
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          isDark ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-700'
-                        }`}>Performance Monitoring</span>
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          isDark ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'
-                        }`}>Session Replay</span>
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          isDark ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700'
-                        }`}>User Feedback</span>
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <div className={`flex items-center space-x-3 px-4 py-2 rounded-lg ${
+                          isDark 
+                            ? 'bg-slate-800/50 border border-slate-700/50' 
+                            : 'bg-gray-50 border border-gray-200'
+                        }`}>
+                          <img 
+                            src={isDark ? "/logos/rootly-logo-light.svg" : "/logos/rootly-logo.svg"}
+                            alt="Rootly Logo" 
+                            className="h-6 w-auto"
+                          />
+                        </div>
+                        <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                          AI-native incident response platform
+                        </span>
                       </div>
-                      <p>
-                        Rootly achieved <strong>50% faster MTTR</strong> and avoided <strong>$100,000+ ARR impact</strong> 
-                        by leveraging Sentry's complete monitoring ecosystem—from automatic error detection to session replay 
-                        showing exactly what users experienced during incidents.
-                      </p>
-                      <p className="italic text-sm">
-                        "Sentry's session replay is game-changing. We can see exactly what users experienced during an incident, 
-                        making root cause analysis instantaneous instead of guesswork." — Dan Sadler, VP of Engineering
-                      </p>
+                      <h5 className={`font-semibold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                        How Rootly Reduces MTTR by 50% with Sentry's Complete Stack
+                      </h5>
+                      <div className={`${isDark ? 'text-gray-300' : 'text-gray-600'} space-y-3`}>
+                        <div className="flex flex-wrap gap-2">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            isDark ? 'bg-red-500/20 text-red-300' : 'bg-red-100 text-red-700'
+                          }`}>Error Monitoring</span>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            isDark ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-700'
+                          }`}>Performance Monitoring</span>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            isDark ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'
+                          }`}>Session Replay</span>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            isDark ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700'
+                          }`}>User Feedback</span>
+                        </div>
+                        <p>
+                          Rootly achieved <strong>50% faster MTTR</strong> and avoided <strong>$100,000+ ARR impact</strong> 
+                          by leveraging Sentry's complete monitoring ecosystem—from automatic error detection to session replay 
+                          showing exactly what users experienced during incidents.
+                        </p>
+                        <p className="italic text-sm">
+                          "Sentry's session replay is game-changing. We can see exactly what users experienced during an incident, 
+                          making root cause analysis instantaneous instead of guesswork." — Dan Sadler, VP of Engineering
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </a>
               </div>
 
               {/* Navigation */}
