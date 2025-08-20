@@ -1,9 +1,9 @@
 import React, { useState, useEffect, memo, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users, Monitor, Github } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getTextClasses } from '../utils/styles';
-import { courseModules } from '../data/courses';
+import { courseModules, sentryFundamentalsModules, sentryLoggingModules, courses } from '../data/courses';
 import { Arcade } from './Arcade';
 
 interface ContentModuleProps {
@@ -73,11 +73,167 @@ ContentModule.displayName = 'ContentModule';
 const CourseDetail: React.FC = memo(() => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
+  const { courseId } = useParams<{ courseId: string }>();
   const [activeModule, setActiveModule] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Determine which modules and course info to use based on courseId
+  const { modules, courseInfo, contentConfig } = useMemo(() => {
+    const course = courses.find(c => c.id === courseId);
+    
+    if (courseId === 'sentry-fundamentals') {
+      return {
+        modules: sentryFundamentalsModules,
+        courseInfo: course || courses[0],
+        contentConfig: {
+          videoUrl: "https://www.youtube.com/embed/6NuusWkjvlw",
+          keyTakeaways: [
+            "Automatic error detection and exception tracking across your application",
+            "Performance monitoring with distributed tracing and custom spans",
+            "Session replay captures user interactions to debug issues faster",
+            "User feedback widgets collect context directly from affected users"
+          ],
+          scenario: {
+            title: "Critical Production Bug Hunt",
+            description: "Your e-commerce app suddenly experiences a 40% drop in conversions. Users report the checkout button \"doesn't work\" but traditional monitoring shows no obvious errors or server issues.",
+            solution: "With Sentry's complete monitoring stack: Session Replay shows users clicking the checkout button repeatedly. Error monitoring reveals a JavaScript exception in payment processing. Performance monitoring identifies slow API calls causing timeouts. User feedback widgets capture that users see \"loading forever\" with no error message.",
+            result: "Instead of hours of guesswork, you identify and fix the root cause in 15 minutes, preventing thousands in lost revenue and customer frustration."
+          },
+          codeExample: {
+            title: "Next.js Sentry Setup",
+            filename: "instrumentation-client.ts",
+            code: `import * as Sentry from "@sentry/nextjs";
+
+Sentry.init({
+  dsn: "https://examplePublicKey@o0.ingest.sentry.io/0",
+
+  sendDefaultPii: true,
+
+  integrations: [
+    // Performance monitoring
+    Sentry.browserTracingIntegration(),
+    // Session replay
+    Sentry.replayIntegration(),
+    // User feedback
+    Sentry.feedbackIntegration({
+      colorScheme: "system",
+    }),
+  ],
+
+  tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+});`
+          }
+        }
+      };
+    } else if (courseId === 'react-error-boundaries') {
+      return {
+        modules: sentryLoggingModules,
+        courseInfo: course || courses[1],
+        contentConfig: {
+          videoUrl: "https://www.youtube.com/embed/06_whBhgPB0",
+          keyTakeaways: [
+            "Structured logs provide context beyond just errors",
+            "Sentry.logger API supports multiple log levels and attributes", 
+            "Logs can be searched, filtered, and used for alerts"
+          ],
+          scenario: {
+            title: "E-commerce Checkout Process",
+            description: "Your online store processes hundreds of orders daily. When payment processing starts failing intermittently, traditional logs only show generic \"payment failed\" messages without context.",
+            solution: "With Sentry structured logging: You can capture user ID, cart value, payment method, and session state. This allows you to quickly identify that the issue only affects credit card payments over $500 for users in specific regions.",
+            result: "What would have taken hours of investigation now takes minutes, preventing revenue loss and improving customer experience."
+          },
+          codeExample: {
+            title: "Sentry Logging Setup",
+            filename: "sentry.client.config.ts",
+            code: `import * as Sentry from '@sentry/react';
+import { useEffect } from 'react';
+import {
+  useLocation,
+  useNavigationType,
+  createRoutesFromChildren,
+  matchRoutes,
+} from 'react-router-dom';
+
+Sentry.init({
+  dsn: '<Your Sentry DSN>',
+  sendDefaultPii: true,
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+    Sentry.reactRouterV7BrowserTracingIntegration({
+      useEffect: useEffect,
+      useLocation,
+      useNavigationType,
+      createRoutesFromChildren,
+      matchRoutes,
+    }),
+  ],
+  // Enable logs to be sent to Sentry
+  _experiments: {
+    enableLogs: true,
+  },
+  tracesSampleRate: 1.0,
+  tracePropagationTargets: ['localhost:3001'],
+  replaysSessionSampleRate: 1.0,
+  replaysOnErrorSampleRate: 1.0,
+});`
+          }
+        }
+      };
+    }
+    
+    // Default fallback
+    return {
+      modules: courseModules,
+      courseInfo: course || courses[0],
+      contentConfig: {
+        videoUrl: "https://www.youtube.com/embed/6NuusWkjvlw",
+        keyTakeaways: [
+          "Automatic error detection and exception tracking across your application",
+          "Performance monitoring with distributed tracing and custom spans", 
+          "Session replay captures user interactions to debug issues faster",
+          "User feedback widgets collect context directly from affected users"
+        ],
+        scenario: {
+          title: "Critical Production Bug Hunt",
+          description: "Your e-commerce app suddenly experiences a 40% drop in conversions. Users report the checkout button \"doesn't work\" but traditional monitoring shows no obvious errors or server issues.",
+          solution: "With Sentry's complete monitoring stack: Session Replay shows users clicking the checkout button repeatedly. Error monitoring reveals a JavaScript exception in payment processing. Performance monitoring identifies slow API calls causing timeouts. User feedback widgets capture that users see \"loading forever\" with no error message.",
+          result: "Instead of hours of guesswork, you identify and fix the root cause in 15 minutes, preventing thousands in lost revenue and customer frustration."
+        },
+        codeExample: {
+          title: "Next.js Sentry Setup",
+          filename: "instrumentation-client.ts",
+          code: `import * as Sentry from "@sentry/nextjs";
+
+Sentry.init({
+  dsn: "https://examplePublicKey@o0.ingest.sentry.io/0",
+
+  sendDefaultPii: true,
+
+  integrations: [
+    // Performance monitoring
+    Sentry.browserTracingIntegration(),
+    // Session replay
+    Sentry.replayIntegration(),
+    // User feedback
+    Sentry.feedbackIntegration({
+      colorScheme: "system",
+    }),
+  ],
+
+  tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+});`
+        }
+      }
+    };
+  }, [courseId]);
 
   const goBack = useCallback(() => {
     navigate('/');
@@ -92,10 +248,10 @@ const CourseDetail: React.FC = memo(() => {
   }, []);
 
   const handleNext = useCallback(() => {
-    setActiveModule(prev => Math.min(courseModules.length - 1, prev + 1));
-  }, []);
+    setActiveModule(prev => Math.min(modules.length - 1, prev + 1));
+  }, [modules.length]);
 
-  const currentModule = useMemo(() => courseModules[activeModule], [activeModule]);
+  const currentModule = useMemo(() => modules[activeModule], [modules, activeModule]);
   
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
@@ -117,7 +273,7 @@ const CourseDetail: React.FC = memo(() => {
           </button>
           <div>
             <h1 className={`text-3xl font-bold ${titleClasses}`}>
-              Sentry Logging 
+              {courseInfo.title}
             </h1>
             <div className="flex items-center space-x-4 mt-2">
               <div className="flex items-center space-x-1">
@@ -148,7 +304,7 @@ const CourseDetail: React.FC = memo(() => {
                 Content Modules
               </h2>
               <div className="space-y-4">
-                {courseModules.map((module, index) => (
+                {modules.map((module, index) => (
                   <ContentModule
                     key={index}
                     title={module.title}
@@ -186,8 +342,8 @@ const CourseDetail: React.FC = memo(() => {
                 <iframe
                   width="100%"
                   height="100%"
-                  src="https://www.youtube.com/embed/06_whBhgPB0"
-                  title="Sentry Logging Demo"
+                  src={contentConfig.videoUrl}
+                  title={`${courseInfo.title} - Demo`}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
@@ -219,18 +375,12 @@ const CourseDetail: React.FC = memo(() => {
                     </h4>
                   </div>
                   <ul className={`space-y-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <li className="flex items-start space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <span>Structured logs provide context beyond just errors</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <span>Sentry.logger API supports multiple log levels and attributes</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <span>Logs can be searched, filtered, and used for alerts</span>
-                    </li>
+                    {contentConfig.keyTakeaways.map((takeaway, index) => (
+                      <li key={index} className="flex items-start space-x-2">
+                        <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                        <span>{takeaway}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
@@ -251,25 +401,21 @@ const CourseDetail: React.FC = memo(() => {
                       isDark ? 'bg-slate-800/30' : 'bg-white/50'
                     }`}>
                       <h5 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        E-commerce Checkout Process
+                        {contentConfig.scenario.title}
                       </h5>
                       <p className="mb-3">
-                        Your online store processes hundreds of orders daily. When payment processing starts failing 
-                        intermittently, traditional logs only show generic "payment failed" messages without context.
+                        {contentConfig.scenario.description}
                       </p>
                       <div className={`p-3 rounded border-l-4 border-green-400 ${
                         isDark ? 'bg-green-900/20' : 'bg-green-50'
                       }`}>
                         <p className="text-sm">
-                          <strong>With Sentry structured logging:</strong> You can capture user ID, cart value, 
-                          payment method, and session state. This allows you to quickly identify that the issue 
-                          only affects credit card payments over $500 for users in specific regions.
+                          <strong>{contentConfig.scenario.solution.split(':')[0]}:</strong> {contentConfig.scenario.solution.split(':').slice(1).join(':')}
                         </p>
                       </div>
                     </div>
                     <div className="text-sm">
-                      <strong>Result:</strong> What would have taken hours of investigation now takes minutes, 
-                      preventing revenue loss and improving customer experience.
+                      <strong>Result:</strong> {contentConfig.scenario.result}
                     </div>
                   </div>
                 </div>
@@ -283,74 +429,14 @@ const CourseDetail: React.FC = memo(() => {
                   <div className="flex items-center space-x-2 mb-4">
                     <Code className="w-5 h-5 text-purple-400" />
                     <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      Code Example
+                      {contentConfig.codeExample.title}
                     </h4>
                   </div>
                   <div className={`rounded-lg p-4 font-mono text-sm ${
                     isDark ? 'bg-slate-900/50 text-green-400' : 'bg-white/50 text-green-600'
                   }`}>
-                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> * <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>as</span> Sentry <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'@sentry/react'</span>;</div>
-                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> {'{'} useEffect {'}'} <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'react'</span>;</div>
-                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>import</span> {'{'}</div>
-                    <div className="ml-2">useLocation,</div>
-                    <div className="ml-2">useNavigationType,</div>
-                    <div className="ml-2">createRoutesFromChildren,</div>
-                    <div className="ml-2">matchRoutes,</div>
-                    <div>{'}'} <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>from</span> <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'react-router-dom'</span>;</div>
-                    <br />
-                    <div><span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>Sentry.init</span>({'{'}</div>
-                    <div className="ml-2">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>dsn</span>: <span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'&lt;Your Sentry DSN&gt;'</span>,
-                    </div>
-                    <div className="ml-2">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>sendDefaultPii</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>true</span>,
-                    </div>
-                    <div className="ml-2">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>integrations</span>: [
-                    </div>
-                    <div className="ml-4">Sentry.browserTracingIntegration(),</div>
-                    <div className="ml-4">Sentry.replayIntegration(),</div>
-                    <div className="ml-4">Sentry.reactRouterV7BrowserTracingIntegration({'{'}</div>
-                    <div className="ml-6">useEffect: useEffect,</div>
-                    <div className="ml-6">useLocation,</div>
-                    <div className="ml-6">useNavigationType,</div>
-                    <div className="ml-6">createRoutesFromChildren,</div>
-                    <div className="ml-6">matchRoutes,</div>
-                    <div className="ml-4">{'}'}),</div>
-                    <div className="ml-2">],</div>
-                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
-                      <div className="pl-2">
-                        <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>// Enable logs to be sent to Sentry</span>
-                      </div>
-                    </div>
-                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
-                      <div className="pl-2">
-                        <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>_experiments</span>: {'{'}
-                      </div>
-                    </div>
-                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
-                      <div className="ml-2 pl-2">
-                        <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>enableLogs</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>true</span>,
-                      </div>
-                    </div>
-                    <div className={`ml-2 ${isDark ? 'bg-yellow-400/20 border-l-4 border-yellow-400' : 'bg-yellow-200/30 border-l-4 border-yellow-500'}`}>
-                      <div className="pl-2">
-                        {'}'},
-                      </div>
-                    </div>
-                    <div className="ml-2">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>tracesSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
-                    </div>
-                    <div className="ml-2">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>tracePropagationTargets</span>: [<span className={`${isDark ? 'text-green-300' : 'text-green-600'}`}>'localhost:3001'</span>],
-                    </div>
-                    <div className="ml-2">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysSessionSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
-                    </div>
-                    <div className="ml-2">
-                      <span className={`${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>replaysOnErrorSampleRate</span>: <span className={`${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.0</span>,
-                    </div>
-                    <div>{'}'});</div>
+                    <div className={`${isDark ? 'text-gray-400' : 'text-gray-500'} mb-2`}>// {contentConfig.codeExample.filename}</div>
+                    <pre className="whitespace-pre-wrap">{contentConfig.codeExample.code}</pre>
                   </div>
                 </div>
 
@@ -377,8 +463,8 @@ const CourseDetail: React.FC = memo(() => {
                       />
                     </div>
                     <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      💡 <strong>Try it yourself:</strong> Navigate through the Sentry interface, filter logs by level, 
-                      and see how structured logging makes debugging faster and more effective.
+                      💡 <strong>Try it yourself:</strong> Explore the Sentry dashboard, view error details with stack traces, 
+                      watch session replays, and see how performance monitoring identifies bottlenecks across your application.
                     </div>
                   </div>
                 </div>
@@ -397,8 +483,8 @@ const CourseDetail: React.FC = memo(() => {
                   </div>
                   <div className="space-y-4">
                     <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                      If you'd like to code along and implement this yourself, fork this repo to get started with 
-                      the complete course implementation and examples.
+                      Get hands-on experience with Sentry's complete monitoring stack. Fork this repository to access 
+                      working Next.js examples with error tracking, performance monitoring, session replay, and user feedback.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3">
                       <a
@@ -428,8 +514,8 @@ const CourseDetail: React.FC = memo(() => {
                       </a>
                     </div>
                     <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      💡 <strong>Repository includes:</strong> Complete Sentry setup, logging examples, 
-                      interactive demos, and step-by-step implementation guides.
+                      💡 <strong>Repository includes:</strong> Complete Next.js Sentry setup, error handling examples, 
+                      custom tracing implementations, session replay configuration, and user feedback integration.
                     </div>
                   </div>
                 </div>
@@ -464,27 +550,31 @@ const CourseDetail: React.FC = memo(() => {
                       </span>
                     </div>
                     <h5 className={`font-semibold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      How Rootly Reduces MTTR by 50% with Sentry
+                      How Rootly Reduces MTTR by 50% with Sentry's Complete Stack
                     </h5>
                     <div className={`${isDark ? 'text-gray-300' : 'text-gray-600'} space-y-3`}>
                       <div className="flex flex-wrap gap-2">
                         <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          isDark ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'
+                          isDark ? 'bg-red-500/20 text-red-300' : 'bg-red-100 text-red-700'
                         }`}>Error Monitoring</span>
                         <span className={`px-2 py-1 rounded text-xs font-medium ${
                           isDark ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-700'
                         }`}>Performance Monitoring</span>
                         <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          isDark ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'
+                        }`}>Session Replay</span>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
                           isDark ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700'
-                        }`}>Alerts</span>
+                        }`}>User Feedback</span>
                       </div>
                       <p>
                         Rootly achieved <strong>50% faster MTTR</strong> and avoided <strong>$100,000+ ARR impact</strong> 
-                        by integrating Sentry's monitoring stack into their incident response platform.
+                        by leveraging Sentry's complete monitoring ecosystem—from automatic error detection to session replay 
+                        showing exactly what users experienced during incidents.
                       </p>
                       <p className="italic text-sm">
-                        "We deploy 10-20 times a day—only possible with Sentry pinpointing issues down to the commit. 
-                        Instead of hours, fixes take minutes." — Dan Sadler, VP of Engineering
+                        "Sentry's session replay is game-changing. We can see exactly what users experienced during an incident, 
+                        making root cause analysis instantaneous instead of guesswork." — Dan Sadler, VP of Engineering
                       </p>
                     </div>
                   </div>
@@ -509,10 +599,10 @@ const CourseDetail: React.FC = memo(() => {
                   Previous
                 </button>
                 <button 
-                  disabled={activeModule === courseModules.length - 1}
+                  disabled={activeModule === modules.length - 1}
                   onClick={handleNext}
                   className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    activeModule === courseModules.length - 1
+                    activeModule === modules.length - 1
                       ? isDark 
                         ? 'bg-slate-800/30 text-gray-500 cursor-not-allowed'
                         : 'bg-gray-100/30 text-gray-400 cursor-not-allowed'

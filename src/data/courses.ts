@@ -82,7 +82,42 @@ export interface CourseModule {
   isCompleted: boolean;
 }
 
-export const courseModules: CourseModule[] = [
+// Sentry Fundamentals modules
+export const sentryFundamentalsModules: CourseModule[] = [
+  {
+    title: "Install Sentry SDK",
+    description: "Set up Sentry in your Next.js application using the installation wizard and configure error monitoring, tracing, and session replay.",
+    duration: "8 min",
+    isCompleted: true
+  },
+  {
+    title: "Verify Your Setup",
+    description: "Test your Sentry configuration by triggering sample errors and verifying data appears in your Sentry project dashboard.",
+    duration: "12 min",
+    isCompleted: true
+  },
+  {
+    title: "Sending Logs",
+    description: "Learn to capture exceptions, send custom messages, and add context to your error reports for better debugging.",
+    duration: "15 min",
+    isCompleted: false
+  },
+  {
+    title: "Customizing Session Replay",
+    description: "Configure session replay settings, privacy controls, and sampling rates to capture meaningful user interactions.",
+    duration: "12 min",
+    isCompleted: false
+  },
+  {
+    title: "Distributed Tracing",
+    description: "Implement performance monitoring with custom spans, trace API calls, and monitor user interactions across your application.",
+    duration: "18 min",
+    isCompleted: false
+  }
+];
+
+// Sentry Logging modules  
+export const sentryLoggingModules: CourseModule[] = [
   {
     title: "Introduction to Sentry Logs",
     description: "Understanding structured logging and why logs are essential for debugging applications beyond errors.",
@@ -114,3 +149,6 @@ export const courseModules: CourseModule[] = [
     isCompleted: false
   }
 ];
+
+// Default modules for backward compatibility
+export const courseModules: CourseModule[] = sentryFundamentalsModules;
