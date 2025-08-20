@@ -2,9 +2,13 @@ import React, { useState, useEffect, memo, useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users, Monitor, Github } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useRole } from '../contexts/RoleContext';
+import { useNextContent } from '../hooks/useNextContent';
 import { getTextClasses } from '../utils/styles';
 import { courseModules, sentryFundamentalsModules, sentryLoggingModules, courses } from '../data/courses';
 import { Arcade } from './Arcade';
+import RoleSpecificExplanation from './RoleSpecificExplanation';
+import NextContentCard from './NextContentCard';
 
 interface ContentModuleProps {
   title: string;
@@ -72,6 +76,8 @@ ContentModule.displayName = 'ContentModule';
 
 const CourseDetail: React.FC = memo(() => {
   const { isDark } = useTheme();
+  const { userProgress, completeModule } = useRole();
+  const { getPersonalizedContentForModule, nextRecommendation } = useNextContent();
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const [activeModule, setActiveModule] = useState(0);
@@ -264,6 +270,16 @@ Sentry.init({
     setActiveModule(prev => Math.min(modules.length - 1, prev + 1));
   }, [modules.length]);
 
+  const handleCompleteModule = useCallback(() => {
+    if (courseId) {
+      completeModule(courseId);
+    }
+  }, [courseId, completeModule]);
+
+  const handleStartNextRecommendation = useCallback((moduleId: string) => {
+    navigate(`/course/${moduleId}`);
+  }, [navigate]);
+
   const currentModule = useMemo(() => modules[activeModule], [modules, activeModule]);
   
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
@@ -374,6 +390,14 @@ Sentry.init({
                     {currentModule.description}
                   </p>
                 </div>
+
+                {/* Role-Specific Explanation */}
+                {userProgress.role && courseId && (
+                  <RoleSpecificExplanation 
+                    moduleId={courseId}
+                    className="mb-6"
+                  />
+                )}
 
                 {/* Key Concepts */}
                 <div className={`border rounded-xl p-6 ${
@@ -715,37 +739,65 @@ Sentry.init({
                 </a>
               </div>
 
-              {/* Navigation */}
-              <div className="flex justify-between items-center mt-8 pt-6 border-t border-purple-500/20">
-                <button 
-                  disabled={activeModule === 0}
-                  onClick={handlePrevious}
-                  className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    activeModule === 0
-                      ? isDark 
-                        ? 'bg-slate-800/30 text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-100/30 text-gray-400 cursor-not-allowed'
-                      : isDark
-                        ? 'bg-slate-800/50 hover:bg-slate-700/50 text-gray-300 hover:text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  Previous
-                </button>
-                <button 
-                  disabled={activeModule === modules.length - 1}
-                  onClick={handleNext}
-                  className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    activeModule === modules.length - 1
-                      ? isDark 
-                        ? 'bg-slate-800/30 text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-100/30 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-purple-500 to-pink-400 text-white hover:from-purple-600 hover:to-pink-500 transform hover:scale-105 shadow-lg hover:shadow-purple-500/30'
-                  }`}
-                >
-                  Next Module
-                </button>
+              {/* Course Completion */}
+              <div className="mt-8 pt-6 border-t border-purple-500/20">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                  {/* Navigation */}
+                  <div className="flex justify-between sm:justify-start sm:gap-4">
+                    <button 
+                      disabled={activeModule === 0}
+                      onClick={handlePrevious}
+                      className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
+                        activeModule === 0
+                          ? isDark 
+                            ? 'bg-slate-800/30 text-gray-500 cursor-not-allowed'
+                            : 'bg-gray-100/30 text-gray-400 cursor-not-allowed'
+                          : isDark
+                            ? 'bg-slate-800/50 hover:bg-slate-700/50 text-gray-300 hover:text-white'
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Previous
+                    </button>
+                    <button 
+                      disabled={activeModule === modules.length - 1}
+                      onClick={handleNext}
+                      className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
+                        activeModule === modules.length - 1
+                          ? isDark 
+                            ? 'bg-slate-800/30 text-gray-500 cursor-not-allowed'
+                            : 'bg-gray-100/30 text-gray-400 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-purple-500 to-pink-400 text-white hover:from-purple-600 hover:to-pink-500 transform hover:scale-105 shadow-lg hover:shadow-purple-500/30'
+                      }`}
+                    >
+                      Next Module
+                    </button>
+                  </div>
+
+                  {/* Complete Module Button */}
+                  <button 
+                    onClick={handleCompleteModule}
+                    className="px-6 py-2 rounded-lg font-medium transition-all duration-200 bg-green-600 hover:bg-green-700 text-white transform hover:scale-105 shadow-lg hover:shadow-green-500/30"
+                  >
+                    Mark Complete
+                  </button>
+                </div>
               </div>
+
+              {/* Next Recommendation */}
+              {userProgress.role && nextRecommendation && nextRecommendation.moduleId !== courseId && (
+                <div className="mt-8 pt-6 border-t border-purple-500/20">
+                  <h4 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    Recommended Next Step
+                  </h4>
+                  <NextContentCard
+                    recommendation={nextRecommendation}
+                    personalizedContent={getPersonalizedContentForModule(nextRecommendation.moduleId)}
+                    onStartLearning={handleStartNextRecommendation}
+                    className="max-w-lg"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

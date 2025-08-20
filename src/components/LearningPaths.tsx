@@ -1,7 +1,9 @@
 import React, { memo, useMemo } from 'react';
 import { ArrowRight, User, Code, Server, Settings } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useRole } from '../contexts/RoleContext';
 import { getTextClasses } from '../utils/styles';
+import PersonalizedPath from './PersonalizedPath';
 
 const UserInputForm: React.FC = () => {
   const { isDark } = useTheme();
@@ -180,6 +182,7 @@ const UserInputForm: React.FC = () => {
 
 const LearningPaths: React.FC = memo(() => {
   const { isDark } = useTheme();
+  const { userProgress } = useRole();
 
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
@@ -199,20 +202,43 @@ const LearningPaths: React.FC = memo(() => {
       }`}></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
-            Choose Your{' '}
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Learning Path
-            </span>
-          </h2>
-          <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
-            Every expert started somewhere. Pick the path that matches your current experience 
-            and let us guide you to Sentry mastery.
-          </p>
-        </div>
+        {userProgress.role ? (
+          /* Show personalized path for users with roles */
+          <>
+            <div className="text-center mb-16">
+              <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
+                Your{' '}
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Learning Journey
+                </span>
+              </h2>
+              <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
+                Personalized content and recommendations tailored specifically for your role 
+                and current progress through the Sentry ecosystem.
+              </p>
+            </div>
 
-        <UserInputForm />
+            <PersonalizedPath />
+          </>
+        ) : (
+          /* Show role selection for users without roles */
+          <>
+            <div className="text-center mb-16">
+              <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
+                Choose Your{' '}
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Learning Path
+                </span>
+              </h2>
+              <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
+                Every expert started somewhere. Pick the path that matches your current experience 
+                and let us guide you to Sentry mastery.
+              </p>
+            </div>
+
+            <UserInputForm />
+          </>
+        )}
       </div>
     </section>
   );
