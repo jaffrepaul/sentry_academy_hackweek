@@ -78,6 +78,46 @@ const PersonaPathDisplay: React.FC = () => {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showResetConfirm]);
 
+  // Position last completed course at top of viewport when persona is first loaded (no animation)
+  React.useEffect(() => {
+    if (currentLearningPath && userProgress.role) {
+      // Use setTimeout with minimal delay to ensure DOM is rendered, then jump immediately
+      setTimeout(() => {
+        const completedSteps = currentLearningPath.steps
+          .filter(step => step.isCompleted)
+          .sort((a, b) => b.priority - a.priority); // Sort by priority descending to get last completed
+
+        if (completedSteps.length > 0) {
+          // Jump to position the last completed step with 50px margin above
+          const lastCompletedStep = completedSteps[0];
+          const stepElement = document.getElementById(`step-${lastCompletedStep.id}`);
+          if (stepElement) {
+            // Get the absolute position of the element relative to the document
+            const rect = stepElement.getBoundingClientRect();
+            const absoluteTop = rect.top + window.scrollY;
+            const offset = absoluteTop - 50 - 40; // 50px above the element, then 40px up
+            window.scrollTo({
+              top: offset,
+              behavior: 'auto' // Instant, no animation
+            });
+          }
+        } else {
+          // No completed steps - find the container with space-y-6 and position at its top
+          const stepsContainer = document.querySelector('.space-y-6');
+          if (stepsContainer) {
+            const rect = stepsContainer.getBoundingClientRect();
+            const absoluteTop = rect.top + window.scrollY;
+            const offset = absoluteTop - 50 - 40; // 50px above the container, then 40px up
+            window.scrollTo({
+              top: offset,
+              behavior: 'auto' // Instant, no animation
+            });
+          }
+        }
+      }, 50); // Minimal delay to ensure DOM is ready
+    }
+  }, [currentLearningPath, userProgress.role]);
+
   if (!currentLearningPath || !userProgress.role) {
     return null;
   }
@@ -151,6 +191,7 @@ const PersonaPathDisplay: React.FC = () => {
           return (
             <div
               key={step.id}
+              id={`step-${step.id}`}
               className={`backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 ${
                 isCompleted
                   ? isDark

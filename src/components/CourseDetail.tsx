@@ -313,12 +313,17 @@ Sentry.init({
   }, [courseId]);
 
   const goBack = useCallback(() => {
-    // Navigate back with transition state for smooth page transition
+    // Check if we came from a learning path or directly accessed the course
+    const fromLearningPath = location.state?.from === 'learning-path' || userProgress.role || currentLearningPath;
+    
+    // Navigate back with appropriate scroll behavior
     navigate('/', { 
-      state: { scrollToSection: 'transition' },
+      state: { 
+        scrollToSection: fromLearningPath ? 'transition' : 'courses' 
+      },
       replace: false 
     });
-  }, [navigate]);
+  }, [navigate, location.state, userProgress.role, currentLearningPath]);
 
   const handleModuleClick = useCallback((index: number) => {
     setActiveModule(index);
@@ -885,8 +890,6 @@ Sentry.init({
                   </div>
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>

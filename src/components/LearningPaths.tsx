@@ -300,6 +300,22 @@ const LearningPaths: React.FC = memo(() => {
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
 
+  // Jump directly to learning path when persona is selected (no animation)
+  React.useEffect(() => {
+    if (userProgress.role) {
+      // Use setTimeout with 0 to ensure DOM is updated first, then jump immediately
+      setTimeout(() => {
+        const pathsSection = document.getElementById('paths');
+        if (pathsSection) {
+          pathsSection.scrollIntoView({ 
+            behavior: 'auto', // Instant, no animation
+            block: 'start' 
+          });
+        }
+      }, 0);
+    }
+  }, [userProgress.role]);
+
   return (
     <section id="paths" className="py-20 lg:py-32 relative">
       <div className={`absolute inset-0 ${

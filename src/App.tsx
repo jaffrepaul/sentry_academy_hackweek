@@ -18,14 +18,27 @@ const HomePage = () => {
   
   useEffect(() => {
     // Check if we're returning from a course detail page
-    const hasNavigationState = location.state?.scrollToSection;
-    if (hasNavigationState) {
+    const scrollToSection = location.state?.scrollToSection;
+    if (scrollToSection) {
       // Start with page hidden for smooth transition
       setIsVisible(false);
       
       // Small delay then fade in for smooth transition
       setTimeout(() => {
         setIsVisible(true);
+        
+        // If we need to scroll to courses section, do it after the page is visible
+        if (scrollToSection === 'courses') {
+          setTimeout(() => {
+            const coursesSection = document.getElementById('courses');
+            if (coursesSection) {
+              coursesSection.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+              });
+            }
+          }, 100); // Additional delay to ensure page is fully rendered
+        }
       }, 50);
     } else {
       // Normal page load - show immediately
