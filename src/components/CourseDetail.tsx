@@ -73,7 +73,7 @@ ContentModule.displayName = 'ContentModule';
 
 const CourseDetail: React.FC = memo(() => {
   const { isDark } = useTheme();
-  const { userProgress, completeModule, getNextRecommendation } = useRole();
+  const { userProgress, currentLearningPath, completeModule, getNextRecommendation } = useRole();
   const navigate = useNavigate();
   const location = useLocation();
   const { courseId } = useParams<{ courseId: string }>();
@@ -81,9 +81,78 @@ const CourseDetail: React.FC = memo(() => {
 
   const nextRecommendation = getNextRecommendation();
 
+  // Get learning path context for navigation
+  const getNavigationContext = useCallback(() => {
+    if (!userProgress.role || !currentLearningPath) {
+      // Fallback for users without personas - cycle through course grid
+      const currentCourseIndex = courses.findIndex(course => course.id === courseId);
+      
+      if (currentCourseIndex === -1) {
+        return { previousCourse: null, nextCourse: null, nextDescription: null };
+      }
+
+      const previousCourse = currentCourseIndex > 0 ? courses[currentCourseIndex - 1] : null;
+      const nextCourse = currentCourseIndex < courses.length - 1 ? courses[currentCourseIndex + 1] : null;
+      
+      return {
+        previousCourse: previousCourse?.id || null,
+        previousTitle: previousCourse?.title || null,
+        previousDescription: previousCourse?.description || null,
+        nextCourse: nextCourse?.id || null,
+        nextTitle: nextCourse?.title || null,
+        nextDescription: nextCourse?.description || 'Continue your learning journey'
+      };
+    }
+
+    // Find current course in learning path
+    const currentStepIndex = currentLearningPath.steps.findIndex(step => 
+      step.modules.includes(courseId || '')
+    );
+
+    if (currentStepIndex === -1) {
+      // If course not found in learning path, fall back to course grid cycling
+      const currentCourseIndex = courses.findIndex(course => course.id === courseId);
+      
+      if (currentCourseIndex === -1) {
+        return { previousCourse: null, nextCourse: null, nextDescription: null };
+      }
+
+      const previousCourse = currentCourseIndex > 0 ? courses[currentCourseIndex - 1] : null;
+      const nextCourse = currentCourseIndex < courses.length - 1 ? courses[currentCourseIndex + 1] : null;
+      
+      return {
+        previousCourse: previousCourse?.id || null,
+        previousTitle: previousCourse?.title || null,
+        previousDescription: previousCourse?.description || null,
+        nextCourse: nextCourse?.id || null,
+        nextTitle: nextCourse?.title || null,
+        nextDescription: nextCourse?.description || 'Continue your learning journey'
+      };
+    }
+
+    const currentStep = currentLearningPath.steps[currentStepIndex];
+    const previousStep = currentStepIndex > 0 ? currentLearningPath.steps[currentStepIndex - 1] : null;
+    const nextStep = currentStepIndex < currentLearningPath.steps.length - 1 
+      ? currentLearningPath.steps[currentStepIndex + 1] 
+      : null;
+
+    return {
+      previousCourse: previousStep?.modules[0] || null,
+      previousTitle: previousStep?.title || null,
+      previousDescription: previousStep?.description || null,
+      nextCourse: nextStep?.modules[0] || null,
+      nextTitle: nextStep?.title || null,
+      nextDescription: nextStep?.description || null,
+      currentStep,
+      nextStep
+    };
+  }, [userProgress.role, currentLearningPath, courseId]);
+
+  const navigationContext = getNavigationContext();
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [courseId]);
 
   // Determine which modules and course info to use based on courseId
   const { modules, courseInfo, contentConfig } = useMemo(() => {
@@ -254,14 +323,6 @@ Sentry.init({
   const handleModuleClick = useCallback((index: number) => {
     setActiveModule(index);
   }, []);
-
-  const handlePrevious = useCallback(() => {
-    setActiveModule(prev => Math.max(0, prev - 1));
-  }, []);
-
-  const handleNext = useCallback(() => {
-    setActiveModule(prev => Math.min(modules.length - 1, prev + 1));
-  }, [modules.length]);
 
   const handleCompleteModule = useCallback(() => {
     if (courseId) {
@@ -724,70 +785,108 @@ Sentry.init({
                 </a>
               </div>
 
-              {/* Navigation */}
-              <div className="flex justify-between items-center mt-8 pt-6 border-t border-purple-500/20">
-                <button 
-                  disabled={activeModule === 0}
-                  onClick={handlePrevious}
-                  className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    activeModule === 0
-                      ? isDark 
-                        ? 'bg-slate-800/30 text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-100/30 text-gray-400 cursor-not-allowed'
-                      : isDark
-                        ? 'bg-slate-800/50 hover:bg-slate-700/50 text-gray-300 hover:text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  Previous
-                </button>
-                <div className="flex gap-4">
-                  <button 
-                    onClick={handleCompleteModule}
-                    className="px-6 py-2 rounded-lg font-medium transition-all duration-200 bg-green-600 hover:bg-green-700 text-white transform hover:scale-105 shadow-lg hover:shadow-green-500/30"
-                  >
-                    Mark Complete
-                  </button>
-                  <button 
-                    disabled={activeModule === modules.length - 1}
-                    onClick={handleNext}
-                    className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
-                      activeModule === modules.length - 1
-                        ? isDark 
-                          ? 'bg-slate-800/30 text-gray-500 cursor-not-allowed'
-                          : 'bg-gray-100/30 text-gray-400 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-purple-500 to-pink-400 text-white hover:from-purple-600 hover:to-pink-500 transform hover:scale-105 shadow-lg hover:shadow-purple-500/30'
-                    }`}
-                  >
-                    Next Module
-                  </button>
+              {/* Course Navigation */}
+              <div className="mt-8 pt-6 border-t border-purple-500/20">
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Previous Course */}
+                  <div>
+                    {navigationContext.previousCourse ? (
+                      <button 
+                        onClick={() => navigate(`/course/${navigationContext.previousCourse}`, { state: { from: 'learning-path' } })}
+                        className={`w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] ${
+                          isDark
+                            ? 'bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50 hover:border-slate-500/70'
+                            : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-start space-x-3 h-full">
+                          <ArrowLeft className={`w-5 h-5 mt-1 flex-shrink-0 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+                          <div className="flex-1 min-h-0">
+                            <div className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                              Previous Course
+                            </div>
+                            <div className={`font-semibold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                              {navigationContext.previousTitle || navigationContext.previousCourse?.split('-').map(word => 
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                              ).join(' ')}
+                            </div>
+                            {navigationContext.previousDescription && (
+                              <div className={`text-sm mt-2 line-clamp-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                {navigationContext.previousDescription}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ) : (
+                      <div className={`w-full h-32 p-4 rounded-xl ${
+                        isDark ? 'bg-slate-800/30 border border-slate-700/30' : 'bg-gray-50/50 border border-gray-200/50'
+                      }`}>
+                        <div className="flex items-start space-x-3 h-full">
+                          <ArrowLeft className={`w-5 h-5 mt-1 flex-shrink-0 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} />
+                          <div className="flex-1">
+                            <div className={`text-sm font-medium ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                              First Course
+                            </div>
+                            <div className={`font-semibold mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                              Start of your learning path
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Next Course */}
+                  <div>
+                    {navigationContext.nextCourse ? (
+                      <button 
+                        onClick={() => navigate(`/course/${navigationContext.nextCourse}`, { state: { from: 'learning-path' } })}
+                        className={`w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] bg-gradient-to-r from-purple-500/20 to-pink-400/20 hover:from-purple-500/30 hover:to-pink-400/30 ${
+                          isDark
+                            ? 'border border-purple-500/40 hover:border-purple-400/60'
+                            : 'border border-purple-300/40 hover:border-purple-400/60'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between h-full">
+                          <div className="flex-1 min-h-0">
+                            <div className={`text-sm font-medium ${isDark ? 'text-purple-300' : 'text-purple-600'}`}>
+                              🎯 Recommended Next Course
+                            </div>
+                            <div className={`font-semibold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                              {navigationContext.nextTitle || navigationContext.nextCourse?.split('-').map(word => 
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                              ).join(' ')}
+                            </div>
+                            <div className={`text-sm mt-2 line-clamp-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                              {navigationContext.nextDescription || 'Continue your learning journey'}
+                            </div>
+                          </div>
+                          <ArrowRight className={`w-5 h-5 mt-1 ${isDark ? 'text-purple-400' : 'text-purple-500'} flex-shrink-0 ml-3`} />
+                        </div>
+                      </button>
+                    ) : (
+                      <div className={`w-full h-32 p-4 rounded-xl ${
+                        isDark ? 'bg-slate-800/30 border border-slate-700/30' : 'bg-gray-50/50 border border-gray-200/50'
+                      }`}>
+                        <div className="flex items-start justify-between h-full">
+                          <div className="flex-1">
+                            <div className={`text-sm font-medium ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                              Learning Path Complete
+                            </div>
+                            <div className={`font-semibold mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                              Great job finishing your path!
+                            </div>
+                          </div>
+                          <CheckCircle className={`w-5 h-5 mt-1 ${isDark ? 'text-gray-600' : 'text-gray-400'} flex-shrink-0`} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* Simple Next Recommendation */}
-              {userProgress.role && nextRecommendation && nextRecommendation.moduleId !== courseId && (
-                <div className="mt-8 pt-6 border-t border-purple-500/20">
-                  <div className={`backdrop-blur-sm border rounded-2xl p-6 ${
-                    isDark 
-                      ? 'bg-slate-900/40 border-emerald-500/40'
-                      : 'bg-white/60 border-emerald-300/40'
-                  }`}>
-                    <h4 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      🎯 Recommended Next: {nextRecommendation.moduleId}
-                    </h4>
-                    <p className={`text-sm mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                      {nextRecommendation.reasoning}
-                    </p>
-                    <button
-                      onClick={() => navigate(`/course/${nextRecommendation.moduleId}`, { state: { from: 'learning-paths' } })}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105"
-                    >
-                      Start Next Course
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
+
             </div>
           </div>
         </div>
