@@ -206,9 +206,6 @@ const NextStepsDisplay: React.FC = () => {
             : 'bg-white/60 border-emerald-300/40'
         }`}>
           <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-xl flex items-center justify-center mb-6 mx-auto">
-              <ArrowRight className="w-8 h-8 text-white" />
-            </div>
             <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
               🎯 Start Here: {nextRecommendation.moduleId}
             </h3>
