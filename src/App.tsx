@@ -1,7 +1,6 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useTheme } from './contexts/ThemeContext';
-import { useRole } from './contexts/RoleContext';
 import { getBackgroundStyle } from './utils/styles';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -11,24 +10,9 @@ import StatsSection from './components/StatsSection';
 import Footer from './components/Footer';
 import CourseDetail from './components/CourseDetail';
 import SiteBackgroundDemo from './components/SiteBackgroundDemo';
-import OnboardingModal from './components/OnboardingModal';
-import PersonalizedPath from './components/PersonalizedPath';
 
 function App() {
   const { isDark } = useTheme();
-  const { shouldShowOnboarding } = useRole();
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  // Check if we should show onboarding on app load
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (shouldShowOnboarding()) {
-        setShowOnboarding(true);
-      }
-    }, 1000); // Small delay to let the app load
-
-    return () => clearTimeout(timer);
-  }, [shouldShowOnboarding]);
 
   // Memoize background styles to prevent recalculation on every render
   const backgroundStyle = useMemo(() => getBackgroundStyle(isDark), [isDark]);
@@ -42,13 +26,7 @@ function App() {
     accent2: isDark ? 'bg-violet-500/10' : 'bg-pink-300/20'
   }), [isDark]);
 
-  const handleCloseOnboarding = () => {
-    setShowOnboarding(false);
-  };
 
-  const handleOnboardingComplete = () => {
-    setShowOnboarding(false);
-  };
 
   return (
     <>
@@ -92,19 +70,14 @@ function App() {
                 <Footer />
               </>
             } />
-            <Route path="/my-path" element={<PersonalizedPath />} />
+
             <Route path="/course/:courseId" element={<CourseDetail />} />
             <Route path="/demo/backgrounds" element={<SiteBackgroundDemo />} />
           </Routes>
         </div>
       </div>
 
-      {/* Onboarding Modal */}
-      <OnboardingModal
-        isOpen={showOnboarding}
-        onClose={handleCloseOnboarding}
-        onComplete={handleOnboardingComplete}
-      />
+
     </>
   );
 }

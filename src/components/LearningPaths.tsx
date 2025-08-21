@@ -1,9 +1,9 @@
 import React, { memo, useMemo } from 'react';
-import { ArrowRight, User, Code, Server, Settings } from 'lucide-react';
+import { ArrowRight, User, Code, Server, Settings, Trophy } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRole } from '../contexts/RoleContext';
 import { getTextClasses } from '../utils/styles';
-import PersonalizedPath from './PersonalizedPath';
 
 const UserInputForm: React.FC = () => {
   const { isDark } = useTheme();
@@ -19,12 +19,14 @@ const UserInputForm: React.FC = () => {
     );
   };
 
+  const { setUserRole } = useRole();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedRole) {
+      setUserRole(selectedRole as any);
       console.log('Selected role:', selectedRole);
       console.log('Selected features:', selectedFeatures);
-      // Handle form submission here
     }
   };
 
@@ -180,9 +182,73 @@ const UserInputForm: React.FC = () => {
   );
 };
 
+const NextStepsDisplay: React.FC = () => {
+  const { isDark } = useTheme();
+  const { getNextRecommendation, userProgress } = useRole();
+  const navigate = useNavigate();
+  
+  const nextRecommendation = getNextRecommendation();
+  
+  const handleStartCourse = (courseId: string) => {
+    navigate(`/course/${courseId}`);
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      {nextRecommendation ? (
+        <div className={`backdrop-blur-sm border rounded-2xl p-8 transition-all duration-300 ${
+          isDark 
+            ? 'bg-slate-900/60 border-emerald-500/40'
+            : 'bg-white/60 border-emerald-300/40'
+        }`}>
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-xl flex items-center justify-center mb-6 mx-auto">
+              <ArrowRight className="w-8 h-8 text-white" />
+            </div>
+            <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              🎯 Start Here: {nextRecommendation.moduleId}
+            </h3>
+            <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              {nextRecommendation.reasoning}
+            </p>
+            <div className="mb-6">
+              <span className="inline-block bg-emerald-100 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300 text-sm px-4 py-2 rounded-full">
+                ⏱️ {nextRecommendation.timeEstimate}
+              </span>
+            </div>
+            <button
+              onClick={() => handleStartCourse(nextRecommendation.moduleId)}
+              className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-8 py-3 rounded-xl font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/30 inline-flex items-center space-x-2"
+            >
+              <span>Start Learning</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className={`backdrop-blur-sm border rounded-2xl p-8 text-center ${
+          isDark 
+            ? 'bg-slate-900/60 border-green-500/40'
+            : 'bg-white/60 border-green-300/40'
+        }`}>
+          <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+            <Trophy className="w-8 h-8 text-white" />
+          </div>
+          <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            🎉 All Caught Up!
+          </h3>
+          <p className={`leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            You've completed your {userProgress.role} learning path. Great job!
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const LearningPaths: React.FC = memo(() => {
   const { isDark } = useTheme();
-  const { userProgress } = useRole();
+  const { userProgress, getNextRecommendation } = useRole();
 
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
@@ -202,43 +268,22 @@ const LearningPaths: React.FC = memo(() => {
       }`}></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {userProgress.role ? (
-          /* Show personalized path for users with roles */
-          <>
-            <div className="text-center mb-16">
-              <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
-                Your{' '}
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Learning Journey
-                </span>
-              </h2>
-              <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
-                Personalized content and recommendations tailored specifically for your role 
-                and current progress through the Sentry ecosystem.
-              </p>
-            </div>
+        <div className="text-center mb-16">
+          <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
+            {userProgress.role ? 'Your' : 'Choose Your'}{' '}
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Learning Path
+            </span>
+          </h2>
+          <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
+            {userProgress.role 
+              ? `Great! You're set up as a ${userProgress.role} engineer. Here's what we recommend next.`
+              : 'Every expert started somewhere. Pick the path that matches your current experience and let us guide you to Sentry mastery.'
+            }
+          </p>
+        </div>
 
-            <PersonalizedPath />
-          </>
-        ) : (
-          /* Show role selection for users without roles */
-          <>
-            <div className="text-center mb-16">
-              <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
-                Choose Your{' '}
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Learning Path
-                </span>
-              </h2>
-              <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
-                Every expert started somewhere. Pick the path that matches your current experience 
-                and let us guide you to Sentry mastery.
-              </p>
-            </div>
-
-            <UserInputForm />
-          </>
-        )}
+        {userProgress.role ? <NextStepsDisplay /> : <UserInputForm />}
       </div>
     </section>
   );

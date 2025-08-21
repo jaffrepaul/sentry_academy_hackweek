@@ -1,26 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { EngineerRole, UserProgress, LearningPath, LearningPathStep, NextContentRecommendation } from '../types/roles';
 import { getLearningPathForRole, getPersonalizationForRole } from '../data/roles';
-import { getNextContentRecommendation, updateProgressAfterCompletion } from '../utils/recommendations';
 
 interface RoleContextType {
   userProgress: UserProgress;
   currentLearningPath: LearningPath | null;
   currentStep: LearningPathStep | null;
   setUserRole: (role: EngineerRole) => void;
-  completeStep: (stepId: string) => void;
   completeModule: (moduleId: string) => void;
-  unlockNextStep: () => void;
   resetProgress: () => void;
-  completeOnboarding: () => void;
-  getRoleSpecificContent: (moduleId: string) => {
-    explanation: string;
-    whyRelevant: string;
-    nextStepNudge: string;
-  } | null;
-  getNextRecommendations: () => NextContentRecommendation | null;
-  markOnboardingComplete: () => void;
-  shouldShowOnboarding: () => boolean;
+  getNextRecommendation: () => NextContentRecommendation | null;
 }
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
@@ -82,27 +71,18 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     }
   };
 
-  const completeStep = (stepId: string) => {
-    setUserProgress(prev => ({
-      ...prev,
-      completedSteps: [...prev.completedSteps, stepId]
-    }));
-  };
-
   const completeModule = (moduleId: string) => {
     setUserProgress(prev => {
-      // Use the algorithm from recommendations.ts for proper progress tracking
-      return updateProgressAfterCompletion(prev, moduleId);
-    });
-  };
-
-  const unlockNextStep = () => {
-    if (currentLearningPath && userProgress.currentStep < currentLearningPath.steps.length - 1) {
-      setUserProgress(prev => ({
+      const newCompletedModules = [...prev.completedModules];
+      if (!newCompletedModules.includes(moduleId)) {
+        newCompletedModules.push(moduleId);
+      }
+      return {
         ...prev,
-        currentStep: prev.currentStep + 1
-      }));
-    }
+        completedModules: newCompletedModules,
+        lastActiveDate: new Date()
+      };
+    });
   };
 
   const resetProgress = () => {
@@ -111,35 +91,31 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  const completeOnboarding = () => {
-    setUserProgress(prev => ({
-      ...prev,
-      onboardingCompleted: true
-    }));
-  };
+  // Simple next recommendation logic
+  const getNextRecommendation = (): NextContentRecommendation | null => {
+    if (!userProgress.role || !currentLearningPath) return null;
 
-  const getRoleSpecificContent = (moduleId: string) => {
-    if (!userProgress.role) return null;
-    
-    const personalization = getPersonalizationForRole(userProgress.role);
-    return personalization?.contentAdaptations[moduleId] || null;
-  };
+    // Find the next step that hasn't been completed
+    const nextStep = currentLearningPath.steps.find(step => 
+      !userProgress.completedSteps.includes(step.id)
+    );
 
-  const getNextRecommendations = () => {
-    return getNextContentRecommendation(userProgress);
-  };
+    if (!nextStep) return null;
 
-  const markOnboardingComplete = () => {
-    setUserProgress(prev => ({
-      ...prev,
-      hasSeenOnboarding: true,
-      onboardingCompleted: true,
-      lastActiveDate: new Date()
-    }));
-  };
+    // Find the next module within the step that hasn't been completed
+    const nextModule = nextStep.modules.find(moduleId => 
+      !userProgress.completedModules.includes(moduleId)
+    );
 
-  const shouldShowOnboarding = () => {
-    return !userProgress.hasSeenOnboarding || !userProgress.role;
+    if (!nextModule) return null;
+
+    return {
+      moduleId: nextModule,
+      stepId: nextStep.id,
+      priority: 1,
+      reasoning: `Continue your ${userProgress.role} learning path with ${nextModule}`,
+      timeEstimate: nextStep.estimatedTime
+    };
   };
 
   const currentStep = currentLearningPath?.steps[userProgress.currentStep] || null;
@@ -149,15 +125,9 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     currentLearningPath,
     currentStep,
     setUserRole,
-    completeStep,
     completeModule,
-    unlockNextStep,
     resetProgress,
-    completeOnboarding,
-    getRoleSpecificContent,
-    getNextRecommendations,
-    markOnboardingComplete,
-    shouldShowOnboarding
+    getNextRecommendation
   };
 
   return (
