@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { ArrowRight, User, Code, Server, Settings, Trophy } from 'lucide-react';
+import { ArrowRight, User, Code, Server, Settings, Trophy, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRole } from '../contexts/RoleContext';
@@ -184,13 +184,17 @@ const UserInputForm: React.FC = () => {
 
 const NextStepsDisplay: React.FC = () => {
   const { isDark } = useTheme();
-  const { getNextRecommendation, userProgress } = useRole();
+  const { getNextRecommendation, userProgress, resetProgress } = useRole();
   const navigate = useNavigate();
   
   const nextRecommendation = getNextRecommendation();
   
   const handleStartCourse = (courseId: string) => {
     navigate(`/course/${courseId}`);
+  };
+
+  const handleReset = () => {
+    resetProgress();
   };
 
   return (
@@ -216,13 +220,26 @@ const NextStepsDisplay: React.FC = () => {
                 ⏱️ {nextRecommendation.timeEstimate}
               </span>
             </div>
-            <button
-              onClick={() => handleStartCourse(nextRecommendation.moduleId)}
-              className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-8 py-3 rounded-xl font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/30 inline-flex items-center space-x-2"
-            >
-              <span>Start Learning</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <button
+                onClick={() => handleStartCourse(nextRecommendation.moduleId)}
+                className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-8 py-3 rounded-xl font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/30 inline-flex items-center space-x-2"
+              >
+                <span>Start Learning</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleReset}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 inline-flex items-center space-x-2 ${
+                  isDark
+                    ? 'bg-slate-700/60 text-gray-300 hover:bg-slate-600/80 border border-slate-600/50'
+                    : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50'
+                }`}
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>Start Over</span>
+              </button>
+            </div>
           </div>
         </div>
       ) : (
@@ -237,9 +254,20 @@ const NextStepsDisplay: React.FC = () => {
           <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             🎉 All Caught Up!
           </h3>
-          <p className={`leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+          <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
             You've completed your {userProgress.role} learning path. Great job!
           </p>
+          <button
+            onClick={handleReset}
+            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 inline-flex items-center space-x-2 ${
+              isDark
+                ? 'bg-slate-700/60 text-gray-300 hover:bg-slate-600/80 border border-slate-600/50'
+                : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50'
+            }`}
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>Try Another Path</span>
+          </button>
         </div>
       )}
     </div>

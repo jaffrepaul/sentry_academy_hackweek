@@ -97,13 +97,57 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
 
     const completedModules = userProgress.completedModules;
 
-    // EVERYONE starts with Sentry Fundamentals - the foundation of error tracking
-    if (!completedModules.includes('sentry-fundamentals')) {
+    // For Frontend Engineers: if they're new to Sentry, start with React-specific error tracking
+    if (userProgress.role === 'frontend' && completedModules.length === 0) {
+      return {
+        moduleId: 'react-error-boundaries',
+        stepId: 'frontend-start',
+        priority: 10,
+        reasoning: 'Start with React error boundaries to catch frontend errors and see user interactions',
+        timeEstimate: '45 minutes'
+      };
+    }
+
+    // For Backend Engineers: if they're new to Sentry, start with Node.js integration
+    if (userProgress.role === 'backend' && completedModules.length === 0) {
+      return {
+        moduleId: 'nodejs-integration',
+        stepId: 'backend-start',
+        priority: 10,
+        reasoning: 'Start with Node.js integration to capture server-side errors and exceptions',
+        timeEstimate: '1 hour'
+      };
+    }
+
+    // For SRE/DevOps: start with infrastructure-wide error tracking
+    if (userProgress.role === 'sre' && completedModules.length === 0) {
+      return {
+        moduleId: 'nodejs-integration',
+        stepId: 'sre-start',
+        priority: 10,
+        reasoning: 'Start with infrastructure error tracking to aggregate errors from all your services',
+        timeEstimate: '1 hour'
+      };
+    }
+
+    // For Full-Stack: start with the frontend first (user-facing)
+    if (userProgress.role === 'fullstack' && completedModules.length === 0) {
+      return {
+        moduleId: 'react-error-boundaries',
+        stepId: 'fullstack-start',
+        priority: 10,
+        reasoning: 'Start with frontend error tracking to catch user-facing issues first',
+        timeEstimate: '45 minutes'
+      };
+    }
+
+    // EVERYONE should eventually do Sentry Fundamentals for the conceptual foundation
+    if (!completedModules.includes('sentry-fundamentals') && completedModules.length >= 1) {
       return {
         moduleId: 'sentry-fundamentals',
         stepId: 'foundation',
-        priority: 10,
-        reasoning: 'Start with Sentry Fundamentals to learn error tracking - the core of application monitoring',
+        priority: 9,
+        reasoning: 'Learn Sentry fundamentals to understand the core concepts behind application monitoring',
         timeEstimate: '45 minutes'
       };
     }
