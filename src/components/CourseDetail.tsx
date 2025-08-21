@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo, useCallback, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Lightbulb, Users, Monitor, Github, ArrowRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRole } from '../contexts/RoleContext';
@@ -75,6 +75,7 @@ const CourseDetail: React.FC = memo(() => {
   const { isDark } = useTheme();
   const { userProgress, completeModule, getNextRecommendation } = useRole();
   const navigate = useNavigate();
+  const location = useLocation();
   const { courseId } = useParams<{ courseId: string }>();
   const [activeModule, setActiveModule] = useState(0);
 
@@ -246,15 +247,18 @@ Sentry.init({
     navigate('/');
     // Use setTimeout to ensure navigation completes before scrolling
     setTimeout(() => {
-      const coursesSection = document.getElementById('courses');
-      if (coursesSection) {
-        coursesSection.scrollIntoView({ 
+      // Check if user came from learning paths
+      const fromLearningPaths = location.state?.from === 'learning-paths';
+      const targetSection = fromLearningPaths ? 'paths' : 'courses';
+      const section = document.getElementById(targetSection);
+      if (section) {
+        section.scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
         });
       }
     }, 100);
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   const handleModuleClick = useCallback((index: number) => {
     setActiveModule(index);
@@ -784,7 +788,7 @@ Sentry.init({
                       {nextRecommendation.reasoning}
                     </p>
                     <button
-                      onClick={() => navigate(`/course/${nextRecommendation.moduleId}`)}
+                      onClick={() => navigate(`/course/${nextRecommendation.moduleId}`, { state: { from: 'learning-paths' } })}
                       className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105"
                     >
                       Start Next Course

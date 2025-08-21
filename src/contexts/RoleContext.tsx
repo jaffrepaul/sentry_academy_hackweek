@@ -21,6 +21,7 @@ const defaultUserProgress: UserProgress = {
   currentStep: 0,
   completedSteps: [],
   completedModules: [],
+  completedFeatures: [],
   onboardingCompleted: false,
   lastActiveDate: new Date(),
   preferredContentType: 'mixed',
@@ -60,43 +61,148 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   const setUserRole = (role: EngineerRole, selectedFeatures: string[] = []) => {
     const learningPath = getLearningPathForRole(role);
     if (learningPath) {
-      setCurrentLearningPath(learningPath);
-      
-      // Map selected features to completed modules
+      // Map selected features to completed features and modules
       const completedModules: string[] = [];
-      if (selectedFeatures.includes('error-tracking')) {
+      const completedFeatures: string[] = [];
+      const completedStepIds: string[] = [];
+      
+      // If user selected ANY feature other than error-tracking, or explicitly selected error-tracking,
+      // we assume they have basic Sentry setup and thus error tracking is complete
+      const hasOtherFeatures = selectedFeatures.length > 0 && 
+        (selectedFeatures.includes('error-tracking') || 
+         selectedFeatures.some(f => f !== 'error-tracking'));
+         
+      if (hasOtherFeatures) {
+        completedFeatures.push('error-tracking');
         // For different roles, error tracking means different starting modules
         if (role === 'frontend') {
           completedModules.push('sentry-fundamentals');
-        } else if (role === 'backend' || role === 'sre') {
+          completedStepIds.push('frontend-error-tracking');
+        } else if (role === 'backend') {
           completedModules.push('nodejs-integration');
+          completedStepIds.push('backend-error-tracking');
+        } else if (role === 'sre') {
+          completedModules.push('nodejs-integration');
+          completedStepIds.push('sre-error-tracking');
+        } else if (role === 'ai-ml') {
+          completedModules.push('nodejs-integration');
+          completedStepIds.push('ai-ml-error-tracking');
         } else if (role === 'fullstack') {
           completedModules.push('sentry-fundamentals');
+          completedStepIds.push('fullstack-error-tracking');
+        } else if (role === 'pm-manager') {
+          // PM/Manager doesn't have an error tracking step since they focus on metrics insights
+          // but we still mark the feature as understood
         }
       }
       if (selectedFeatures.includes('performance-monitoring')) {
+        completedFeatures.push('performance-monitoring');
         completedModules.push('performance-monitoring');
+        // Add corresponding step IDs based on role
+        if (role === 'frontend') completedStepIds.push('frontend-performance');
+        else if (role === 'backend') completedStepIds.push('backend-performance');
+        else if (role === 'fullstack') completedStepIds.push('fullstack-performance');
+        else if (role === 'sre') completedStepIds.push('sre-performance-tracing');
+        else if (role === 'ai-ml') completedStepIds.push('ai-ml-performance');
       }
       if (selectedFeatures.includes('session-replay')) {
+        completedFeatures.push('session-replay');
         completedModules.push('react-error-boundaries');
+        if (role === 'frontend') completedStepIds.push('frontend-session-replay');
+        else if (role === 'fullstack') completedStepIds.push('fullstack-session-replay');
       }
       if (selectedFeatures.includes('logging')) {
+        completedFeatures.push('logging');
         completedModules.push('react-error-boundaries'); // Using this as logging course placeholder
+        if (role === 'frontend') completedStepIds.push('frontend-logging');
+        else if (role === 'backend') completedStepIds.push('backend-logging');
+        else if (role === 'fullstack') completedStepIds.push('fullstack-logging');
+        else if (role === 'sre') completedStepIds.push('sre-logging');
+        else if (role === 'ai-ml') completedStepIds.push('ai-ml-logging');
       }
-      if (selectedFeatures.includes('user-feedback') || selectedFeatures.includes('cron-monitoring') || selectedFeatures.includes('ai-agent-monitoring') || selectedFeatures.includes('mcp-monitoring')) {
-        completedModules.push('team-workflows');
+      if (selectedFeatures.includes('distributed-tracing')) {
+        completedFeatures.push('distributed-tracing');
+        completedModules.push('distributed-tracing');
+        if (role === 'backend') completedStepIds.push('backend-distributed-tracing');
+        else if (role === 'fullstack') completedStepIds.push('fullstack-distributed-tracing');
+        else if (role === 'sre') completedStepIds.push('sre-performance-tracing');
+        else if (role === 'ai-ml') completedStepIds.push('ai-ml-distributed-tracing');
       }
-      if (selectedFeatures.includes('profiling')) {
+      if (selectedFeatures.includes('release-health')) {
+        completedFeatures.push('release-health');
+        completedModules.push('release-health');
+        if (role === 'backend') completedStepIds.push('backend-release-health');
+        else if (role === 'sre') completedStepIds.push('sre-release-health');
+      }
+      if (selectedFeatures.includes('dashboards-alerts')) {
+        completedFeatures.push('dashboards-alerts');
         completedModules.push('custom-dashboards');
+        if (role === 'frontend') completedStepIds.push('frontend-dashboards-alerts');
+        else if (role === 'backend') completedStepIds.push('backend-dashboards-alerts');
+        else if (role === 'fullstack') completedStepIds.push('fullstack-dashboards-alerts');
+        else if (role === 'sre') completedStepIds.push('sre-dashboards');
+        else if (role === 'ai-ml') completedStepIds.push('ai-ml-dashboards-alerts');
       }
+      if (selectedFeatures.includes('integrations')) {
+        completedFeatures.push('integrations');
+        completedModules.push('team-workflows');
+        if (role === 'frontend') completedStepIds.push('frontend-integrations');
+        else if (role === 'sre') completedStepIds.push('sre-integrations');
+      }
+      if (selectedFeatures.includes('user-feedback')) {
+        completedFeatures.push('user-feedback');
+        completedModules.push('user-feedback');
+        if (role === 'frontend') completedStepIds.push('frontend-user-feedback');
+      }
+      if (selectedFeatures.includes('seer-mcp')) {
+        completedFeatures.push('seer-mcp');
+        completedModules.push('seer-mcp');
+        if (role === 'ai-ml') completedStepIds.push('ai-ml-seer-mcp');
+      }
+      if (selectedFeatures.includes('custom-metrics')) {
+        completedFeatures.push('custom-metrics');
+        completedModules.push('custom-metrics');
+        if (role === 'ai-ml') completedStepIds.push('ai-ml-custom-metrics');
+      }
+      if (selectedFeatures.includes('metrics-insights')) {
+        completedFeatures.push('metrics-insights');
+        completedModules.push('metrics-insights');
+        if (role === 'pm-manager') completedStepIds.push('pm-understanding-metrics');
+      }
+      if (selectedFeatures.includes('stakeholder-reporting')) {
+        completedFeatures.push('stakeholder-reporting');
+        completedModules.push('stakeholder-dashboards');
+        if (role === 'pm-manager') completedStepIds.push('pm-stakeholder-reporting');
+      }
+
+      // Create updated learning path with completed steps marked and proper unlocking
+      const updatedPath = {
+        ...learningPath,
+        steps: learningPath.steps.map((step) => {
+          const isCompleted = completedStepIds.includes(step.id);
+          const isFirstIncompleteStep = !isCompleted && 
+            learningPath.steps
+              .filter(s => s.priority < step.priority)
+              .every(s => completedStepIds.includes(s.id));
+          
+          return {
+            ...step,
+            isCompleted,
+            isUnlocked: isCompleted || isFirstIncompleteStep || step.priority === 1
+          };
+        })
+      };
+      
+      setCurrentLearningPath(updatedPath);
 
       setUserProgress(prev => ({
         ...prev,
         role,
         currentStep: 0,
-        completedSteps: [],
+        completedSteps: completedStepIds,
         completedModules,
-        lastActiveDate: new Date().toISOString()
+        completedFeatures,
+        lastActiveDate: new Date()
       }));
     }
   };
@@ -121,228 +227,27 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  // Smart Sentry-based recommendation logic using the baseline paths
+  // Feature-based recommendation logic using the new persona-specific learning paths
   const getNextRecommendation = (): NextContentRecommendation | null => {
-    if (!userProgress.role) return null;
+    if (!userProgress.role || !currentLearningPath) return null;
 
-    const completedModules = userProgress.completedModules;
+    // Find the next uncompleted step in priority order that is also unlocked
+    const nextStep = currentLearningPath.steps
+      .filter(step => !step.isCompleted && step.isUnlocked)
+      .sort((a, b) => a.priority - b.priority)[0];
 
-    // **Frontend Engineer Path**
-    // Typical start: Error tracking (JS exceptions)
-    // Next-best features: Performance monitoring (Web Vitals, LCP, FID), Session Replay, Release health
-    if (userProgress.role === 'frontend') {
-      // 1. Start with Error tracking (JS exceptions)
-      if (!completedModules.includes('sentry-fundamentals')) {
-        return {
-          moduleId: 'sentry-fundamentals',
-          stepId: 'frontend-error-tracking',
-          priority: 10,
-          reasoning: 'Start with error tracking to capture JavaScript exceptions and unhandled promise rejections',
-          timeEstimate: '45 minutes'
-        };
-      }
-      // 2. Performance monitoring (Web Vitals, LCP, FID)
-      if (!completedModules.includes('performance-monitoring')) {
-        return {
-          moduleId: 'performance-monitoring',
-          stepId: 'frontend-web-vitals',
-          priority: 9,
-          reasoning: 'Monitor Core Web Vitals (LCP, FID, CLS) to optimize user experience and SEO rankings',
-          timeEstimate: '2 hours'
-        };
-      }
-      // 3. Session Replay
-      if (!completedModules.includes('react-error-boundaries')) {
-        return {
-          moduleId: 'react-error-boundaries',
-          stepId: 'frontend-session-replay',
-          priority: 8,
-          reasoning: 'Add Session Replay to see exactly what users experienced when errors occurred',
-          timeEstimate: '1.2 hours'
-        };
-      }
-      // 4. Release health
-      if (!completedModules.includes('team-workflows')) {
-        return {
-          moduleId: 'team-workflows',
-          stepId: 'frontend-release-health',
-          priority: 7,
-          reasoning: 'Monitor release health to catch frontend regressions and deployment issues early',
-          timeEstimate: '1 hour'
-        };
-      }
-    }
+    if (!nextStep) return null; // All steps completed or no unlocked steps
 
-    // **Backend Engineer Path**
-    // Typical start: Error tracking (API failures, exceptions)
-    // Next-best features: Tracing (latency hotspots), Performance (slow queries), Dashboards (service health)
-    if (userProgress.role === 'backend') {
-      // 1. Start with Error tracking (API failures, exceptions)
-      if (!completedModules.includes('nodejs-integration')) {
-        return {
-          moduleId: 'nodejs-integration',
-          stepId: 'backend-error-tracking',
-          priority: 10,
-          reasoning: 'Start with error tracking to capture API failures, database exceptions, and server-side errors',
-          timeEstimate: '1.8 hours'
-        };
-      }
-      // 2. Tracing (latency hotspots)
-      if (!completedModules.includes('performance-monitoring')) {
-        return {
-          moduleId: 'performance-monitoring',
-          stepId: 'backend-tracing',
-          priority: 9,
-          reasoning: 'Add distributed tracing to identify latency hotspots and slow database queries',
-          timeEstimate: '2 hours'
-        };
-      }
-      // 3. Performance (slow queries) - covered by tracing above
-      // 4. Dashboards (service health)
-      if (!completedModules.includes('custom-dashboards')) {
-        return {
-          moduleId: 'custom-dashboards',
-          stepId: 'backend-service-health',
-          priority: 8,
-          reasoning: 'Create dashboards to monitor service health, API response times, and error rates',
-          timeEstimate: '2.5 hours'
-        };
-      }
-      // Optional: Fundamentals for conceptual understanding
-      if (!completedModules.includes('sentry-fundamentals')) {
-        return {
-          moduleId: 'sentry-fundamentals',
-          stepId: 'backend-fundamentals',
-          priority: 7,
-          reasoning: 'Learn Sentry fundamentals to deepen your understanding of application monitoring concepts',
-          timeEstimate: '45 minutes'
-        };
-      }
-    }
-
-    // **SRE / DevOps / Infra Path**
-    // Typical start: Error tracking signals from services
-    // Next-best features: Dashboards (infrastructure-wide), Alerts/Notifications, Tracing for distributed systems, Integration with on-call tools
-    if (userProgress.role === 'sre') {
-      // 1. Start with Error tracking signals from services
-      if (!completedModules.includes('nodejs-integration')) {
-        return {
-          moduleId: 'nodejs-integration',
-          stepId: 'sre-error-signals',
-          priority: 10,
-          reasoning: 'Start with error tracking to aggregate error signals from all your services and infrastructure',
-          timeEstimate: '1.8 hours'
-        };
-      }
-      // 2. Dashboards (infrastructure-wide)
-      if (!completedModules.includes('custom-dashboards')) {
-        return {
-          moduleId: 'custom-dashboards',
-          stepId: 'sre-infrastructure-dashboards',
-          priority: 9,
-          reasoning: 'Build infrastructure-wide dashboards to monitor system health across all services',
-          timeEstimate: '2.5 hours'
-        };
-      }
-      // 3. Alerts/Notifications & Integration with on-call tools
-      if (!completedModules.includes('team-workflows')) {
-        return {
-          moduleId: 'team-workflows',
-          stepId: 'sre-alerting-oncall',
-          priority: 8,
-          reasoning: 'Set up automated alerts and integrate with on-call tools like PagerDuty and Slack',
-          timeEstimate: '3 hours'
-        };
-      }
-      // 4. Tracing for distributed systems
-      if (!completedModules.includes('performance-monitoring')) {
-        return {
-          moduleId: 'performance-monitoring',
-          stepId: 'sre-distributed-tracing',
-          priority: 7,
-          reasoning: 'Implement distributed tracing to understand request flows across microservices',
-          timeEstimate: '2 hours'
-        };
-      }
-      // Optional: Fundamentals
-      if (!completedModules.includes('sentry-fundamentals')) {
-        return {
-          moduleId: 'sentry-fundamentals',
-          stepId: 'sre-fundamentals',
-          priority: 6,
-          reasoning: 'Learn Sentry fundamentals to understand monitoring principles and best practices',
-          timeEstimate: '45 minutes'
-        };
-      }
-    }
-
-    // **Full-stack Engineer Path**
-    // Typical start: Error tracking on both frontend/backend
-    // Next-best features: Cross-service tracing, Performance dashboards, Release health, Regression alerts
-    if (userProgress.role === 'fullstack') {
-      // 1. Start with Error tracking on both frontend/backend
-      if (!completedModules.includes('sentry-fundamentals')) {
-        return {
-          moduleId: 'sentry-fundamentals',
-          stepId: 'fullstack-error-tracking-foundation',
-          priority: 10,
-          reasoning: 'Start with error tracking fundamentals to monitor both frontend and backend errors',
-          timeEstimate: '45 minutes'
-        };
-      }
-      if (!completedModules.includes('nodejs-integration')) {
-        return {
-          moduleId: 'nodejs-integration',
-          stepId: 'fullstack-backend-errors',
-          priority: 9,
-          reasoning: 'Add backend error tracking to connect frontend and server-side issues',
-          timeEstimate: '1.8 hours'
-        };
-      }
-      // 2. Cross-service tracing
-      if (!completedModules.includes('performance-monitoring')) {
-        return {
-          moduleId: 'performance-monitoring',
-          stepId: 'fullstack-cross-service-tracing',
-          priority: 8,
-          reasoning: 'Implement cross-service tracing to monitor performance from user interactions to database queries',
-          timeEstimate: '2 hours'
-        };
-      }
-      // 3. Performance dashboards
-      if (!completedModules.includes('custom-dashboards')) {
-        return {
-          moduleId: 'custom-dashboards',
-          stepId: 'fullstack-performance-dashboards',
-          priority: 7,
-          reasoning: 'Create performance dashboards that show the complete user journey across your stack',
-          timeEstimate: '2.5 hours'
-        };
-      }
-      // 4. Release health & Regression alerts
-      if (!completedModules.includes('team-workflows')) {
-        return {
-          moduleId: 'team-workflows',
-          stepId: 'fullstack-release-regression',
-          priority: 6,
-          reasoning: 'Set up release health monitoring and regression alerts for your entire stack',
-          timeEstimate: '3 hours'
-        };
-      }
-      // Optional: Session Replay for frontend insights
-      if (!completedModules.includes('react-error-boundaries')) {
-        return {
-          moduleId: 'react-error-boundaries',
-          stepId: 'fullstack-frontend-insights',
-          priority: 5,
-          reasoning: 'Add Session Replay to see user interactions and debug frontend issues more effectively',
-          timeEstimate: '1.2 hours'
-        };
-      }
-    }
-
-    // All modules completed for this role
-    return null;
+    // Get the primary module for this step
+    const primaryModule = nextStep.modules[0];
+    
+    return {
+      moduleId: primaryModule,
+      stepId: nextStep.id,
+      priority: nextStep.priority,
+      reasoning: nextStep.description,
+      timeEstimate: nextStep.estimatedTime
+    };
   };
 
   const currentStep = currentLearningPath?.steps[userProgress.currentStep] || null;

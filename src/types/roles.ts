@@ -1,4 +1,4 @@
-export type EngineerRole = 'backend' | 'frontend' | 'sre' | 'fullstack';
+export type EngineerRole = 'backend' | 'frontend' | 'sre' | 'fullstack' | 'ai-ml' | 'pm-manager';
 
 export interface RoleInfo {
   id: EngineerRole;
@@ -12,12 +12,29 @@ export interface LearningPathStep {
   id: string;
   title: string;
   description: string;
+  feature: SentryFeature;
   modules: string[]; // Course IDs
   outcomes: string[];
   estimatedTime: string;
   isCompleted: boolean;
   isUnlocked: boolean;
+  priority: number; // Lower number = higher priority
 }
+
+export type SentryFeature = 
+  | 'error-tracking'
+  | 'performance-monitoring'
+  | 'logging'
+  | 'session-replay'
+  | 'distributed-tracing'
+  | 'release-health'
+  | 'dashboards-alerts'
+  | 'integrations'
+  | 'user-feedback'
+  | 'seer-mcp'
+  | 'custom-metrics'
+  | 'metrics-insights'
+  | 'stakeholder-reporting';
 
 export interface LearningPath {
   id: string;
@@ -33,6 +50,7 @@ export interface UserProgress {
   currentStep: number;
   completedSteps: string[];
   completedModules: string[];
+  completedFeatures: SentryFeature[];
   onboardingCompleted: boolean;
   lastActiveDate: Date;
   preferredContentType: 'hands-on' | 'conceptual' | 'mixed';

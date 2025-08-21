@@ -72,6 +72,69 @@ export const courses: Course[] = [
     students: 3800,
     category: "Enterprise",
     isPopular: true
+  },
+  {
+    id: "distributed-tracing",
+    title: "Distributed Tracing",
+    description: "Master distributed tracing across microservices, trace request flows, and identify performance bottlenecks in complex systems.",
+    duration: "2.8 hrs",
+    level: "Advanced",
+    rating: 4.7,
+    students: 3200,
+    category: "Performance"
+  },
+  {
+    id: "release-health",
+    title: "Release Health & Deployment Monitoring",
+    description: "Track release stability, monitor deployment health, and set up automated rollback triggers for safer deployments.",
+    duration: "2.0 hrs",
+    level: "Intermediate",
+    rating: 4.8,
+    students: 4500,
+    category: "DevOps"
+  },
+  {
+    id: "user-feedback",
+    title: "User Feedback Integration",
+    description: "Implement user feedback systems, link feedback to errors, and create feedback-driven debugging workflows.",
+    duration: "1.5 hrs",
+    level: "Intermediate",
+    rating: 4.6,
+    students: 2800,
+    category: "UX"
+  },
+  {
+    id: "seer-mcp",
+    title: "Seer & MCP for AI/ML",
+    description: "Leverage Sentry's AI-powered debugging with Seer and implement Model Context Protocol (MCP) for ML observability.",
+    duration: "3.5 hrs",
+    level: "Advanced",
+    rating: 4.9,
+    students: 1200,
+    category: "AI/ML",
+    isPopular: true
+  },
+
+  {
+    id: "stakeholder-dashboards",
+    title: "Building Effective Dashboards for Stakeholders",
+    description: "Learn to create compelling dashboards that translate technical metrics into business insights for PMs, executives, and cross-functional teams.",
+    duration: "2.0 hrs",
+    level: "Beginner",
+    rating: 4.8,
+    students: 3400,
+    category: "Management",
+    isPopular: true
+  },
+  {
+    id: "metrics-insights",
+    title: "Metrics-Driven Product Insights",
+    description: "Master the art of interpreting Sentry data to make informed product decisions, prioritize engineering work, and communicate impact to stakeholders.",
+    duration: "1.5 hrs",
+    level: "Beginner",
+    rating: 4.9,
+    students: 2800,
+    category: "Management"
   }
 ];
 

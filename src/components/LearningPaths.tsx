@@ -1,9 +1,10 @@
 import React, { memo, useMemo } from 'react';
-import { ArrowRight, User, Code, Server, Settings, Trophy, RotateCcw } from 'lucide-react';
+import { ArrowRight, User, Code, Server, Settings, Trophy, RotateCcw, Layers, Bot, BarChart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRole } from '../contexts/RoleContext';
 import { getTextClasses } from '../utils/styles';
+import PersonaPathDisplay from './PersonaPathDisplay';
 
 const UserInputForm: React.FC = () => {
   const { isDark } = useTheme();
@@ -33,34 +34,55 @@ const UserInputForm: React.FC = () => {
   const roleOptions = [
     {
       value: 'frontend',
-      label: 'Frontend Developer',
+      label: 'Front-end Web Developer',
       icon: <Code className="w-5 h-5" />,
-      description: 'Build amazing user experiences'
+      description: 'Monitor client-side issues and user experience'
     },
     {
       value: 'backend',
       label: 'Backend Engineer',
       icon: <Server className="w-5 h-5" />,
-      description: 'Power the server-side magic'
+      description: 'Deep visibility into backend performance'
+    },
+    {
+      value: 'fullstack',
+      label: 'Full-stack Engineer',
+      icon: <Layers className="w-5 h-5" />,
+      description: 'End-to-end observability pipeline and tooling'
     },
     {
       value: 'sre',
-      label: 'SRE / DevOps / Infra',
+      label: 'SRE/DevOps',
       icon: <Settings className="w-5 h-5" />,
-      description: 'Keep systems running smoothly'
+      description: 'High reliability and proactive alerting'
+    },
+    {
+      value: 'ai-ml',
+      label: 'AI/ML-Aware Developer',
+      icon: <Bot className="w-5 h-5" />,
+      description: 'Debug AI pipelines with observability'
+    },
+    {
+      value: 'pm-manager',
+      label: 'Product/Engineering Manager',
+      icon: <BarChart className="w-5 h-5" />,
+      description: 'Turn data into actionable insights'
     }
   ];
 
   const sentryFeatures = [
     { value: 'error-tracking', label: 'Error Tracking' },
     { value: 'performance-monitoring', label: 'Performance Monitoring' },
-    { value: 'session-replay', label: 'Session Replay' },
-    { value: 'profiling', label: 'Profiling' },
     { value: 'logging', label: 'Logging' },
+    { value: 'session-replay', label: 'Session Replay' },
+    { value: 'distributed-tracing', label: 'Distributed Tracing' },
+    { value: 'release-health', label: 'Release Health' },
+    { value: 'dashboards-alerts', label: 'Dashboards & Alerts' },
+    { value: 'integrations', label: 'Integrations' },
     { value: 'user-feedback', label: 'User Feedback' },
-    { value: 'cron-monitoring', label: 'Uptime Monitoring' },
-    { value: 'ai-agent-monitoring', label: 'AI Agent Monitoring' },
-    { value: 'mcp-monitoring', label: 'MCP monitoring' }
+    { value: 'seer-mcp', label: 'Seer / MCP' },
+    { value: 'custom-metrics', label: 'Custom Metrics' },
+    { value: 'metrics-insights', label: 'AI Agent Monitoring' }
   ];
 
   return (
@@ -190,7 +212,7 @@ const NextStepsDisplay: React.FC = () => {
   const nextRecommendation = getNextRecommendation();
   
   const handleStartCourse = (courseId: string) => {
-    navigate(`/course/${courseId}`);
+    navigate(`/course/${courseId}`, { state: { from: 'learning-paths' } });
   };
 
   const handleReset = () => {
@@ -207,7 +229,7 @@ const NextStepsDisplay: React.FC = () => {
         }`}>
           <div className="text-center">
             <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              🎯 Start Here: {nextRecommendation.moduleId}
+              🎯 Next Step: {nextRecommendation.stepId.split('-').slice(1).join(' ').replace(/\b\w/g, l => l.toUpperCase())}
             </h3>
             <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
               {nextRecommendation.reasoning}
@@ -308,7 +330,7 @@ const LearningPaths: React.FC = memo(() => {
           </p>
         </div>
 
-        {userProgress.role ? <NextStepsDisplay /> : <UserInputForm />}
+        {userProgress.role ? <PersonaPathDisplay /> : <UserInputForm />}
       </div>
     </section>
   );
