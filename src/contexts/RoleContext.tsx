@@ -91,31 +91,172 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  // Simple next recommendation logic
+  // Smart Sentry-based recommendation logic
   const getNextRecommendation = (): NextContentRecommendation | null => {
-    if (!userProgress.role || !currentLearningPath) return null;
+    if (!userProgress.role) return null;
 
-    // Find the next step that hasn't been completed
-    const nextStep = currentLearningPath.steps.find(step => 
-      !userProgress.completedSteps.includes(step.id)
-    );
+    const completedModules = userProgress.completedModules;
 
-    if (!nextStep) return null;
+    // EVERYONE starts with Sentry Fundamentals - the foundation of error tracking
+    if (!completedModules.includes('sentry-fundamentals')) {
+      return {
+        moduleId: 'sentry-fundamentals',
+        stepId: 'foundation',
+        priority: 10,
+        reasoning: 'Start with Sentry Fundamentals to learn error tracking - the core of application monitoring',
+        timeEstimate: '45 minutes'
+      };
+    }
 
-    // Find the next module within the step that hasn't been completed
-    const nextModule = nextStep.modules.find(moduleId => 
-      !userProgress.completedModules.includes(moduleId)
-    );
+    // After fundamentals, recommend based on role
+    switch (userProgress.role) {
+      case 'frontend':
+        // Frontend: Fundamentals → Performance (Core Web Vitals) → Session Replay
+        if (!completedModules.includes('performance-monitoring')) {
+          return {
+            moduleId: 'performance-monitoring',
+            stepId: 'frontend-performance',
+            priority: 9,
+            reasoning: 'Learn performance monitoring to track Core Web Vitals and optimize user experience',
+            timeEstimate: '1 hour'
+          };
+        }
+        if (!completedModules.includes('react-error-boundaries')) {
+          return {
+            moduleId: 'react-error-boundaries',
+            stepId: 'frontend-debugging',
+            priority: 8,
+            reasoning: 'Master Session Replay to see exactly what users experienced during errors',
+            timeEstimate: '45 minutes'
+          };
+        }
+        break;
 
-    if (!nextModule) return null;
+      case 'backend':
+        // Backend: Fundamentals → Node.js Integration → Performance/Tracing → Dashboards
+        if (!completedModules.includes('nodejs-integration')) {
+          return {
+            moduleId: 'nodejs-integration',
+            stepId: 'backend-integration',
+            priority: 9,
+            reasoning: 'Set up Sentry in your Node.js services to capture server-side errors and exceptions',
+            timeEstimate: '1 hour'
+          };
+        }
+        if (!completedModules.includes('performance-monitoring')) {
+          return {
+            moduleId: 'performance-monitoring',
+            stepId: 'backend-performance',
+            priority: 8,
+            reasoning: 'Add distributed tracing to track requests across your microservices and find bottlenecks',
+            timeEstimate: '1.5 hours'
+          };
+        }
+        if (!completedModules.includes('custom-dashboards')) {
+          return {
+            moduleId: 'custom-dashboards',
+            stepId: 'backend-monitoring',
+            priority: 7,
+            reasoning: 'Create dashboards to monitor API performance and set up proactive alerts',
+            timeEstimate: '1 hour'
+          };
+        }
+        break;
 
-    return {
-      moduleId: nextModule,
-      stepId: nextStep.id,
-      priority: 1,
-      reasoning: `Continue your ${userProgress.role} learning path with ${nextModule}`,
-      timeEstimate: nextStep.estimatedTime
-    };
+      case 'sre':
+        // SRE: Fundamentals → Node.js (infrastructure) → Performance/Tracing → Dashboards/Alerts → Team Workflows
+        if (!completedModules.includes('nodejs-integration')) {
+          return {
+            moduleId: 'nodejs-integration',
+            stepId: 'sre-infrastructure',
+            priority: 9,
+            reasoning: 'Set up Sentry across your infrastructure to aggregate errors from all services',
+            timeEstimate: '1 hour'
+          };
+        }
+        if (!completedModules.includes('performance-monitoring')) {
+          return {
+            moduleId: 'performance-monitoring',
+            stepId: 'sre-tracing',
+            priority: 8,
+            reasoning: 'Implement distributed tracing to understand request flows across your entire system',
+            timeEstimate: '1.5 hours'
+          };
+        }
+        if (!completedModules.includes('custom-dashboards')) {
+          return {
+            moduleId: 'custom-dashboards',
+            stepId: 'sre-dashboards',
+            priority: 7,
+            reasoning: 'Build infrastructure health dashboards and integrate with your existing monitoring stack',
+            timeEstimate: '1 hour'
+          };
+        }
+        if (!completedModules.includes('team-workflows')) {
+          return {
+            moduleId: 'team-workflows',
+            stepId: 'sre-workflows',
+            priority: 6,
+            reasoning: 'Set up automated alerting and integrate with PagerDuty/Slack for incident response',
+            timeEstimate: '45 minutes'
+          };
+        }
+        break;
+
+      case 'fullstack':
+        // Full-stack: Fundamentals → React (frontend) → Node.js (backend) → Performance → Workflows
+        if (!completedModules.includes('react-error-boundaries')) {
+          return {
+            moduleId: 'react-error-boundaries',
+            stepId: 'fullstack-frontend',
+            priority: 9,
+            reasoning: 'Set up React error boundaries to catch frontend errors and see user interactions',
+            timeEstimate: '45 minutes'
+          };
+        }
+        if (!completedModules.includes('nodejs-integration')) {
+          return {
+            moduleId: 'nodejs-integration',
+            stepId: 'fullstack-backend',
+            priority: 8,
+            reasoning: 'Add Sentry to your backend to connect frontend and backend errors for complete visibility',
+            timeEstimate: '1 hour'
+          };
+        }
+        if (!completedModules.includes('performance-monitoring')) {
+          return {
+            moduleId: 'performance-monitoring',
+            stepId: 'fullstack-performance',
+            priority: 7,
+            reasoning: 'Monitor performance across your entire stack from user clicks to database queries',
+            timeEstimate: '1.5 hours'
+          };
+        }
+        if (!completedModules.includes('team-workflows')) {
+          return {
+            moduleId: 'team-workflows',
+            stepId: 'fullstack-workflows',
+            priority: 6,
+            reasoning: 'Set up release monitoring to catch regressions across your entire stack',
+            timeEstimate: '45 minutes'
+          };
+        }
+        break;
+    }
+
+    // If all core modules are done, suggest advanced topics
+    if (!completedModules.includes('custom-dashboards') && completedModules.length >= 3) {
+      return {
+        moduleId: 'custom-dashboards',
+        stepId: 'advanced',
+        priority: 5,
+        reasoning: 'Create custom dashboards to get deeper insights into your application performance',
+        timeEstimate: '1 hour'
+      };
+    }
+
+    // All done!
+    return null;
   };
 
   const currentStep = currentLearningPath?.steps[userProgress.currentStep] || null;
