@@ -24,7 +24,7 @@ const UserInputForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedRole) {
-      setUserRole(selectedRole as any);
+      setUserRole(selectedRole as any, selectedFeatures);
       console.log('Selected role:', selectedRole);
       console.log('Selected features:', selectedFeatures);
     }

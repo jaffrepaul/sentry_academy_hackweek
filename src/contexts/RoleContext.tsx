@@ -6,7 +6,7 @@ interface RoleContextType {
   userProgress: UserProgress;
   currentLearningPath: LearningPath | null;
   currentStep: LearningPathStep | null;
-  setUserRole: (role: EngineerRole) => void;
+  setUserRole: (role: EngineerRole, selectedFeatures?: string[]) => void;
   completeModule: (moduleId: string) => void;
   resetProgress: () => void;
   getNextRecommendation: () => NextContentRecommendation | null;
@@ -57,16 +57,46 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userProgress));
   }, [userProgress]);
 
-  const setUserRole = (role: EngineerRole) => {
+  const setUserRole = (role: EngineerRole, selectedFeatures: string[] = []) => {
     const learningPath = getLearningPathForRole(role);
     if (learningPath) {
       setCurrentLearningPath(learningPath);
+      
+      // Map selected features to completed modules
+      const completedModules: string[] = [];
+      if (selectedFeatures.includes('error-tracking')) {
+        // For different roles, error tracking means different starting modules
+        if (role === 'frontend') {
+          completedModules.push('sentry-fundamentals');
+        } else if (role === 'backend' || role === 'sre') {
+          completedModules.push('nodejs-integration');
+        } else if (role === 'fullstack') {
+          completedModules.push('sentry-fundamentals');
+        }
+      }
+      if (selectedFeatures.includes('performance-monitoring')) {
+        completedModules.push('performance-monitoring');
+      }
+      if (selectedFeatures.includes('session-replay')) {
+        completedModules.push('react-error-boundaries');
+      }
+      if (selectedFeatures.includes('logging')) {
+        completedModules.push('react-error-boundaries'); // Using this as logging course placeholder
+      }
+      if (selectedFeatures.includes('user-feedback') || selectedFeatures.includes('cron-monitoring') || selectedFeatures.includes('ai-agent-monitoring') || selectedFeatures.includes('mcp-monitoring')) {
+        completedModules.push('team-workflows');
+      }
+      if (selectedFeatures.includes('profiling')) {
+        completedModules.push('custom-dashboards');
+      }
+
       setUserProgress(prev => ({
         ...prev,
         role,
         currentStep: 0,
         completedSteps: [],
-        completedModules: []
+        completedModules,
+        lastActiveDate: new Date().toISOString()
       }));
     }
   };
