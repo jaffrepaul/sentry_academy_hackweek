@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { BookOpen, Github, Twitter, Linkedin, ExternalLink } from 'lucide-react';
+import { Github, Twitter, Linkedin, ExternalLink } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getTextClasses } from '../utils/styles';
 
@@ -48,8 +48,15 @@ const Footer: React.FC = memo(() => {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/25">
-                <BookOpen className="w-6 h-6 text-white" />
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>
+                <img 
+                  src="/logos/sentry-logo.svg" 
+                  alt="Sentry Logo" 
+                  className="w-12 h-12"
+                  style={{ filter: isDark ? 'invert(1) brightness(1)' : 'brightness(0.1)' }}
+                />
               </div>
               <div>
                 <h3 className={`text-xl font-bold ${titleClasses}`}>

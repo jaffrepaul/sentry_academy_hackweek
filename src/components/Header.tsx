@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BookOpen, Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getNavLinkClasses, scrollToSection } from '../utils/styles';
 
@@ -73,8 +73,15 @@ const Header: React.FC = memo(() => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <button onClick={handleLogoClick} className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/25">
-              <BookOpen className="w-6 h-6 text-white" />
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>
+              <img 
+                src="/logos/sentry-logo.svg" 
+                alt="Sentry Logo" 
+                className="w-12 h-12"
+                style={{ filter: isDark ? 'invert(1) brightness(1)' : 'brightness(0.1)' }}
+              />
             </div>
             <div className="text-left">
               <h1 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
