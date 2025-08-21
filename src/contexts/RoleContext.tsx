@@ -91,215 +91,227 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  // Smart Sentry-based recommendation logic
+  // Smart Sentry-based recommendation logic using the baseline paths
   const getNextRecommendation = (): NextContentRecommendation | null => {
     if (!userProgress.role) return null;
 
     const completedModules = userProgress.completedModules;
 
-    // For Frontend Engineers: if they're new to Sentry, start with React-specific error tracking
-    if (userProgress.role === 'frontend' && completedModules.length === 0) {
-      return {
-        moduleId: 'react-error-boundaries',
-        stepId: 'frontend-start',
-        priority: 10,
-        reasoning: 'Start with React error boundaries to catch frontend errors and see user interactions',
-        timeEstimate: '45 minutes'
-      };
+    // **Frontend Engineer Path**
+    // Typical start: Error tracking (JS exceptions)
+    // Next-best features: Performance monitoring (Web Vitals, LCP, FID), Session Replay, Release health
+    if (userProgress.role === 'frontend') {
+      // 1. Start with Error tracking (JS exceptions)
+      if (!completedModules.includes('sentry-fundamentals')) {
+        return {
+          moduleId: 'sentry-fundamentals',
+          stepId: 'frontend-error-tracking',
+          priority: 10,
+          reasoning: 'Start with error tracking to capture JavaScript exceptions and unhandled promise rejections',
+          timeEstimate: '45 minutes'
+        };
+      }
+      // 2. Performance monitoring (Web Vitals, LCP, FID)
+      if (!completedModules.includes('performance-monitoring')) {
+        return {
+          moduleId: 'performance-monitoring',
+          stepId: 'frontend-web-vitals',
+          priority: 9,
+          reasoning: 'Monitor Core Web Vitals (LCP, FID, CLS) to optimize user experience and SEO rankings',
+          timeEstimate: '2 hours'
+        };
+      }
+      // 3. Session Replay
+      if (!completedModules.includes('react-error-boundaries')) {
+        return {
+          moduleId: 'react-error-boundaries',
+          stepId: 'frontend-session-replay',
+          priority: 8,
+          reasoning: 'Add Session Replay to see exactly what users experienced when errors occurred',
+          timeEstimate: '1.2 hours'
+        };
+      }
+      // 4. Release health
+      if (!completedModules.includes('team-workflows')) {
+        return {
+          moduleId: 'team-workflows',
+          stepId: 'frontend-release-health',
+          priority: 7,
+          reasoning: 'Monitor release health to catch frontend regressions and deployment issues early',
+          timeEstimate: '1 hour'
+        };
+      }
     }
 
-    // For Backend Engineers: if they're new to Sentry, start with Node.js integration
-    if (userProgress.role === 'backend' && completedModules.length === 0) {
-      return {
-        moduleId: 'nodejs-integration',
-        stepId: 'backend-start',
-        priority: 10,
-        reasoning: 'Start with Node.js integration to capture server-side errors and exceptions',
-        timeEstimate: '1 hour'
-      };
+    // **Backend Engineer Path**
+    // Typical start: Error tracking (API failures, exceptions)
+    // Next-best features: Tracing (latency hotspots), Performance (slow queries), Dashboards (service health)
+    if (userProgress.role === 'backend') {
+      // 1. Start with Error tracking (API failures, exceptions)
+      if (!completedModules.includes('nodejs-integration')) {
+        return {
+          moduleId: 'nodejs-integration',
+          stepId: 'backend-error-tracking',
+          priority: 10,
+          reasoning: 'Start with error tracking to capture API failures, database exceptions, and server-side errors',
+          timeEstimate: '1.8 hours'
+        };
+      }
+      // 2. Tracing (latency hotspots)
+      if (!completedModules.includes('performance-monitoring')) {
+        return {
+          moduleId: 'performance-monitoring',
+          stepId: 'backend-tracing',
+          priority: 9,
+          reasoning: 'Add distributed tracing to identify latency hotspots and slow database queries',
+          timeEstimate: '2 hours'
+        };
+      }
+      // 3. Performance (slow queries) - covered by tracing above
+      // 4. Dashboards (service health)
+      if (!completedModules.includes('custom-dashboards')) {
+        return {
+          moduleId: 'custom-dashboards',
+          stepId: 'backend-service-health',
+          priority: 8,
+          reasoning: 'Create dashboards to monitor service health, API response times, and error rates',
+          timeEstimate: '2.5 hours'
+        };
+      }
+      // Optional: Fundamentals for conceptual understanding
+      if (!completedModules.includes('sentry-fundamentals')) {
+        return {
+          moduleId: 'sentry-fundamentals',
+          stepId: 'backend-fundamentals',
+          priority: 7,
+          reasoning: 'Learn Sentry fundamentals to deepen your understanding of application monitoring concepts',
+          timeEstimate: '45 minutes'
+        };
+      }
     }
 
-    // For SRE/DevOps: start with infrastructure-wide error tracking
-    if (userProgress.role === 'sre' && completedModules.length === 0) {
-      return {
-        moduleId: 'nodejs-integration',
-        stepId: 'sre-start',
-        priority: 10,
-        reasoning: 'Start with infrastructure error tracking to aggregate errors from all your services',
-        timeEstimate: '1 hour'
-      };
+    // **SRE / DevOps / Infra Path**
+    // Typical start: Error tracking signals from services
+    // Next-best features: Dashboards (infrastructure-wide), Alerts/Notifications, Tracing for distributed systems, Integration with on-call tools
+    if (userProgress.role === 'sre') {
+      // 1. Start with Error tracking signals from services
+      if (!completedModules.includes('nodejs-integration')) {
+        return {
+          moduleId: 'nodejs-integration',
+          stepId: 'sre-error-signals',
+          priority: 10,
+          reasoning: 'Start with error tracking to aggregate error signals from all your services and infrastructure',
+          timeEstimate: '1.8 hours'
+        };
+      }
+      // 2. Dashboards (infrastructure-wide)
+      if (!completedModules.includes('custom-dashboards')) {
+        return {
+          moduleId: 'custom-dashboards',
+          stepId: 'sre-infrastructure-dashboards',
+          priority: 9,
+          reasoning: 'Build infrastructure-wide dashboards to monitor system health across all services',
+          timeEstimate: '2.5 hours'
+        };
+      }
+      // 3. Alerts/Notifications & Integration with on-call tools
+      if (!completedModules.includes('team-workflows')) {
+        return {
+          moduleId: 'team-workflows',
+          stepId: 'sre-alerting-oncall',
+          priority: 8,
+          reasoning: 'Set up automated alerts and integrate with on-call tools like PagerDuty and Slack',
+          timeEstimate: '3 hours'
+        };
+      }
+      // 4. Tracing for distributed systems
+      if (!completedModules.includes('performance-monitoring')) {
+        return {
+          moduleId: 'performance-monitoring',
+          stepId: 'sre-distributed-tracing',
+          priority: 7,
+          reasoning: 'Implement distributed tracing to understand request flows across microservices',
+          timeEstimate: '2 hours'
+        };
+      }
+      // Optional: Fundamentals
+      if (!completedModules.includes('sentry-fundamentals')) {
+        return {
+          moduleId: 'sentry-fundamentals',
+          stepId: 'sre-fundamentals',
+          priority: 6,
+          reasoning: 'Learn Sentry fundamentals to understand monitoring principles and best practices',
+          timeEstimate: '45 minutes'
+        };
+      }
     }
 
-    // For Full-Stack: start with the frontend first (user-facing)
-    if (userProgress.role === 'fullstack' && completedModules.length === 0) {
-      return {
-        moduleId: 'react-error-boundaries',
-        stepId: 'fullstack-start',
-        priority: 10,
-        reasoning: 'Start with frontend error tracking to catch user-facing issues first',
-        timeEstimate: '45 minutes'
-      };
+    // **Full-stack Engineer Path**
+    // Typical start: Error tracking on both frontend/backend
+    // Next-best features: Cross-service tracing, Performance dashboards, Release health, Regression alerts
+    if (userProgress.role === 'fullstack') {
+      // 1. Start with Error tracking on both frontend/backend
+      if (!completedModules.includes('sentry-fundamentals')) {
+        return {
+          moduleId: 'sentry-fundamentals',
+          stepId: 'fullstack-error-tracking-foundation',
+          priority: 10,
+          reasoning: 'Start with error tracking fundamentals to monitor both frontend and backend errors',
+          timeEstimate: '45 minutes'
+        };
+      }
+      if (!completedModules.includes('nodejs-integration')) {
+        return {
+          moduleId: 'nodejs-integration',
+          stepId: 'fullstack-backend-errors',
+          priority: 9,
+          reasoning: 'Add backend error tracking to connect frontend and server-side issues',
+          timeEstimate: '1.8 hours'
+        };
+      }
+      // 2. Cross-service tracing
+      if (!completedModules.includes('performance-monitoring')) {
+        return {
+          moduleId: 'performance-monitoring',
+          stepId: 'fullstack-cross-service-tracing',
+          priority: 8,
+          reasoning: 'Implement cross-service tracing to monitor performance from user interactions to database queries',
+          timeEstimate: '2 hours'
+        };
+      }
+      // 3. Performance dashboards
+      if (!completedModules.includes('custom-dashboards')) {
+        return {
+          moduleId: 'custom-dashboards',
+          stepId: 'fullstack-performance-dashboards',
+          priority: 7,
+          reasoning: 'Create performance dashboards that show the complete user journey across your stack',
+          timeEstimate: '2.5 hours'
+        };
+      }
+      // 4. Release health & Regression alerts
+      if (!completedModules.includes('team-workflows')) {
+        return {
+          moduleId: 'team-workflows',
+          stepId: 'fullstack-release-regression',
+          priority: 6,
+          reasoning: 'Set up release health monitoring and regression alerts for your entire stack',
+          timeEstimate: '3 hours'
+        };
+      }
+      // Optional: Session Replay for frontend insights
+      if (!completedModules.includes('react-error-boundaries')) {
+        return {
+          moduleId: 'react-error-boundaries',
+          stepId: 'fullstack-frontend-insights',
+          priority: 5,
+          reasoning: 'Add Session Replay to see user interactions and debug frontend issues more effectively',
+          timeEstimate: '1.2 hours'
+        };
+      }
     }
 
-    // EVERYONE should eventually do Sentry Fundamentals for the conceptual foundation
-    if (!completedModules.includes('sentry-fundamentals') && completedModules.length >= 1) {
-      return {
-        moduleId: 'sentry-fundamentals',
-        stepId: 'foundation',
-        priority: 9,
-        reasoning: 'Learn Sentry fundamentals to understand the core concepts behind application monitoring',
-        timeEstimate: '45 minutes'
-      };
-    }
-
-    // After fundamentals, recommend based on role
-    switch (userProgress.role) {
-      case 'frontend':
-        // Frontend: Fundamentals → Performance (Core Web Vitals) → Session Replay
-        if (!completedModules.includes('performance-monitoring')) {
-          return {
-            moduleId: 'performance-monitoring',
-            stepId: 'frontend-performance',
-            priority: 9,
-            reasoning: 'Learn performance monitoring to track Core Web Vitals and optimize user experience',
-            timeEstimate: '1 hour'
-          };
-        }
-        if (!completedModules.includes('react-error-boundaries')) {
-          return {
-            moduleId: 'react-error-boundaries',
-            stepId: 'frontend-debugging',
-            priority: 8,
-            reasoning: 'Master Session Replay to see exactly what users experienced during errors',
-            timeEstimate: '45 minutes'
-          };
-        }
-        break;
-
-      case 'backend':
-        // Backend: Fundamentals → Node.js Integration → Performance/Tracing → Dashboards
-        if (!completedModules.includes('nodejs-integration')) {
-          return {
-            moduleId: 'nodejs-integration',
-            stepId: 'backend-integration',
-            priority: 9,
-            reasoning: 'Set up Sentry in your Node.js services to capture server-side errors and exceptions',
-            timeEstimate: '1 hour'
-          };
-        }
-        if (!completedModules.includes('performance-monitoring')) {
-          return {
-            moduleId: 'performance-monitoring',
-            stepId: 'backend-performance',
-            priority: 8,
-            reasoning: 'Add distributed tracing to track requests across your microservices and find bottlenecks',
-            timeEstimate: '1.5 hours'
-          };
-        }
-        if (!completedModules.includes('custom-dashboards')) {
-          return {
-            moduleId: 'custom-dashboards',
-            stepId: 'backend-monitoring',
-            priority: 7,
-            reasoning: 'Create dashboards to monitor API performance and set up proactive alerts',
-            timeEstimate: '1 hour'
-          };
-        }
-        break;
-
-      case 'sre':
-        // SRE: Fundamentals → Node.js (infrastructure) → Performance/Tracing → Dashboards/Alerts → Team Workflows
-        if (!completedModules.includes('nodejs-integration')) {
-          return {
-            moduleId: 'nodejs-integration',
-            stepId: 'sre-infrastructure',
-            priority: 9,
-            reasoning: 'Set up Sentry across your infrastructure to aggregate errors from all services',
-            timeEstimate: '1 hour'
-          };
-        }
-        if (!completedModules.includes('performance-monitoring')) {
-          return {
-            moduleId: 'performance-monitoring',
-            stepId: 'sre-tracing',
-            priority: 8,
-            reasoning: 'Implement distributed tracing to understand request flows across your entire system',
-            timeEstimate: '1.5 hours'
-          };
-        }
-        if (!completedModules.includes('custom-dashboards')) {
-          return {
-            moduleId: 'custom-dashboards',
-            stepId: 'sre-dashboards',
-            priority: 7,
-            reasoning: 'Build infrastructure health dashboards and integrate with your existing monitoring stack',
-            timeEstimate: '1 hour'
-          };
-        }
-        if (!completedModules.includes('team-workflows')) {
-          return {
-            moduleId: 'team-workflows',
-            stepId: 'sre-workflows',
-            priority: 6,
-            reasoning: 'Set up automated alerting and integrate with PagerDuty/Slack for incident response',
-            timeEstimate: '45 minutes'
-          };
-        }
-        break;
-
-      case 'fullstack':
-        // Full-stack: Fundamentals → React (frontend) → Node.js (backend) → Performance → Workflows
-        if (!completedModules.includes('react-error-boundaries')) {
-          return {
-            moduleId: 'react-error-boundaries',
-            stepId: 'fullstack-frontend',
-            priority: 9,
-            reasoning: 'Set up React error boundaries to catch frontend errors and see user interactions',
-            timeEstimate: '45 minutes'
-          };
-        }
-        if (!completedModules.includes('nodejs-integration')) {
-          return {
-            moduleId: 'nodejs-integration',
-            stepId: 'fullstack-backend',
-            priority: 8,
-            reasoning: 'Add Sentry to your backend to connect frontend and backend errors for complete visibility',
-            timeEstimate: '1 hour'
-          };
-        }
-        if (!completedModules.includes('performance-monitoring')) {
-          return {
-            moduleId: 'performance-monitoring',
-            stepId: 'fullstack-performance',
-            priority: 7,
-            reasoning: 'Monitor performance across your entire stack from user clicks to database queries',
-            timeEstimate: '1.5 hours'
-          };
-        }
-        if (!completedModules.includes('team-workflows')) {
-          return {
-            moduleId: 'team-workflows',
-            stepId: 'fullstack-workflows',
-            priority: 6,
-            reasoning: 'Set up release monitoring to catch regressions across your entire stack',
-            timeEstimate: '45 minutes'
-          };
-        }
-        break;
-    }
-
-    // If all core modules are done, suggest advanced topics
-    if (!completedModules.includes('custom-dashboards') && completedModules.length >= 3) {
-      return {
-        moduleId: 'custom-dashboards',
-        stepId: 'advanced',
-        priority: 5,
-        reasoning: 'Create custom dashboards to get deeper insights into your application performance',
-        timeEstimate: '1 hour'
-      };
-    }
-
-    // All done!
+    // All modules completed for this role
     return null;
   };
 
