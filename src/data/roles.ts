@@ -1,4 +1,4 @@
-import { RoleInfo, LearningPath, RolePersonalization, EngineerRole, SentryFeature } from '../types/roles';
+import { RoleInfo, LearningPath, RolePersonalization, EngineerRole } from '../types/roles';
 
 export const roles: RoleInfo[] = [
   {

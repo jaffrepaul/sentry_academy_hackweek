@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { useMemo, useEffect, useState } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTheme } from './contexts/ThemeContext';
 import { getBackgroundStyle } from './utils/styles';
 import Header from './components/Header';
@@ -10,6 +10,43 @@ import StatsSection from './components/StatsSection';
 import Footer from './components/Footer';
 import CourseDetail from './components/CourseDetail';
 import SiteBackgroundDemo from './components/SiteBackgroundDemo';
+
+// Home page wrapper component that handles page transitions
+const HomePage = () => {
+  const location = useLocation();
+  const [isVisible, setIsVisible] = useState(false);
+  
+  useEffect(() => {
+    // Check if we're returning from a course detail page
+    const hasNavigationState = location.state?.scrollToSection;
+    if (hasNavigationState) {
+      // Start with page hidden for smooth transition
+      setIsVisible(false);
+      
+      // Small delay then fade in for smooth transition
+      setTimeout(() => {
+        setIsVisible(true);
+      }, 50);
+    } else {
+      // Normal page load - show immediately
+      setIsVisible(true);
+    }
+  }, [location.state]);
+
+  return (
+    <div 
+      className={`transition-opacity duration-300 ease-out ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
+      <Hero />
+      <CourseGrid />
+      <LearningPaths />
+      <StatsSection />
+      <Footer />
+    </div>
+  );
+};
 
 function App() {
   const { isDark } = useTheme();
@@ -61,15 +98,7 @@ function App() {
         {/* Content with top padding for header */}
         <div className="pt-20">
           <Routes>
-            <Route path="/" element={
-              <>
-                <Hero />
-                <CourseGrid />
-                <LearningPaths />
-                <StatsSection />
-                <Footer />
-              </>
-            } />
+            <Route path="/" element={<HomePage />} />
 
             <Route path="/course/:courseId" element={<CourseDetail />} />
             <Route path="/demo/backgrounds" element={<SiteBackgroundDemo />} />

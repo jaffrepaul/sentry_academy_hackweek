@@ -98,7 +98,7 @@ const PersonaPathDisplay: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex-1" />
           <div className="flex-1">
-            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
+            <h2 className={`text-3xl md:text-4xl font-bold mb-4 lg:leading-tight lg:h-24 lg:flex lg:items-center lg:justify-center ${
               isDark ? 'text-white' : 'text-gray-900'
             }`}>
               {currentLearningPath.title}
@@ -120,7 +120,7 @@ const PersonaPathDisplay: React.FC = () => {
           </div>
         </div>
         
-        <p className={`text-lg mb-6 ${
+        <p className={`text-lg mb-6 lg:leading-relaxed lg:h-14 lg:flex lg:items-center lg:justify-center lg:max-w-2xl lg:mx-auto ${
           isDark ? 'text-gray-300' : 'text-gray-600'
         }`}>
           {currentLearningPath.description}

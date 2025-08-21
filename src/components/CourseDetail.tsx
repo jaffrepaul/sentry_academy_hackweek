@@ -244,21 +244,12 @@ Sentry.init({
   }, [courseId]);
 
   const goBack = useCallback(() => {
-    navigate('/');
-    // Use setTimeout to ensure navigation completes before scrolling
-    setTimeout(() => {
-      // Check if user came from learning paths
-      const fromLearningPaths = location.state?.from === 'learning-paths';
-      const targetSection = fromLearningPaths ? 'paths' : 'courses';
-      const section = document.getElementById(targetSection);
-      if (section) {
-        section.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }, 100);
-  }, [navigate, location.state]);
+    // Navigate back with transition state for smooth page transition
+    navigate('/', { 
+      state: { scrollToSection: 'transition' },
+      replace: false 
+    });
+  }, [navigate]);
 
   const handleModuleClick = useCallback((index: number) => {
     setActiveModule(index);
