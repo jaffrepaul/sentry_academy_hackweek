@@ -525,6 +525,7 @@ Make it practical and actionable for engineers.`
         confidence: 0.6
       };
     }
+    */
   }
 
   // Generate role-specific personalizations
@@ -647,6 +648,7 @@ Make it highly relevant and actionable for this specific role.`
         roleSpecificUseCases: []
       };
     }
+    */
   }
 
   // Calculate quality score based on various factors
