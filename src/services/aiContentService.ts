@@ -9,7 +9,7 @@ import {
   GenerationResponse
 } from '../types/aiGeneration';
 import { EngineerRole } from '../types/roles';
-import { updateGenerationProgress } from '../data/aiGeneratedCourses';
+import { updateGenerationProgress, aiGeneratedCoursesStore } from '../data/aiGeneratedCourses';
 
 // Types for OpenAI API integration
 interface OpenAIMessage {
@@ -168,12 +168,18 @@ class AIContentService {
         version: 1
       };
 
+      // Add the generated course to the store
+      console.log('AIContentService: Adding course to store:', aiCourse.id, aiCourse.title);
+      aiGeneratedCoursesStore.addCourse(aiCourse);
+
       updateGenerationProgress(request.id, {
         status: 'review-needed',
         currentStep: 'Content generation complete - ready for review',
         progress: 100,
-        logs: ['Course generation completed successfully']
+        logs: ['Course generation completed successfully', `Course ${aiCourse.id} added to store`]
       });
+
+      console.log('AIContentService: Course generation completed successfully');
 
       return aiCourse;
     } catch (error) {
@@ -193,6 +199,46 @@ class AIContentService {
     researchedContent: ResearchedContent[], 
     keywords: string[]
   ): Promise<SynthesizedContent> {
+    // For demo purposes, return mock synthesized content
+    console.log('AIContentService: Synthesizing research for keywords:', keywords);
+    
+    // Mock synthesis for demo - in production this would call OpenAI
+    return {
+      mainConcepts: [
+        `${keywords[0]} fundamentals and setup`,
+        `Advanced ${keywords[0]} techniques`,
+        `${keywords[0]} best practices`,
+        `Production ${keywords[0]} strategies`
+      ],
+      keyTakeaways: [
+        `Master ${keywords[0]} configuration and setup`,
+        `Implement advanced ${keywords[0]} patterns`,
+        `Apply ${keywords[0]} best practices in production`,
+        `Troubleshoot common ${keywords[0]} issues`
+      ],
+      codeExamples: [
+        `// ${keywords[0]} setup example\nimport * as Sentry from "@sentry/react";\n\n// Configure ${keywords[0]}\nSentry.init({\n  // Configuration here\n});`,
+        `// Advanced ${keywords[0]} usage\n// Implementation details here`
+      ],
+      useCases: [
+        `Production ${keywords[0]} monitoring`,
+        `Development ${keywords[0]} optimization`,
+        `Team ${keywords[0]} workflows`
+      ],
+      bestPractices: [
+        `Use appropriate ${keywords[0]} sampling rates`,
+        `Monitor ${keywords[0]} performance impact`,
+        `Set up ${keywords[0]} alerts and dashboards`
+      ],
+      commonPitfalls: [
+        `Over-configuring ${keywords[0]} in development`,
+        `Ignoring ${keywords[0]} performance overhead`,
+        `Missing ${keywords[0]} edge cases`
+      ],
+      relatedFeatures: ['performance-monitoring', 'error-tracking', 'dashboards-alerts']
+    };
+
+    /* Original OpenAI integration - keeping for future use
     const researchSummary = researchedContent
       .map(content => `Source: ${content.title}\nContent: ${content.content.substring(0, 1000)}...`)
       .join('\n\n');
@@ -249,6 +295,7 @@ Extract the key educational components that would be most valuable for engineers
       console.error('Error synthesizing research:', error);
       throw new Error('Failed to synthesize research content');
     }
+    */
   }
 
   // Generate course metadata
@@ -256,6 +303,25 @@ Extract the key educational components that would be most valuable for engineers
     synthesizedContent: SynthesizedContent,
     request: ContentGenerationRequest
   ): Promise<Omit<AIGeneratedCourse, 'id' | 'isAIGenerated' | 'generationRequest' | 'researchSources' | 'synthesizedContent' | 'generatedModules' | 'rolePersonalizations' | 'qualityScore' | 'generatedAt' | 'lastModified' | 'version'>> {
+    console.log('AIContentService: Generating course metadata for keywords:', request.keywords);
+    
+    // For demo purposes, return mock metadata
+    const title = `Mastering ${request.keywords.join(' & ')} with Sentry`;
+    const description = `Learn ${request.keywords.join(' and ')} concepts through hands-on examples and real-world scenarios. Master the fundamentals and apply advanced techniques in production environments.`;
+    
+    return {
+      title,
+      description,
+      duration: request.contentType === 'beginner' ? '1.5 hrs' : 
+                request.contentType === 'intermediate' ? '2.5 hrs' : '3.5 hrs',
+      level: this.mapContentTypeToLevel(request.contentType),
+      category: 'Monitoring',
+      rating: 4.5,
+      students: 0,
+      isPopular: false
+    };
+
+    /* Original OpenAI integration - keeping for future use
     const messages: OpenAIMessage[] = [
       {
         role: 'system',
@@ -313,6 +379,7 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
         isPopular: false
       };
     }
+    */
   }
 
   // Generate course modules
@@ -320,6 +387,8 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
     synthesizedContent: SynthesizedContent,
     request: ContentGenerationRequest
   ): Promise<AIGeneratedModule[]> {
+    console.log('AIContentService: Generating modules for concepts:', synthesizedContent.mainConcepts);
+    
     const moduleCount = Math.min(Math.max(synthesizedContent.mainConcepts.length, 3), 6);
     const modules: AIGeneratedModule[] = [];
 
@@ -329,6 +398,7 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
       modules.push(module);
     }
 
+    console.log('AIContentService: Generated', modules.length, 'modules');
     return modules;
   }
 
@@ -339,6 +409,38 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
     request: ContentGenerationRequest,
     index: number
   ): Promise<AIGeneratedModule> {
+    console.log('AIContentService: Generating module for concept:', concept);
+    
+    // For demo purposes, return mock module data
+    const moduleId = `module-${index + 1}-${Date.now()}`;
+    const title = concept;
+    const description = `Learn about ${concept} in detail. This module covers the fundamentals, implementation strategies, and best practices for ${concept} in production environments.`;
+    
+    return {
+      id: moduleId,
+      title,
+      description,
+      duration: '20 min',
+      isCompleted: false,
+      keyTakeaways: [
+        `Understand ${concept} fundamentals`,
+        `Implement ${concept} in your applications`,
+        `Apply ${concept} best practices`,
+        `Troubleshoot common ${concept} issues`
+      ],
+      scenario: `You're working on a production application and need to implement ${concept}. Learn how to configure, deploy, and monitor ${concept} effectively.`,
+      codeExample: `// ${concept} implementation example\nimport * as Sentry from "@sentry/react";\n\n// Configure ${concept}\nSentry.init({\n  // Add your configuration here\n  dsn: "YOUR_DSN_HERE",\n  // ${concept} specific settings\n});\n\n// Use ${concept} in your application\nfunction example${concept.replace(/\s+/g, '')}() {\n  // Implementation details\n  console.log('${concept} example');\n}`,
+      contentConfig: {
+        hasHandsOn: request.includeCodeExamples,
+        hasScenario: request.includeScenarios,
+        hasCodeExample: request.includeCodeExamples,
+        estimatedReadingTime: 8
+      },
+      sourceReferences: [`https://docs.sentry.io/product/${concept.toLowerCase().replace(/\s+/g, '-')}/`],
+      confidence: 0.85
+    };
+
+    /* Original OpenAI integration - keeping for future use
     const messages: OpenAIMessage[] = [
       {
         role: 'system',
@@ -430,6 +532,7 @@ Make it practical and actionable for engineers.`
     synthesizedContent: SynthesizedContent,
     targetRoles: EngineerRole[]
   ): Promise<AIGeneratedPersonalization[]> {
+    console.log('AIContentService: Generating role personalizations for:', targetRoles);
     const personalizations: AIGeneratedPersonalization[] = [];
 
     for (const role of targetRoles) {
@@ -437,6 +540,7 @@ Make it practical and actionable for engineers.`
       personalizations.push(personalization);
     }
 
+    console.log('AIContentService: Generated personalizations for', personalizations.length, 'roles');
     return personalizations;
   }
 
@@ -445,6 +549,39 @@ Make it practical and actionable for engineers.`
     role: EngineerRole,
     synthesizedContent: SynthesizedContent
   ): Promise<AIGeneratedPersonalization> {
+    console.log('AIContentService: Generating personalization for role:', role);
+    
+    // For demo purposes, return mock personalization data
+    const roleLabels = {
+      'frontend': 'Frontend Developer',
+      'backend': 'Backend Engineer', 
+      'fullstack': 'Full-stack Developer',
+      'sre': 'SRE/DevOps Engineer',
+      'ai-ml': 'AI/ML Engineer',
+      'pm-manager': 'Product Manager/Engineering Manager'
+    };
+
+    const mainConcept = synthesizedContent.mainConcepts[0] || 'monitoring';
+    
+    return {
+      roleId: role,
+      explanation: `As a ${roleLabels[role]}, you'll learn how ${mainConcept} applies specifically to your daily work. This content focuses on the tools and techniques most relevant to ${role} responsibilities.`,
+      whyRelevant: `${mainConcept} is crucial for ${roleLabels[role]}s because it directly impacts your ability to build reliable, observable applications and deliver great user experiences.`,
+      nextStepNudge: `Ready to apply ${mainConcept} in your ${role} workflow? Continue to the next module to see practical implementation examples.`,
+      difficulty: 'intermediate',
+      roleSpecificExamples: [
+        `${role}-specific ${mainConcept} implementation`,
+        `Common ${mainConcept} patterns for ${role} work`,
+        `${roleLabels[role]} workflow integration`
+      ],
+      roleSpecificUseCases: [
+        `${mainConcept} for ${role} development`,
+        `Team collaboration with ${mainConcept}`,
+        `Production ${mainConcept} for ${roleLabels[role]}s`
+      ]
+    };
+
+    /* Original OpenAI integration - keeping for future use
     const roleContexts = {
       'frontend': 'Frontend developers work with React, JavaScript, and user experience optimization',
       'backend': 'Backend engineers work with APIs, databases, and server-side applications',
@@ -577,7 +714,9 @@ Make it highly relevant and actionable for this specific role.`
     try {
       // Simulate async processing - in a real implementation, this would
       // trigger a background job or queue processing
+      console.log('AIContentService: Starting async content generation for request:', request.id);
       setTimeout(async () => {
+        console.log('AIContentService: Executing background generation for:', request.id);
         try {
           // This would normally fetch from external sources
           const mockResearchedContent: ResearchedContent[] = [
@@ -598,7 +737,7 @@ Make it highly relevant and actionable for this specific role.`
         } catch (error) {
           console.error('Background generation failed:', error);
         }
-      }, 1000);
+      }, 3000); // Increased delay to 3 seconds to simulate real processing
 
       return {
         success: true,

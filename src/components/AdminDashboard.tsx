@@ -42,10 +42,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
   const loadDashboardData = () => {
     try {
+      console.log('AdminDashboard: loadDashboardData called');
       const dashboardStats = getGenerationStats();
       setStats(dashboardStats);
 
       const allCourses = aiGeneratedCoursesStore.getAllCourses();
+      console.log('AdminDashboard: Found courses:', allCourses.length);
       const sortedCourses = allCourses
         .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime())
         .slice(0, 10);
@@ -65,6 +67,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   };
 
   const refreshData = () => {
+    console.log('AdminDashboard: refreshData called');
     setRefreshTrigger(prev => prev + 1);
   };
 

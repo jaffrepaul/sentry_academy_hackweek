@@ -107,6 +107,7 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
           setGenerationProgress(progress);
           
           if (['review-needed', 'approved', 'rejected', 'error'].includes(progress.status)) {
+            console.log('ContentGenerationForm: Generation completed with status:', progress.status);
             setIsGenerating(false);
             setCurrentRequestId(null);
             onGenerationStarted();
