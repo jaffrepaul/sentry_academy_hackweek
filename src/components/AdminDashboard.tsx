@@ -92,14 +92,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         </div>
         <div className="flex space-x-3">
           <button
-            onClick={refreshData}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Refresh clicked');
+              refreshData();
+            }}
             className="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
           >
             🔄 Refresh
           </button>
           <button
-            onClick={() => setCurrentView('generate')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Generate clicked');
+              setCurrentView('generate');
+            }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
           >
             ✨ Generate New Content
           </button>
@@ -206,8 +218,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Recent Courses</h2>
           <button
-            onClick={() => setCurrentView('manage')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('View All clicked');
+              setCurrentView('manage');
+            }}
             className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+            style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
           >
             View All →
           </button>
@@ -218,8 +236,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             <span className="text-4xl mb-4 block">📚</span>
             <p className="text-gray-600">No courses generated yet</p>
             <button
-              onClick={() => setCurrentView('generate')}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Generate first course clicked');
+                setCurrentView('generate');
+              }}
               className="mt-2 text-blue-600 hover:text-blue-700 font-medium"
+              style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
             >
               Generate your first course
             </button>
@@ -267,7 +291,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   );
 
   const renderNavigation = () => (
-    <nav className="bg-white border-b border-gray-200 mb-6">
+    <nav className="bg-white border-b border-gray-200 mb-6" style={{ position: 'relative', zIndex: 3 }}>
       <div className="flex space-x-8">
         {[
           { id: 'overview', label: 'Overview', icon: '📊' },
@@ -277,12 +301,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setCurrentView(tab.id as DashboardView)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Navigation clicked:', tab.id);
+              setCurrentView(tab.id as DashboardView);
+            }}
             className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               currentView === tab.id
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
+            style={{ position: 'relative', zIndex: 4, pointerEvents: 'auto' }}
           >
             <span>{tab.icon}</span>
             <span>{tab.label}</span>
@@ -370,9 +400,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" style={{ position: 'relative', zIndex: 1 }}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white shadow-sm border-b" style={{ position: 'relative', zIndex: 2 }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
@@ -380,8 +410,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             </div>
             {onClose && (
               <button
-                onClick={onClose}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onClose();
+                }}
                 className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                style={{ position: 'relative', zIndex: 10 }}
               >
                 ✕
               </button>
@@ -391,14 +426,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" style={{ position: 'relative', zIndex: 2 }}>
         {renderNavigation()}
         {renderContent()}
       </div>
 
       {/* Course Preview Modal */}
       {selectedCourse && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{ zIndex: 9999 }}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{ zIndex: 10000 }}>
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
             <GeneratedContentPreview
               course={selectedCourse}

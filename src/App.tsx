@@ -95,19 +95,21 @@ function App() {
         }}
       >
         {/* Animated background elements */}
-        <div className={`absolute inset-0 ${gradientClasses.primary}`} />
+        <div className={`absolute inset-0 ${gradientClasses.primary}`} style={{ pointerEvents: 'none' }} />
         <div 
           className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl ${gradientClasses.accent1}`}
           style={{
             animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            willChange: 'auto'
+            willChange: 'auto',
+            pointerEvents: 'none'
           }}
         />
         <div 
           className={`absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl ${gradientClasses.accent2}`}
           style={{
             animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s',
-            willChange: 'auto'
+            willChange: 'auto',
+            pointerEvents: 'none'
           }}
         />
         
