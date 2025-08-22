@@ -66,7 +66,7 @@ const PersonaPathDisplay: React.FC = () => {
   const navigate = useNavigate();
   const [showResetConfirm, setShowResetConfirm] = React.useState(false);
 
-  // Handle escape key to close modal
+  // Handle escape key to close modal and prevent body scroll
   React.useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && showResetConfirm) {
@@ -74,8 +74,19 @@ const PersonaPathDisplay: React.FC = () => {
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    if (showResetConfirm) {
+      // Prevent body scrolling when modal is open
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleEscape);
+    } else {
+      // Restore body scrolling when modal is closed
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleEscape);
+    };
   }, [showResetConfirm]);
 
   // Position last completed course at top of viewport when persona is first loaded (no animation)
@@ -373,12 +384,14 @@ const PersonaPathDisplay: React.FC = () => {
 
       {/* Reset Confirmation Modal */}
       {showResetConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`max-w-md w-full rounded-2xl p-6 border ${
-            isDark
-              ? 'bg-slate-900/95 border-slate-600/50'
-              : 'bg-white/95 border-gray-300/50'
-          }`}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div 
+            className={`max-w-md w-full rounded-2xl p-6 border ${
+              isDark
+                ? 'bg-slate-900/95 border-slate-600/50'
+                : 'bg-white/95 border-gray-300/50'
+            }`}
+          >
             <div className="text-center">
               <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 mx-auto ${
                 isDark ? 'bg-orange-900/30' : 'bg-orange-100/80'
