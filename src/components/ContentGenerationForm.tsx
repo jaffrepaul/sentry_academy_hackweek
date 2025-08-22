@@ -23,7 +23,6 @@ interface FormData {
   keywords: string[];
   selectedSources: ResearchSourceConfig[];
   targetRoles: EngineerRole[];
-  contentType: 'beginner' | 'intermediate' | 'advanced';
   includeCodeExamples: boolean;
   includeScenarios: boolean;
   generateLearningPath: boolean;
@@ -83,7 +82,6 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
     keywords: [],
     selectedSources: defaultResearchSources,
     targetRoles: [],
-    contentType: 'intermediate',
     includeCodeExamples: true,
     includeScenarios: true,
     generateLearningPath: false
@@ -209,7 +207,6 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
         keywords: formData.keywords,
         selectedSources: formData.selectedSources.filter(s => s.enabled),
         targetRoles: formData.targetRoles,
-        contentType: formData.contentType,
         includeCodeExamples: formData.includeCodeExamples,
         includeScenarios: formData.includeScenarios,
         generateLearningPath: formData.generateLearningPath,
@@ -263,7 +260,6 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
       keywords: [],
       selectedSources: defaultResearchSources,
       targetRoles: [],
-      contentType: 'intermediate',
       includeCodeExamples: true,
       includeScenarios: true,
       generateLearningPath: false
@@ -492,22 +488,6 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
               Content Configuration
             </label>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-600 mb-2">Skill Level</label>
-                <select
-                  value={formData.contentType}
-                  onChange={(e) => setFormData(prev => ({ 
-                    ...prev, 
-                    contentType: e.target.value as 'beginner' | 'intermediate' | 'advanced' 
-                  }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="beginner">Beginner - New to Sentry</option>
-                  <option value="intermediate">Intermediate - Some Sentry experience</option>
-                  <option value="advanced">Advanced - Experienced with Sentry</option>
-                </select>
-              </div>
-
               <div className="flex space-x-6">
                 <label className="flex items-center">
                   <input
@@ -570,7 +550,7 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
                         />
                         <div>
                           <p className="font-medium text-gray-900">
-                            {sourceConfig.source.replace('https://', '').replace('/', '')}
+                            {sourceConfig.source.replace('https://', '').replace(/\/$/, '')}
                           </p>
                           <p className="text-sm text-gray-600">{sourceConfig.description}</p>
                         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   AIGeneratedCourse, 
   GenerationStatus,
@@ -48,17 +48,20 @@ export const AIContentManager: React.FC<AIContentManagerProps> = ({
     loadCourses();
   }, []);
 
+
+
   // Apply filters and sorting
   useEffect(() => {
     applyFiltersAndSort();
-  }, [applyFiltersAndSort]);
+  }, [courses, filters]);
 
   const loadCourses = () => {
     const allCourses = aiGeneratedCoursesStore.getAllCourses();
+
     setCourses(allCourses);
   };
 
-  const applyFiltersAndSort = useCallback(() => {
+  const applyFiltersAndSort = () => {
     let filtered = [...courses];
 
     // Status filter
@@ -114,7 +117,7 @@ export const AIContentManager: React.FC<AIContentManagerProps> = ({
     });
 
     setFilteredCourses(filtered);
-  }, [courses, filters]);
+  };
 
   const getStatusInfo = (course: AIGeneratedCourse) => {
     const progress = getGenerationProgress(course.generationRequest.id);

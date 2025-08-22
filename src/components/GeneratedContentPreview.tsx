@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
-  AIGeneratedCourse, 
-  ValidationResult
+  AIGeneratedCourse
 } from '../types/aiGeneration';
 import { Course } from '../data/courses';
 import { EngineerRole } from '../types/roles';
@@ -16,7 +15,7 @@ interface GeneratedContentPreviewProps {
   onEdit?: (course: AIGeneratedCourse) => void;
 }
 
-type PreviewTab = 'overview' | 'modules' | 'personalizations' | 'validation' | 'comparison';
+type PreviewTab = 'overview' | 'modules' | 'personalizations' | 'comparison';
 
 export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = ({
   course,
@@ -30,62 +29,9 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
   const [selectedRole, setSelectedRole] = useState<EngineerRole>(course.rolePersonalizations[0]?.roleId || 'frontend');
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
-  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
 
-  // Mock validation function - in production, this would call a validation service
-  useEffect(() => {
-    const mockValidation = (): ValidationResult => {
-      const issues = [];
-      let score = 1.0;
 
-      // Check course structure
-      if (!course.title || course.title.length < 10) {
-        issues.push({
-          type: 'structure' as const,
-          severity: 'medium' as const,
-          message: 'Course title should be more descriptive',
-          field: 'title',
-          suggestedFix: 'Add more descriptive keywords to the title'
-        });
-        score -= 0.1;
-      }
 
-      // Check modules
-      if (course.generatedModules.length < 3) {
-        issues.push({
-          type: 'content' as const,
-          severity: 'low' as const,
-          message: 'Consider adding more modules for comprehensive coverage',
-          suggestedFix: 'Add 2-3 more modules to cover the topic thoroughly'
-        });
-        score -= 0.05;
-      }
-
-      // Check role coverage
-      if (course.rolePersonalizations.length < course.generationRequest.targetRoles.length) {
-        issues.push({
-          type: 'relevance' as const,
-          severity: 'high' as const,
-          message: 'Missing personalizations for some target roles',
-          suggestedFix: 'Generate personalizations for all target roles'
-        });
-        score -= 0.2;
-      }
-
-      return {
-        isValid: score >= 0.7,
-        score: Math.max(score, 0),
-        issues,
-        suggestions: [
-          'Consider adding more real-world examples',
-          'Include troubleshooting sections',
-          'Add links to official documentation'
-        ]
-      };
-    };
-
-    setValidationResult(mockValidation());
-  }, [course]);
 
   const handleApprove = () => {
     const updatedCourse = {
@@ -94,15 +40,36 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
       approvedBy: 'admin' // In a real app, this would be the current user
     };
     
+    // Update the course
     aiGeneratedCoursesStore.updateCourse(course.id, updatedCourse);
+    
+    // Update the generation progress status to "approved"
+    aiGeneratedCoursesStore.updateGenerationProgress(course.generationRequest.id, {
+      status: 'approved',
+      currentStep: 'Course approved and published',
+      progress: 100,
+      logs: [`Course approved by admin at ${new Date().toISOString()}`]
+    });
+    
+
+    
     onApprove(updatedCourse);
   };
 
   const handleReject = () => {
     if (!rejectReason.trim()) return;
     
+    // Update the course with rejection notes
     aiGeneratedCoursesStore.updateCourse(course.id, {
       reviewNotes: rejectReason
+    });
+    
+    // Update the generation progress status to "rejected"
+    aiGeneratedCoursesStore.updateGenerationProgress(course.generationRequest.id, {
+      status: 'rejected',
+      currentStep: 'Course rejected by admin',
+      progress: 100,
+      logs: [`Course rejected by admin: ${rejectReason}`]
     });
     
     onReject(course, rejectReason);
@@ -133,7 +100,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
           { id: 'overview', label: 'Overview', icon: '📋' },
           { id: 'modules', label: 'Modules', icon: '📚' },
           { id: 'personalizations', label: 'Role Personalizations', icon: '👥' },
-          { id: 'validation', label: 'Validation', icon: '✅' },
+
           ...(comparisonCourse ? [{ id: 'comparison', label: 'Comparison', icon: '⚖️' }] : [])
         ].map(tab => (
           <button
@@ -210,10 +177,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
               <span className="text-gray-600">Generated:</span>
               <span className="ml-2 text-gray-900">{course.generatedAt.toLocaleString()}</span>
             </div>
-            <div>
-              <span className="text-gray-600">Content Type:</span>
-              <span className="ml-2 text-gray-900">{course.generationRequest.contentType}</span>
-            </div>
+
           </div>
         </div>
 
@@ -578,8 +542,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
         return renderModules();
       case 'personalizations':
         return renderPersonalizations();
-      case 'validation':
-        return renderValidation();
+
       case 'comparison':
         return renderComparison();
       default:
@@ -588,7 +551,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Header */}
       <div className="flex justify-between items-center p-6 border-b">
         <div>
@@ -613,7 +576,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-6 overflow-y-auto min-h-0">
         {renderContent()}
       </div>
 

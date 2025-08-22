@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Clock, Trophy, ChevronRight, Star } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getCardClasses, getTextClasses, getButtonClasses } from '../utils/styles';
-import { courses, type Course } from '../data/courses';
+import { getAllCourses, type Course } from '../data/courses';
 
 const CourseCard: React.FC<Course> = memo(({ 
   id,
@@ -111,7 +111,7 @@ const CourseGrid: React.FC = memo(() => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map((course) => (
+          {getAllCourses().map((course) => (
             <CourseCard key={course.id} {...course} />
           ))}
         </div>

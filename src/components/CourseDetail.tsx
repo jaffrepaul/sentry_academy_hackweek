@@ -4,7 +4,7 @@ import { ArrowLeft, Clock, Trophy, Star, CheckCircle, Circle, Code, FileText, Li
 import { useTheme } from '../contexts/ThemeContext';
 import { useRole } from '../contexts/RoleContext';
 import { getTextClasses } from '../utils/styles';
-import { courseModules, sentryFundamentalsModules, sentryLoggingModules, courses } from '../data/courses';
+import { courseModules, sentryFundamentalsModules, sentryLoggingModules, getAllCourses, getCourseById } from '../data/courses';
 import { Arcade } from './Arcade';
 
 interface ContentModuleProps {
@@ -85,14 +85,15 @@ const CourseDetail: React.FC = memo(() => {
   const getNavigationContext = useCallback(() => {
     if (!userProgress.role || !currentLearningPath) {
       // Fallback for users without personas - cycle through course grid
-      const currentCourseIndex = courses.findIndex(course => course.id === courseId);
+      const allCourses = getAllCourses();
+      const currentCourseIndex = allCourses.findIndex(course => course.id === courseId);
       
       if (currentCourseIndex === -1) {
         return { previousCourse: null, nextCourse: null, nextDescription: null };
       }
 
-      const previousCourse = currentCourseIndex > 0 ? courses[currentCourseIndex - 1] : null;
-      const nextCourse = currentCourseIndex < courses.length - 1 ? courses[currentCourseIndex + 1] : null;
+      const previousCourse = currentCourseIndex > 0 ? allCourses[currentCourseIndex - 1] : null;
+      const nextCourse = currentCourseIndex < allCourses.length - 1 ? allCourses[currentCourseIndex + 1] : null;
       
       return {
         previousCourse: previousCourse?.id || null,
@@ -111,14 +112,15 @@ const CourseDetail: React.FC = memo(() => {
 
     if (currentStepIndex === -1) {
       // If course not found in learning path, fall back to course grid cycling
-      const currentCourseIndex = courses.findIndex(course => course.id === courseId);
+      const allCourses = getAllCourses();
+      const currentCourseIndex = allCourses.findIndex(course => course.id === courseId);
       
       if (currentCourseIndex === -1) {
         return { previousCourse: null, nextCourse: null, nextDescription: null };
       }
 
-      const previousCourse = currentCourseIndex > 0 ? courses[currentCourseIndex - 1] : null;
-      const nextCourse = currentCourseIndex < courses.length - 1 ? courses[currentCourseIndex + 1] : null;
+      const previousCourse = currentCourseIndex > 0 ? allCourses[currentCourseIndex - 1] : null;
+      const nextCourse = currentCourseIndex < allCourses.length - 1 ? allCourses[currentCourseIndex + 1] : null;
       
       return {
         previousCourse: previousCourse?.id || null,
@@ -156,12 +158,12 @@ const CourseDetail: React.FC = memo(() => {
 
   // Determine which modules and course info to use based on courseId
   const { modules, courseInfo, contentConfig } = useMemo(() => {
-    const course = courses.find(c => c.id === courseId);
+    const course = getCourseById(courseId || '');
     
     if (courseId === 'sentry-fundamentals') {
       return {
         modules: sentryFundamentalsModules,
-        courseInfo: course || courses[0],
+        courseInfo: course || getAllCourses()[0],
         contentConfig: {
           videoUrl: "https://www.youtube.com/embed/6NuusWkjvlw",
           arcadeUrl: "https://demo.arcade.software/4z9l5xNZfpXFGAFc03az?embed",
@@ -208,7 +210,7 @@ Sentry.init({
     } else if (courseId === 'react-error-boundaries') {
       return {
         modules: sentryLoggingModules,
-        courseInfo: course || courses[1],
+        courseInfo: course || getAllCourses()[1],
         contentConfig: {
           videoUrl: "https://www.youtube.com/embed/06_whBhgPB0",
           arcadeUrl: "https://demo.arcade.software/PalOCHofpcO3DqvA4Rzr?embed&hidechrome=true",
@@ -266,7 +268,7 @@ Sentry.init({
     // Default fallback
     return {
       modules: courseModules,
-      courseInfo: course || courses[0],
+      courseInfo: course || getAllCourses()[0],
       contentConfig: {
         videoUrl: "https://www.youtube.com/embed/6NuusWkjvlw",
         arcadeUrl: "https://demo.arcade.software/4z9l5xNZfpXFGAFc03az?embed",

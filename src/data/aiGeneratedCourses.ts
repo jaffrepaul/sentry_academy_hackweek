@@ -47,7 +47,7 @@ export const defaultResearchSources: ResearchSourceConfig[] = [
   {
     source: ResearchSource.YOUTUBE,
     enabled: false,
-    priority: 5,
+    priority: 6,
     description: 'Video content and tutorials (requires manual processing)'
   }
 ];
@@ -352,6 +352,8 @@ class AIGeneratedCoursesStore {
 
 // Global store instance
 export const aiGeneratedCoursesStore = new AIGeneratedCoursesStore();
+
+
 
 // Convenience functions for external use
 export const addAIGeneratedCourse = (course: AIGeneratedCourse) => 

@@ -25,7 +25,6 @@ export interface ContentGenerationRequest {
   keywords: string[];
   selectedSources: ResearchSourceConfig[];
   targetRoles: EngineerRole[];
-  contentType: 'beginner' | 'intermediate' | 'advanced';
   includeCodeExamples: boolean;
   includeScenarios: boolean;
   generateLearningPath: boolean;

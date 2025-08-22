@@ -1,3 +1,5 @@
+// Import mock data for demonstration (remove in production) - MUST BE FIRST
+import './data/mockAIContent';
 import { useMemo, useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTheme } from './contexts/ThemeContext';
@@ -11,8 +13,6 @@ import Footer from './components/Footer';
 import CourseDetail from './components/CourseDetail';
 import SiteBackgroundDemo from './components/SiteBackgroundDemo';
 import { AdminDashboard } from './components/AdminDashboard';
-// Import mock data for demonstration (remove in production)
-import './data/mockAIContent';
 
 // Home page wrapper component that handles page transitions
 const HomePage = () => {
@@ -66,6 +66,8 @@ const HomePage = () => {
 
 function App() {
   const { isDark } = useTheme();
+
+
 
   // Memoize background styles to prevent recalculation on every render
   const backgroundStyle = useMemo(() => getBackgroundStyle(isDark), [isDark]);

@@ -312,9 +312,8 @@ Extract the key educational components that would be most valuable for engineers
     return {
       title,
       description,
-      duration: request.contentType === 'beginner' ? '1.5 hrs' : 
-                request.contentType === 'intermediate' ? '2.5 hrs' : '3.5 hrs',
-      level: this.mapContentTypeToLevel(request.contentType),
+      duration: '2.5 hrs',
+      level: 'Intermediate',
       category: 'Monitoring',
       rating: 4.5,
       students: 0,
@@ -343,7 +342,7 @@ Extract the key educational components that would be most valuable for engineers
         role: 'user',
         content: `Create course metadata for a Sentry course about: ${request.keywords.join(', ')}
 
-Target skill level: ${request.contentType}
+Target skill level: Intermediate
 Target roles: ${request.targetRoles.join(', ')}
 
 Key concepts: ${synthesizedContent.mainConcepts.join(', ')}
@@ -359,7 +358,7 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
         title: metadata.title || `Sentry ${request.keywords[0]} Training`,
         description: metadata.description || 'Learn advanced Sentry concepts and best practices.',
         duration: metadata.duration || '2 hrs',
-        level: this.mapContentTypeToLevel(request.contentType),
+        level: 'Intermediate',
         category: metadata.category || 'Monitoring',
         rating: Math.min(Math.max(metadata.rating || 4.5, 3.0), 5.0),
         students: 0,
@@ -372,7 +371,7 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
         title: `Sentry ${request.keywords.join(' & ')} Guide`,
         description: `Learn ${request.keywords.join(' and ')} with Sentry. Master the concepts and apply them in real-world scenarios.`,
         duration: '2 hrs',
-        level: this.mapContentTypeToLevel(request.contentType),
+        level: 'Intermediate',
         category: 'Monitoring',
         rating: 4.5,
         students: 0,
@@ -463,7 +462,7 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
 
 Context:
 - Course keywords: ${request.keywords.join(', ')}
-- Skill level: ${request.contentType}
+- Skill level: Intermediate
 - Available takeaways: ${synthesizedContent.keyTakeaways.join(', ')}
 - Available code examples: ${synthesizedContent.codeExamples.slice(0, 2).join(', ')}
 - Available use cases: ${synthesizedContent.useCases.slice(0, 2).join(', ')}
@@ -696,14 +695,7 @@ Make it highly relevant and actionable for this specific role.`
   }
 
   // Utility methods
-  private mapContentTypeToLevel(contentType: string): string {
-    const mapping = {
-      'beginner': 'Beginner',
-      'intermediate': 'Intermediate',
-      'advanced': 'Advanced'
-    };
-    return mapping[contentType as keyof typeof mapping] || 'Intermediate';
-  }
+
 
   private estimateReadingTime(text: string): number {
     const wordsPerMinute = 200;

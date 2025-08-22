@@ -73,7 +73,7 @@ export function generateMockAIContent() {
         }
       ],
       targetRoles: ['frontend', 'backend', 'fullstack'],
-      contentType: 'advanced',
+
       includeCodeExamples: true,
       includeScenarios: true,
       generateLearningPath: false,
@@ -273,58 +273,13 @@ export function generateMockAIContent() {
     approvedBy: 'admin'
   };
 
-  // Add the course to the store
-  addAIGeneratedCourse(mockAICourse);
+  // Advanced Profiling course removed - was showing in main UI
+  // Keeping the course definition for reference but not adding to store
+  // addAIGeneratedCourse(mockAICourse);
+  // addGenerationRequest(mockAICourse.generationRequest);
+  // updateGenerationProgress(mockAICourse.generationRequest.id, { ... });
 
-  // Add a generation request and progress
-  addGenerationRequest(mockAICourse.generationRequest);
-  updateGenerationProgress(mockAICourse.generationRequest.id, {
-    status: 'approved',
-    currentStep: 'Course approved and published',
-    progress: 100,
-    logs: [
-      'Research completed successfully',
-      'Content generation finished',
-      'Quality validation passed',
-      'Course approved by admin',
-      'Published to course catalog'
-    ]
-  });
-
-  // Create another course that's still in progress
-  const inProgressRequest = {
-    id: 'req-session-replay-002',
-    keywords: ['session replay', 'debugging', 'user experience'],
-    selectedSources: [
-      {
-        source: ResearchSource.DOCS_MAIN,
-        enabled: true,
-        priority: 1,
-        description: 'Official Sentry documentation'
-      }
-    ],
-    targetRoles: ['frontend', 'pm-manager'] as const,
-    contentType: 'intermediate' as const,
-    includeCodeExamples: true,
-    includeScenarios: true,
-    generateLearningPath: false,
-    createdAt: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
-    createdBy: 'admin'
-  };
-
-  addGenerationRequest(inProgressRequest);
-  updateGenerationProgress(inProgressRequest.id, {
-    status: 'generating',
-    currentStep: 'Generating course modules and personalizations',
-    progress: 75,
-    logs: [
-      'Research phase completed',
-      'Content synthesis in progress',
-      'Generating modules...',
-      'Creating role personalizations...'
-    ],
-    estimatedTimeRemaining: 120
-  });
+  // Note: Additional mock courses can be added here if needed for testing
 
   console.log('Mock AI content generated and added to store');
 }

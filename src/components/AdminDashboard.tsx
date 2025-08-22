@@ -42,12 +42,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
   const loadDashboardData = () => {
     try {
-      console.log('AdminDashboard: loadDashboardData called');
       const dashboardStats = getGenerationStats();
       setStats(dashboardStats);
 
       const allCourses = aiGeneratedCoursesStore.getAllCourses();
-      console.log('AdminDashboard: Found courses:', allCourses.length);
       const sortedCourses = allCourses
         .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime())
         .slice(0, 10);
@@ -368,36 +366,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
           </p>
         </div>
         
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Quality Threshold
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            defaultValue="70"
-            className="w-full"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Minimum quality score for auto-approval (70%)
-          </p>
+        <div className="text-sm text-gray-600">
+          <p>Settings panel for future configuration options.</p>
+          <p className="mt-2">Currently all course approvals require manual review.</p>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Max Concurrent Generations
-          </label>
-          <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-            <option value="1">1</option>
-            <option value="3" selected>3</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-          Save Settings
-        </button>
       </div>
     </div>
   );
@@ -437,7 +409,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       {/* Course Preview Modal */}
       {selectedCourse && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{ zIndex: 10000 }}>
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
             <GeneratedContentPreview
               course={selectedCourse}
               onClose={() => setSelectedCourse(null)}
