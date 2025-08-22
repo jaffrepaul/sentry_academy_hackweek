@@ -10,6 +10,13 @@ export interface Course {
   isPopular?: boolean;
 }
 
+// Extended interface for courses that includes AI-generated content
+export interface EnhancedCourse extends Course {
+  isAIGenerated?: boolean;
+  qualityScore?: number;
+  generatedAt?: Date;
+}
+
 export const courses: Course[] = [
   {
     id: "sentry-fundamentals",
@@ -215,3 +222,120 @@ export const sentryLoggingModules: CourseModule[] = [
 
 // Default modules for backward compatibility
 export const courseModules: CourseModule[] = sentryFundamentalsModules;
+
+// AI Integration Functions
+import { AIGeneratedCourse } from '../types/aiGeneration';
+import { getApprovedAIGeneratedCourses } from './aiGeneratedCourses';
+
+/**
+ * Get all courses including both manual and approved AI-generated courses
+ */
+export function getAllCourses(): EnhancedCourse[] {
+  const manualCourses: EnhancedCourse[] = courses.map(course => ({
+    ...course,
+    isAIGenerated: false
+  }));
+
+  const aiCourses: EnhancedCourse[] = getApprovedAIGeneratedCourses().map(aiCourse => ({
+    id: aiCourse.id,
+    title: aiCourse.title,
+    description: aiCourse.description,
+    duration: aiCourse.duration,
+    level: aiCourse.level,
+    rating: aiCourse.rating,
+    students: aiCourse.students,
+    category: aiCourse.category,
+    isPopular: aiCourse.isPopular,
+    isAIGenerated: true,
+    qualityScore: aiCourse.qualityScore,
+    generatedAt: aiCourse.generatedAt
+  }));
+
+  return [...manualCourses, ...aiCourses];
+}
+
+/**
+ * Add an AI-generated course to the course catalog
+ */
+export function addAIGeneratedCourse(aiCourse: AIGeneratedCourse): void {
+  // This function is primarily handled by the AI courses store
+  // but can be used for additional integration logic if needed
+  console.log(`AI course "${aiCourse.title}" has been integrated into the course catalog`);
+}
+
+/**
+ * Get courses by category, including AI-generated ones
+ */
+export function getCoursesByCategory(category: string): EnhancedCourse[] {
+  return getAllCourses().filter(course => course.category === category);
+}
+
+/**
+ * Get popular courses, including AI-generated ones
+ */
+export function getPopularCourses(): EnhancedCourse[] {
+  return getAllCourses().filter(course => course.isPopular);
+}
+
+/**
+ * Search courses by title or description
+ */
+export function searchCourses(query: string): EnhancedCourse[] {
+  const lowercaseQuery = query.toLowerCase();
+  return getAllCourses().filter(course => 
+    course.title.toLowerCase().includes(lowercaseQuery) ||
+    course.description.toLowerCase().includes(lowercaseQuery)
+  );
+}
+
+/**
+ * Get course by ID from both manual and AI-generated courses
+ */
+export function getCourseById(id: string): EnhancedCourse | undefined {
+  return getAllCourses().find(course => course.id === id);
+}
+
+/**
+ * Get courses by level
+ */
+export function getCoursesByLevel(level: string): EnhancedCourse[] {
+  return getAllCourses().filter(course => course.level === level);
+}
+
+/**
+ * Get recently added courses (including AI-generated)
+ */
+export function getRecentCourses(limit: number = 10): EnhancedCourse[] {
+  const allCourses = getAllCourses();
+  
+  // Sort by generated date for AI courses, or use a default for manual courses
+  return allCourses
+    .sort((a, b) => {
+      const dateA = a.generatedAt || new Date('2024-01-01'); // Default date for manual courses
+      const dateB = b.generatedAt || new Date('2024-01-01');
+      return dateB.getTime() - dateA.getTime();
+    })
+    .slice(0, limit);
+}
+
+/**
+ * Get course statistics including AI-generated courses
+ */
+export function getCourseStatistics() {
+  const allCourses = getAllCourses();
+  const aiCourses = allCourses.filter(course => course.isAIGenerated);
+  const manualCourses = allCourses.filter(course => !course.isAIGenerated);
+
+  return {
+    total: allCourses.length,
+    manual: manualCourses.length,
+    aiGenerated: aiCourses.length,
+    averageRating: allCourses.reduce((sum, course) => sum + course.rating, 0) / allCourses.length,
+    totalStudents: allCourses.reduce((sum, course) => sum + course.students, 0),
+    categories: [...new Set(allCourses.map(course => course.category))],
+    levels: [...new Set(allCourses.map(course => course.level))],
+    averageQualityScore: aiCourses.length > 0 
+      ? aiCourses.reduce((sum, course) => sum + (course.qualityScore || 0), 0) / aiCourses.length 
+      : null
+  };
+}

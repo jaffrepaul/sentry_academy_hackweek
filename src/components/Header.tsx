@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, Settings } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getNavLinkClasses, scrollToSection } from '../utils/styles';
 
@@ -59,6 +59,11 @@ const Header: React.FC = memo(() => {
     }
   }, [location.pathname, navigate]);
 
+  const handleAdminClick = useCallback(() => {
+    setIsMenuOpen(false);
+    navigate('/admin');
+  }, [navigate]);
+
   return (
     <header 
       className={headerClasses} 
@@ -116,6 +121,18 @@ const Header: React.FC = memo(() => {
               Workshops
             </a>
             <button
+              onClick={handleAdminClick}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                isDark
+                  ? 'bg-slate-800/50 hover:bg-slate-700/50 text-purple-400'
+                  : 'bg-gray-100 hover:bg-gray-200 text-purple-600'
+              }`}
+              aria-label="Access admin dashboard"
+              title="Admin Dashboard"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+            <button
               onClick={toggleTheme}
               className={themeButtonClasses}
               aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
@@ -164,6 +181,17 @@ const Header: React.FC = memo(() => {
               <a href="#workshops" className={navLinkClasses}>
                 Workshops
               </a>
+              <button
+                onClick={handleAdminClick}
+                className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
+                  isDark
+                    ? 'bg-slate-800/50 hover:bg-slate-700/50 text-purple-400'
+                    : 'bg-gray-100 hover:bg-gray-200 text-purple-600'
+                }`}
+              >
+                <Settings className="w-5 h-5" />
+                <span>Admin</span>
+              </button>
               <button
                 onClick={toggleTheme}
                 className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${

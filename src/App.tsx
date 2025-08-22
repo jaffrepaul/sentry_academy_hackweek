@@ -10,6 +10,9 @@ import StatsSection from './components/StatsSection';
 import Footer from './components/Footer';
 import CourseDetail from './components/CourseDetail';
 import SiteBackgroundDemo from './components/SiteBackgroundDemo';
+import { AdminDashboard } from './components/AdminDashboard';
+// Import mock data for demonstration (remove in production)
+import './data/mockAIContent';
 
 // Home page wrapper component that handles page transitions
 const HomePage = () => {
@@ -112,8 +115,8 @@ function App() {
         <div className="pt-20">
           <Routes>
             <Route path="/" element={<HomePage />} />
-
             <Route path="/course/:courseId" element={<CourseDetail />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/demo/backgrounds" element={<SiteBackgroundDemo />} />
           </Routes>
         </div>

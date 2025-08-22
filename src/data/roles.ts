@@ -899,3 +899,215 @@ export function getLearningPathForRole(roleId: EngineerRole): LearningPath | und
 export function getPersonalizationForRole(roleId: EngineerRole): RolePersonalization | undefined {
   return rolePersonalizations.find(p => p.roleId === roleId);
 }
+
+// AI Integration Functions
+import { AIGeneratedCourse } from '../types/aiGeneration';
+import { getApprovedAIGeneratedCourses } from './aiGeneratedCourses';
+
+/**
+ * Get enhanced learning path that includes AI-generated content
+ */
+export function getEnhancedLearningPathForRole(roleId: EngineerRole): LearningPath | undefined {
+  const basePath = getLearningPathForRole(roleId);
+  if (!basePath) return undefined;
+
+  // Get approved AI courses for this role
+  const aiCourses = getApprovedAIGeneratedCourses()
+    .filter(course => course.generationRequest.targetRoles.includes(roleId));
+
+  // Create AI-generated learning path steps
+  const aiSteps: LearningPathStep[] = aiCourses.map((course, index) => {
+    const suggestedPriority = basePath.steps.length + index + 1;
+    
+    return {
+      id: `ai-step-${course.id}`,
+      title: course.title,
+      description: course.description,
+      feature: determineFeatureFromKeywords(course.generationRequest.keywords),
+      modules: [course.id],
+      outcomes: course.synthesizedContent.keyTakeaways.slice(0, 3),
+      estimatedTime: course.duration,
+      isCompleted: false,
+      isUnlocked: true, // AI courses are unlocked by default
+      priority: suggestedPriority
+    };
+  });
+
+  return {
+    ...basePath,
+    steps: [...basePath.steps, ...aiSteps].sort((a, b) => a.priority - b.priority),
+    totalEstimatedTime: calculateTotalTime([...basePath.steps, ...aiSteps])
+  };
+}
+
+/**
+ * Add AI-generated learning path step to existing role path
+ */
+export function addAIGeneratedLearningPathStep(
+  roleId: EngineerRole, 
+  aiCourse: AIGeneratedCourse, 
+  suggestedPosition?: number
+): boolean {
+  const existingPath = getLearningPathForRole(roleId);
+  if (!existingPath) return false;
+
+  const newStep: LearningPathStep = {
+    id: `ai-step-${aiCourse.id}`,
+    title: aiCourse.title,
+    description: aiCourse.description,
+    feature: determineFeatureFromKeywords(aiCourse.generationRequest.keywords),
+    modules: [aiCourse.id],
+    outcomes: aiCourse.synthesizedContent.keyTakeaways.slice(0, 3),
+    estimatedTime: aiCourse.duration,
+    isCompleted: false,
+    isUnlocked: true,
+    priority: suggestedPosition || existingPath.steps.length + 1
+  };
+
+  // In a real implementation, this would update the database
+  console.log(`Added AI step "${newStep.title}" to ${roleId} learning path`);
+  return true;
+}
+
+/**
+ * Generate personalization for AI course based on role
+ */
+export function generatePersonalizationForAICourse(
+  aiCourse: AIGeneratedCourse, 
+  roleId: EngineerRole
+): PersonalizedContent | undefined {
+  const rolePersonalization = aiCourse.rolePersonalizations.find(rp => rp.roleId === roleId);
+  if (!rolePersonalization) return undefined;
+
+  return {
+    roleSpecificExplanation: rolePersonalization.explanation,
+    whyRelevantToRole: rolePersonalization.whyRelevant,
+    nextStepNudge: rolePersonalization.nextStepNudge,
+    difficultyForRole: rolePersonalization.difficulty
+  };
+}
+
+/**
+ * Get all learning paths enhanced with AI content
+ */
+export function getAllEnhancedLearningPaths(): LearningPath[] {
+  return roles.map(role => getEnhancedLearningPathForRole(role.id)).filter(Boolean) as LearningPath[];
+}
+
+/**
+ * Get role-specific recommendations including AI courses
+ */
+export function getRoleRecommendations(roleId: EngineerRole): {
+  nextCourses: string[];
+  aiCourses: string[];
+  reasoning: string[];
+} {
+  const basePath = getLearningPathForRole(roleId);
+  const aiCourses = getApprovedAIGeneratedCourses()
+    .filter(course => course.generationRequest.targetRoles.includes(roleId));
+
+  const nextCourses = basePath?.steps
+    .filter(step => !step.isCompleted && step.isUnlocked)
+    .slice(0, 3)
+    .map(step => step.modules[0]) || [];
+
+  const aiCourseIds = aiCourses
+    .sort((a, b) => b.qualityScore - a.qualityScore) // Sort by quality
+    .slice(0, 2)
+    .map(course => course.id);
+
+  const reasoning = [
+    `Recommended based on ${roleId} role requirements`,
+    'AI courses provide cutting-edge content',
+    'Courses are ordered by relevance and quality'
+  ];
+
+  return {
+    nextCourses,
+    aiCourses: aiCourseIds,
+    reasoning
+  };
+}
+
+/**
+ * Helper function to determine Sentry feature from keywords
+ */
+function determineFeatureFromKeywords(keywords: string[]): SentryFeature {
+  const keywordToFeature: Record<string, SentryFeature> = {
+    'error': 'error-tracking',
+    'performance': 'performance-monitoring',
+    'profiling': 'performance-monitoring',
+    'logging': 'logging',
+    'session': 'session-replay',
+    'replay': 'session-replay',
+    'tracing': 'distributed-tracing',
+    'distributed': 'distributed-tracing',
+    'release': 'release-health',
+    'dashboard': 'dashboards-alerts',
+    'alert': 'dashboards-alerts',
+    'integration': 'integrations',
+    'feedback': 'user-feedback',
+    'seer': 'seer-mcp',
+    'mcp': 'seer-mcp',
+    'metric': 'custom-metrics',
+    'insight': 'metrics-insights',
+    'stakeholder': 'stakeholder-reporting'
+  };
+
+  for (const keyword of keywords) {
+    const lowerKeyword = keyword.toLowerCase();
+    for (const [key, feature] of Object.entries(keywordToFeature)) {
+      if (lowerKeyword.includes(key)) {
+        return feature;
+      }
+    }
+  }
+
+  return 'error-tracking'; // Default fallback
+}
+
+/**
+ * Helper function to calculate total estimated time
+ */
+function calculateTotalTime(steps: LearningPathStep[]): string {
+  const totalMinutes = steps.reduce((total, step) => {
+    const timeMatch = step.estimatedTime.match(/(\d+(?:\.\d+)?)\s*(min|hour|hr)/i);
+    if (timeMatch) {
+      const value = parseFloat(timeMatch[1]);
+      const unit = timeMatch[2].toLowerCase();
+      return total + (unit.startsWith('hour') || unit === 'hr' ? value * 60 : value);
+    }
+    return total + 60; // Default to 1 hour if parsing fails
+  }, 0);
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = Math.round(totalMinutes % 60);
+
+  if (hours === 0) {
+    return `${minutes} minutes`;
+  } else if (minutes === 0) {
+    return `${hours} hour${hours !== 1 ? 's' : ''}`;
+  } else {
+    return `${hours}.${Math.round(minutes / 6)} hours`;
+  }
+}
+
+/**
+ * Get learning path statistics including AI content
+ */
+export function getLearningPathStatistics() {
+  const allPaths = getAllEnhancedLearningPaths();
+  const aiSteps = allPaths.flatMap(path => 
+    path.steps.filter(step => step.id.startsWith('ai-step-'))
+  );
+
+  return {
+    totalPaths: allPaths.length,
+    totalSteps: allPaths.reduce((sum, path) => sum + path.steps.length, 0),
+    aiGeneratedSteps: aiSteps.length,
+    averagePathLength: allPaths.reduce((sum, path) => sum + path.steps.length, 0) / allPaths.length,
+    rolesWithAIContent: allPaths.filter(path => 
+      path.steps.some(step => step.id.startsWith('ai-step-'))
+    ).length
+  };
+}
