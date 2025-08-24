@@ -39,12 +39,12 @@ const ContentModule: React.FC<ContentModuleProps> = memo(({
 
   return (
     <div 
-      className={`cursor-pointer transition-all duration-300 ${
-        isActive ? 'transform scale-105' : 'hover:transform hover:scale-102'
+      className={`cursor-pointer transition-smooth ${
+        isActive ? 'transform scale-105' : 'hover:transform hover:scale-[1.02]'
       }`}
       onClick={onClick}
     >
-      <div className={`backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 ${cardClasses}`}>
+      <div className={`backdrop-blur-sm border rounded-2xl p-6 transition-smooth ${cardClasses}`}>
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             {isCompleted ? (
@@ -73,13 +73,13 @@ ContentModule.displayName = 'ContentModule';
 
 const CourseDetail: React.FC = memo(() => {
   const { isDark } = useTheme();
-  const { userProgress, currentLearningPath, completeModule, getNextRecommendation } = useRole();
+  const { userProgress, currentLearningPath } = useRole();
   const navigate = useNavigate();
   const location = useLocation();
   const { courseId } = useParams<{ courseId: string }>();
   const [activeModule, setActiveModule] = useState(0);
 
-  const nextRecommendation = getNextRecommendation();
+
 
   // Get learning path context for navigation
   const getNavigationContext = useCallback(() => {
@@ -152,8 +152,27 @@ const CourseDetail: React.FC = memo(() => {
 
   const navigationContext = getNavigationContext();
 
+  // Position page at top instantly and add smooth content animations
   useEffect(() => {
+    // Instantly position at top without any scrolling animation
     window.scrollTo(0, 0);
+    
+    // Use setTimeout with minimal delay to ensure DOM is rendered
+    setTimeout(() => {
+      // Add fade-in animation to content sections
+      const contentSections = document.querySelectorAll('.course-content-section');
+      contentSections.forEach((section, index) => {
+        const element = section as HTMLElement;
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        
+        setTimeout(() => {
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
+        }, 100 + (index * 150)); // Stagger animations
+      });
+    }, 50);
   }, [courseId]);
 
   // Determine which modules and course info to use based on courseId
@@ -315,14 +334,13 @@ Sentry.init({
   }, [courseId]);
 
   const goBack = useCallback(() => {
-    // Check if we came from a learning path or directly accessed the course
+    // Check if we came from a learning path or course grid
     const fromLearningPath = location.state?.from === 'learning-path' || userProgress.role || currentLearningPath;
+    const fromCourseGrid = location.state?.from === 'course-grid';
     
     // Navigate back with appropriate scroll behavior
     navigate('/', { 
-      state: { 
-        scrollToSection: fromLearningPath ? 'transition' : 'courses' 
-      },
+      state: fromCourseGrid ? { scrollToSection: 'courses' } : undefined,
       replace: false 
     });
   }, [navigate, location.state, userProgress.role, currentLearningPath]);
@@ -331,11 +349,7 @@ Sentry.init({
     setActiveModule(index);
   }, []);
 
-  const handleCompleteModule = useCallback(() => {
-    if (courseId) {
-      completeModule(courseId);
-    }
-  }, [courseId, completeModule]);
+
 
 
 
@@ -351,7 +365,7 @@ Sentry.init({
         <div className="flex items-center space-x-4 mb-8">
           <button 
             onClick={goBack}
-            className={`p-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg backdrop-blur-sm ${
+            className={`p-2 rounded-lg transition-smooth transform hover:scale-110 shadow-lg backdrop-blur-sm hover:shadow-xl ${
               isDark
                 ? 'bg-slate-800/50 hover:bg-slate-700/50 text-gray-300 hover:text-white border border-purple-500/30 hover:border-purple-400/60 hover:shadow-purple-500/20'
                 : 'bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 hover:text-gray-900 border border-purple-300/30 hover:border-purple-400/60 hover:shadow-purple-300/20'
@@ -383,7 +397,7 @@ Sentry.init({
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Content Modules Sidebar */}
           <div className="lg:col-span-1">
-            <div className={`backdrop-blur-sm border rounded-2xl p-6 ${
+            <div className={`course-content-section backdrop-blur-sm border rounded-2xl p-6 ${
               isDark 
                 ? 'bg-slate-900/40 border-purple-500/30'
                 : 'bg-white/60 border-purple-300/30'
@@ -424,7 +438,7 @@ Sentry.init({
                 : 'bg-white/60 border-purple-300/30'
             }`}>
               {/* Video/Content Player */}
-              <div className={`aspect-video rounded-xl mb-8 overflow-hidden ${
+              <div className={`course-content-section aspect-video rounded-xl mb-8 overflow-hidden ${
                 isDark ? 'bg-slate-800/50' : 'bg-gray-100/50'
               }`}>
                 <iframe
@@ -440,7 +454,7 @@ Sentry.init({
               </div>
 
               {/* Module Content */}
-              <div className="space-y-6">
+              <div className="course-content-section space-y-6">
                 <div>
                   <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {currentModule.title}
@@ -453,7 +467,7 @@ Sentry.init({
 
 
                 {/* Key Concepts */}
-                <div className={`border rounded-xl p-6 ${
+                <div className={`course-content-section border rounded-xl p-6 ${
                   isDark 
                     ? 'border-purple-500/30 bg-slate-800/30'
                     : 'border-purple-300/30 bg-purple-50/30'
@@ -475,7 +489,7 @@ Sentry.init({
                 </div>
 
                 {/* Real World Scenario */}
-                <div className={`border rounded-xl p-6 ${
+                <div className={`course-content-section border rounded-xl p-6 ${
                   isDark 
                     ? 'border-green-500/30 bg-green-900/10'
                     : 'border-green-300/30 bg-green-50/30'
@@ -511,7 +525,7 @@ Sentry.init({
                 </div>
 
                 {/* Code Example */}
-                <div className={`border rounded-xl p-6 ${
+                <div className={`course-content-section border rounded-xl p-6 ${
                   isDark 
                     ? 'border-purple-500/30 bg-slate-800/30'
                     : 'border-purple-300/30 bg-gray-50/30'
@@ -645,7 +659,7 @@ Sentry.init({
                 </div>
 
                 {/* Interactive Demo */}
-                <div className={`border rounded-xl p-6 ${
+                <div className={`course-content-section border rounded-xl p-6 ${
                   isDark 
                     ? 'border-blue-500/30 bg-blue-900/10'
                     : 'border-blue-300/30 bg-blue-50/30'
@@ -674,7 +688,7 @@ Sentry.init({
                 </div>
 
                 {/* GitHub Repository Callout */}
-                <div className={`border rounded-xl p-6 ${
+                <div className={`course-content-section border rounded-xl p-6 ${
                   isDark 
                     ? 'border-green-500/30 bg-green-900/10'
                     : 'border-green-300/30 bg-green-50/30'
@@ -729,7 +743,7 @@ Sentry.init({
                   href="https://sentry.io/customers/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block transition-all duration-200 hover:transform hover:scale-[1.025]"
+                  className="course-content-section block transition-all duration-200 hover:transform hover:scale-[1.025]"
                 >
                   <div className={`border rounded-xl p-6 cursor-pointer transition-all duration-200 ${
                     isDark 
@@ -800,7 +814,7 @@ Sentry.init({
                     {navigationContext.previousCourse ? (
                       <button 
                         onClick={() => navigate(`/course/${navigationContext.previousCourse}`, { state: { from: 'learning-path' } })}
-                        className={`w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] ${
+                        className={`w-full h-32 p-4 rounded-xl text-left transition-smooth transform hover:scale-[1.02] hover:shadow-lg ${
                           isDark
                             ? 'bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50 hover:border-slate-500/70'
                             : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300'
@@ -849,7 +863,7 @@ Sentry.init({
                     {navigationContext.nextCourse ? (
                       <button 
                         onClick={() => navigate(`/course/${navigationContext.nextCourse}`, { state: { from: 'learning-path' } })}
-                        className={`w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] bg-gradient-to-r from-purple-500/20 to-pink-400/20 hover:from-purple-500/30 hover:to-pink-400/30 ${
+                        className={`w-full h-32 p-4 rounded-xl text-left transition-smooth transform hover:scale-[1.02] hover:shadow-xl bg-gradient-to-r from-purple-500/20 to-pink-400/20 hover:from-purple-500/30 hover:to-pink-400/30 ${
                           isDark
                             ? 'border border-purple-500/40 hover:border-purple-400/60'
                             : 'border border-purple-300/40 hover:border-purple-400/60'

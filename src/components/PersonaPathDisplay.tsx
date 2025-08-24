@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRole } from '../contexts/RoleContext';
 import { 
@@ -64,6 +64,7 @@ const PersonaPathDisplay: React.FC = () => {
   const { isDark } = useTheme();
   const { currentLearningPath, userProgress, resetProgress } = useRole();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showResetConfirm, setShowResetConfirm] = React.useState(false);
 
   // Handle escape key to close modal and prevent body scroll
@@ -89,9 +90,14 @@ const PersonaPathDisplay: React.FC = () => {
     };
   }, [showResetConfirm]);
 
-  // Position last completed course at top of viewport when persona is first loaded (no animation)
+  // Position last completed course at top of viewport when persona is first loaded or returning from course detail
   React.useEffect(() => {
     if (currentLearningPath && userProgress.role) {
+      // Check if we're returning from a course detail page
+      const returnFromCourse = location.state?.returnFromCourse;
+      const scrollToSection = location.state?.scrollToSection;
+      const isReturningFromCourse = returnFromCourse && scrollToSection === 'learning-path';
+      
       // Use setTimeout with minimal delay to ensure DOM is rendered, then jump immediately
       setTimeout(() => {
         const completedSteps = currentLearningPath.steps
@@ -99,42 +105,54 @@ const PersonaPathDisplay: React.FC = () => {
           .sort((a, b) => b.priority - a.priority); // Sort by priority descending to get last completed
 
         if (completedSteps.length > 0) {
-          // Jump to position the last completed step with 50px margin above
+          // Jump to position the last completed step with margin above
           const lastCompletedStep = completedSteps[0];
           const stepElement = document.getElementById(`step-${lastCompletedStep.id}`);
           if (stepElement) {
             // Get the absolute position of the element relative to the document
             const rect = stepElement.getBoundingClientRect();
             const absoluteTop = rect.top + window.scrollY;
-            const offset = absoluteTop - 50 - 40; // 50px above the element, then 40px up
+            const offset = absoluteTop - 100; // Position with 100px margin above the completed step (20px more space)
             window.scrollTo({
               top: offset,
-              behavior: 'auto' // Instant, no animation
+              behavior: isReturningFromCourse ? 'smooth' : 'auto' // Smooth when returning from course, instant on initial load
             });
           }
         } else {
-          // No completed steps - find the container with space-y-6 and position at its top
-          const stepsContainer = document.querySelector('.space-y-6');
-          if (stepsContainer) {
-            const rect = stepsContainer.getBoundingClientRect();
+          // No completed steps - position at the learning path title
+          const titleElement = document.getElementById('learning-path-title');
+          if (titleElement) {
+            const rect = titleElement.getBoundingClientRect();
             const absoluteTop = rect.top + window.scrollY;
-            const offset = absoluteTop - 50 - 40; // 50px above the container, then 40px up
+            const offset = absoluteTop - 100; // Position with 100px margin above the title
             window.scrollTo({
               top: offset,
-              behavior: 'auto' // Instant, no animation
+              behavior: isReturningFromCourse ? 'smooth' : 'auto'
             });
+          } else {
+            // Fallback: find the steps container and position at its top
+            const stepsContainer = document.querySelector('.space-y-6');
+            if (stepsContainer) {
+              const rect = stepsContainer.getBoundingClientRect();
+              const absoluteTop = rect.top + window.scrollY;
+              const offset = absoluteTop - 50 - 40; // 50px above the container, then 40px up
+              window.scrollTo({
+                top: offset,
+                behavior: isReturningFromCourse ? 'smooth' : 'auto'
+              });
+            }
           }
         }
-      }, 50); // Minimal delay to ensure DOM is ready
+      }, isReturningFromCourse ? 150 : 50); // Longer delay when returning from course to ensure smooth transition
     }
-  }, [currentLearningPath, userProgress.role]);
+  }, [currentLearningPath, userProgress.role, location.state]);
 
   if (!currentLearningPath || !userProgress.role) {
     return null;
   }
 
   const handleStartModule = (moduleId: string) => {
-    navigate(`/course/${moduleId}`, { state: { from: 'learning-paths' } });
+    navigate(`/course/${moduleId}`, { state: { from: 'learning-path' } });
   };
 
   const handleResetPath = () => {
@@ -149,9 +167,12 @@ const PersonaPathDisplay: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex-1" />
           <div className="flex-1">
-            <h2 className={`text-3xl md:text-4xl font-bold mb-4 lg:leading-tight lg:h-24 lg:flex lg:items-center lg:justify-center ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2 
+              id="learning-path-title"
+              className={`text-3xl md:text-4xl font-bold mb-4 lg:leading-tight lg:h-24 lg:flex lg:items-center lg:justify-center ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}
+            >
               {currentLearningPath.title}
             </h2>
           </div>
@@ -203,7 +224,7 @@ const PersonaPathDisplay: React.FC = () => {
             <div
               key={step.id}
               id={`step-${step.id}`}
-              className={`backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 ${
+              className={`backdrop-blur-sm border rounded-2xl p-6 transition-smooth hover:scale-[1.01] ${
                 isCompleted
                   ? isDark
                     ? 'bg-emerald-900/20 border-emerald-500/40'
@@ -307,7 +328,7 @@ const PersonaPathDisplay: React.FC = () => {
                   {isCurrentNext && (
                     <button
                       onClick={() => handleStartModule(step.modules[0])}
-                      className={`inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg bg-gradient-to-r ${featureColor} text-white hover:shadow-xl`}
+                      className={`inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-smooth transform hover:scale-105 shadow-lg bg-gradient-to-r ${featureColor} text-white hover:shadow-xl`}
                     >
                       <span>Start Learning</span>
                       <ArrowRight className="w-4 h-4" />
@@ -326,7 +347,7 @@ const PersonaPathDisplay: React.FC = () => {
                       </div>
                       <button
                         onClick={() => handleStartModule(step.modules[0])}
-                        className={`text-sm hover:underline transition-colors duration-200 ${
+                        className={`text-sm hover:underline transition-smooth ${
                           isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'
                         }`}
                       >

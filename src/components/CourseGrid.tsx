@@ -21,22 +21,22 @@ const CourseCard: React.FC<Course> = memo(({
 
   const handleCardClick = useCallback(() => {
     if (id) {
-      navigate(`/course/${id}`);
+      navigate(`/course/${id}`, { state: { from: 'course-grid' } });
     }
   }, [id, navigate]);
 
   const cardClasses = useMemo(() => getCardClasses(isDark), [isDark]);
   return (
-    <div className="group cursor-pointer relative" onClick={handleCardClick}>
+    <div className="group cursor-pointer relative transition-smooth hover:scale-[1.02]" onClick={handleCardClick}>
       {isPopular && (
-        <div className="absolute -top-3 -right-3 z-10">
-          <div className="bg-gradient-to-r from-orange-400 to-pink-400 text-white text-xs font-bold px-3 py-1 rounded-full">
+        <div className="absolute -top-3 -right-3 z-10 transition-smooth group-hover:scale-110">
+          <div className="bg-gradient-to-r from-orange-400 to-pink-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
             Popular
           </div>
         </div>
       )}
       
-      <div className={`${cardClasses} p-6 h-full`}>
+      <div className={`${cardClasses} p-6 h-full transition-smooth group-hover:shadow-2xl`}>
         <div className="flex items-center justify-between mb-4">
           <span className={`text-xs font-medium uppercase tracking-wider px-2 py-1 rounded-full ${
             isDark 
@@ -51,7 +51,7 @@ const CourseCard: React.FC<Course> = memo(({
           </div>
         </div>
 
-        <h3 className={`text-xl font-bold mb-3 transition-colors ${getTextClasses(isDark, 'primary')} group-hover:${getTextClasses(isDark, 'accent')}`}>
+        <h3 className={`text-xl font-bold mb-3 transition-smooth ${getTextClasses(isDark, 'primary')} group-hover:${getTextClasses(isDark, 'accent')} group-hover:translate-x-1`}>
           {title}
         </h3>
 
@@ -79,7 +79,7 @@ const CourseCard: React.FC<Course> = memo(({
           <span className={`font-medium transition-colors ${getTextClasses(isDark, 'accent')}`}>
             Start Course
           </span>
-          <ChevronRight className={`w-5 h-5 group-hover:translate-x-1 transition-all ${getTextClasses(isDark, 'secondary')} group-hover:${getTextClasses(isDark, 'accent')}`} />
+          <ChevronRight className={`w-5 h-5 group-hover:translate-x-2 transition-smooth ${getTextClasses(isDark, 'secondary')} group-hover:${getTextClasses(isDark, 'accent')}`} />
         </div>
       </div>
     </div>

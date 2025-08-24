@@ -22,7 +22,7 @@ const Header: React.FC = memo(() => {
   const navLinkClasses = useMemo(() => getNavLinkClasses(isDark), [isDark]);
 
   const themeButtonClasses = useMemo(() => 
-    `p-2 rounded-lg transition-all duration-200 ${
+    `p-2 rounded-lg transition-smooth transform hover:scale-110 ${
       isDark
         ? 'bg-slate-800/50 hover:bg-slate-700/50 text-yellow-400'
         : 'bg-gray-100 hover:bg-gray-200 text-gray-800'  // Improved from gray-700 to gray-800 for better contrast
@@ -77,7 +77,7 @@ const Header: React.FC = memo(() => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <button onClick={handleLogoClick} className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
+          <button onClick={handleLogoClick} className="flex items-center space-x-3 hover:opacity-80 transition-smooth transform hover:scale-105">
             <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
               isDark ? 'text-white' : 'text-gray-900'
             }`}>
@@ -122,7 +122,7 @@ const Header: React.FC = memo(() => {
             </a>
             <button
               onClick={handleAdminClick}
-              className={`p-2 rounded-lg transition-all duration-200 ${
+              className={`p-2 rounded-lg transition-smooth transform hover:scale-110 ${
                 isDark
                   ? 'bg-slate-800/50 hover:bg-slate-700/50 text-purple-400'
                   : 'bg-gray-100 hover:bg-gray-200 text-purple-600'
@@ -139,7 +139,7 @@ const Header: React.FC = memo(() => {
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <button className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-violet-700 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-purple-500/25">
+            <button className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
               Get Started
             </button>
           </nav>

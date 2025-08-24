@@ -109,7 +109,7 @@ const UserInputForm: React.FC = () => {
               />
               <label
                 htmlFor={option.value}
-                className={`block backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer ${
+                className={`block backdrop-blur-sm border rounded-2xl p-6 transition-smooth transform hover:scale-105 hover:shadow-xl cursor-pointer ${
                   selectedRole === option.value
                     ? isDark 
                       ? 'border-purple-400/80 bg-slate-900/80 shadow-lg shadow-purple-500/25'
@@ -120,7 +120,7 @@ const UserInputForm: React.FC = () => {
                 }`}
               >
                 <div className="text-center">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-all duration-300 ${
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-smooth ${
                     selectedRole === option.value
                       ? 'bg-gradient-to-r from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30'
                       : 'bg-gradient-to-r from-purple-400/20 to-violet-500/20 group-hover:from-purple-400/30 group-hover:to-violet-500/30'
@@ -131,7 +131,7 @@ const UserInputForm: React.FC = () => {
                       {option.icon}
                     </div>
                   </div>
-                  <h3 className={`text-lg font-bold mb-2 transition-colors duration-300 ${
+                  <h3 className={`text-lg font-bold mb-2 transition-smooth ${
                     selectedRole === option.value 
                       ? isDark ? 'text-purple-300' : 'text-purple-700'  // Improved from purple-600 to purple-700
                       : isDark 
@@ -158,7 +158,7 @@ const UserInputForm: React.FC = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {sentryFeatures.map((feature) => (
               <div key={feature.value} className="group">
-                <label className={`flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-all duration-300 cursor-pointer ${
+                <label className={`flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-smooth cursor-pointer hover:scale-[1.02] ${
                   isDark 
                     ? 'bg-slate-900/40 border-purple-500/30 hover:border-purple-400/60 hover:bg-slate-900/60'
                     : 'bg-white/75 border-purple-400/40 hover:border-purple-500/60 hover:bg-white/85'  // Improved opacity and border contrast
@@ -174,7 +174,7 @@ const UserInputForm: React.FC = () => {
                         : 'bg-white border-purple-400/60'  // Improved border contrast from purple-300/50 to purple-400/60
                     }`}
                   />
-                  <span className={`transition-colors duration-300 ${
+                  <span className={`transition-smooth ${
                     isDark 
                       ? 'text-gray-300 group-hover:text-purple-300' 
                       : 'text-gray-800 group-hover:text-purple-700'  // Improved from gray-700 to gray-800 and purple-600 to purple-700
@@ -193,10 +193,10 @@ const UserInputForm: React.FC = () => {
             disabled={!selectedRole}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="group bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-xl font-medium hover:from-purple-600 hover:to-violet-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:from-purple-500 disabled:hover:to-violet-600 inline-flex items-center space-x-2"
+            className="group bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-xl font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg hover:shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:from-purple-500 disabled:hover:to-violet-600 inline-flex items-center space-x-2"
           >
             <span>Get My Personalized Path</span>
-            <ArrowRight className={`w-5 h-5 transition-transform duration-200 ${isHovered && selectedRole ? 'translate-x-1' : ''}`} />
+            <ArrowRight className={`w-5 h-5 transition-smooth ${isHovered && selectedRole ? 'translate-x-2' : ''}`} />
           </button>
         </div>
       </form>
@@ -295,7 +295,7 @@ const NextStepsDisplay: React.FC = () => {
 
 const LearningPaths: React.FC = memo(() => {
   const { isDark } = useTheme();
-  const { userProgress, getNextRecommendation } = useRole();
+  const { userProgress } = useRole();
 
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);

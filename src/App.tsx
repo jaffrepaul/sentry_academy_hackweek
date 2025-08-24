@@ -22,6 +22,7 @@ const HomePage = () => {
   useEffect(() => {
     // Check if we're returning from a course detail page
     const scrollToSection = location.state?.scrollToSection;
+    
     if (scrollToSection) {
       // Start with page hidden for smooth transition
       setIsVisible(false);
@@ -30,7 +31,7 @@ const HomePage = () => {
       setTimeout(() => {
         setIsVisible(true);
         
-        // If we need to scroll to courses section, do it after the page is visible
+        // Handle different scroll targets
         if (scrollToSection === 'courses') {
           setTimeout(() => {
             const coursesSection = document.getElementById('courses');
@@ -40,7 +41,19 @@ const HomePage = () => {
                 block: 'start' 
               });
             }
-          }, 100); // Additional delay to ensure page is fully rendered
+          }, 100);
+        } else if (scrollToSection === 'learning-path') {
+          // For learning path navigation, we'll let PersonaPathDisplay handle the positioning
+          // Just scroll to the paths section first
+          setTimeout(() => {
+            const pathsSection = document.getElementById('paths');
+            if (pathsSection) {
+              pathsSection.scrollIntoView({ 
+                behavior: 'auto', // Instant scroll to paths section
+                block: 'start' 
+              });
+            }
+          }, 100);
         }
       }, 50);
     } else {
@@ -51,8 +64,8 @@ const HomePage = () => {
 
   return (
     <div 
-      className={`transition-opacity duration-300 ease-out ${
-        isVisible ? 'opacity-100' : 'opacity-0'
+      className={`transition-fade ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
     >
       <Hero />
