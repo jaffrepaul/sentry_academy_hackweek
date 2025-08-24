@@ -21,34 +21,52 @@ export const defaultResearchSources: ResearchSourceConfig[] = [
     description: 'Official Sentry documentation - highest technical accuracy'
   },
   {
-    source: ResearchSource.DOCS_PRODUCT,
+    source: ResearchSource.SENTRY_MAIN,
     enabled: true,
     priority: 2,
+    description: 'Main Sentry platform and product information'
+  },
+  {
+    source: ResearchSource.DOCS_PRODUCT,
+    enabled: true,
+    priority: 3,
     description: 'Product-specific documentation with feature details'
   },
   {
     source: ResearchSource.BLOG,
     enabled: true,
-    priority: 3,
+    priority: 4,
     description: 'Engineering blog posts with real-world examples'
   },
   {
-    source: ResearchSource.CUSTOMERS,
-    enabled: true,
-    priority: 4,
-    description: 'Customer case studies and success stories'
-  },
-  {
     source: ResearchSource.VS_LOGGING,
-    enabled: false,
+    enabled: true,
     priority: 5,
     description: 'Comparison content for positioning context'
   },
   {
-    source: ResearchSource.YOUTUBE,
-    enabled: false,
+    source: ResearchSource.ANSWERS,
+    enabled: true,
     priority: 6,
-    description: 'Video content and tutorials (requires manual processing)'
+    description: 'Community Q&A and troubleshooting resources'
+  },
+  {
+    source: ResearchSource.SUPPORT,
+    enabled: true,
+    priority: 7,
+    description: 'Support documentation and help center'
+  },
+  {
+    source: ResearchSource.YOUTUBE,
+    enabled: true,
+    priority: 8,
+    description: 'Video content and tutorials'
+  },
+  {
+    source: ResearchSource.CUSTOMERS,
+    enabled: true,
+    priority: 9,
+    description: 'Customer case studies and success stories'
   }
 ];
 

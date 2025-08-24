@@ -99,19 +99,73 @@ class ContentResearchEngine {
     switch (source) {
       case ResearchSource.DOCS_MAIN:
         return await this.researchSentryDocs(keywords, priority);
+      case ResearchSource.SENTRY_MAIN:
+        return await this.researchSentryMain(keywords, priority);
       case ResearchSource.DOCS_PRODUCT:
         return await this.researchSentryProductDocs(keywords, priority);
       case ResearchSource.BLOG:
         return await this.researchSentryBlog(keywords, priority);
-      case ResearchSource.CUSTOMERS:
-        return await this.researchCustomerStories(keywords, priority);
       case ResearchSource.VS_LOGGING:
         return await this.researchComparisonContent(keywords, priority);
+      case ResearchSource.ANSWERS:
+        return await this.researchAnswersContent(keywords, priority);
+      case ResearchSource.SUPPORT:
+        return await this.researchSupportContent(keywords, priority);
       case ResearchSource.YOUTUBE:
         return await this.researchYouTubeContent(keywords, priority);
+      case ResearchSource.CUSTOMERS:
+        return await this.researchCustomerStories(keywords, priority);
       default:
         return [];
     }
+  }
+
+  // Research Sentry main platform
+  private async researchSentryMain(keywords: string[], _priority: number): Promise<ResearchedContent[]> {
+    const results: ResearchedContent[] = [];
+    
+    const mockMainPages = [
+      {
+        url: 'https://sentry.io/features/',
+        title: 'Sentry Features Overview',
+        content: this.generateMockDocContent('Comprehensive overview of Sentry platform features', keywords),
+        section: 'Features'
+      },
+      {
+        url: 'https://sentry.io/pricing/',
+        title: 'Sentry Pricing & Plans',
+        content: this.generateMockDocContent('Sentry pricing tiers and feature comparison', keywords),
+        section: 'Pricing'
+      },
+      {
+        url: 'https://sentry.io/for/javascript/',
+        title: 'Sentry for JavaScript',
+        content: this.generateMockDocContent('JavaScript-specific Sentry implementation', keywords),
+        section: 'Platform'
+      }
+    ];
+
+    for (const page of mockMainPages) {
+      if (this.checkRateLimit('sentry.io', 5)) {
+        const relevanceScore = this.calculateRelevanceScore(page.content, keywords);
+        
+        if (relevanceScore > 0.3) {
+          results.push({
+            source: ResearchSource.SENTRY_MAIN,
+            url: page.url,
+            title: page.title,
+            content: page.content,
+            relevanceScore,
+            extractedAt: new Date(),
+            keyTopics: this.extractKeyTopics(page.content, keywords),
+            codeExamples: this.extractCodeExamples(page.content),
+            useCases: this.extractUseCases(page.content)
+          });
+        }
+      }
+    }
+
+    return results;
   }
 
   // Research Sentry main documentation
@@ -354,6 +408,96 @@ class ContentResearchEngine {
     return results;
   }
 
+  // Research Sentry Answers content
+  private async researchAnswersContent(keywords: string[], _priority: number): Promise<ResearchedContent[]> {
+    const results: ResearchedContent[] = [];
+    
+    const mockAnswersContent = [
+      {
+        url: 'https://sentry.io/answers/javascript-errors/',
+        title: 'Common JavaScript Errors and Solutions',
+        content: this.generateMockAnswersContent('Community-driven solutions for JavaScript error handling', keywords)
+      },
+      {
+        url: 'https://sentry.io/answers/performance-optimization/',
+        title: 'Performance Optimization Q&A',
+        content: this.generateMockAnswersContent('Performance monitoring best practices from the community', keywords)
+      },
+      {
+        url: 'https://sentry.io/answers/debugging-tips/',
+        title: 'Debugging Tips and Tricks',
+        content: this.generateMockAnswersContent('Expert debugging techniques and troubleshooting guides', keywords)
+      }
+    ];
+
+    for (const answer of mockAnswersContent) {
+      if (this.checkRateLimit('sentry.io', 3)) {
+        const relevanceScore = this.calculateRelevanceScore(answer.content, keywords);
+        
+        if (relevanceScore > 0.2) {
+          results.push({
+            source: ResearchSource.ANSWERS,
+            url: answer.url,
+            title: answer.title,
+            content: answer.content,
+            relevanceScore,
+            extractedAt: new Date(),
+            keyTopics: this.extractKeyTopics(answer.content, keywords),
+            codeExamples: this.extractCodeExamples(answer.content),
+            useCases: this.extractUseCases(answer.content)
+          });
+        }
+      }
+    }
+
+    return results;
+  }
+
+  // Research Sentry Support content
+  private async researchSupportContent(keywords: string[], _priority: number): Promise<ResearchedContent[]> {
+    const results: ResearchedContent[] = [];
+    
+    const mockSupportContent = [
+      {
+        url: 'https://sentry.zendesk.com/hc/en-us/articles/getting-started',
+        title: 'Getting Started with Sentry',
+        content: this.generateMockSupportContent('Step-by-step guide to setting up Sentry', keywords)
+      },
+      {
+        url: 'https://sentry.zendesk.com/hc/en-us/articles/troubleshooting',
+        title: 'Troubleshooting Common Issues',
+        content: this.generateMockSupportContent('Solutions for common Sentry setup and configuration issues', keywords)
+      },
+      {
+        url: 'https://sentry.zendesk.com/hc/en-us/articles/sdk-configuration',
+        title: 'SDK Configuration Guide',
+        content: this.generateMockSupportContent('Comprehensive SDK configuration and best practices', keywords)
+      }
+    ];
+
+    for (const support of mockSupportContent) {
+      if (this.checkRateLimit('sentry.zendesk.com', 2)) {
+        const relevanceScore = this.calculateRelevanceScore(support.content, keywords);
+        
+        if (relevanceScore > 0.3) {
+          results.push({
+            source: ResearchSource.SUPPORT,
+            url: support.url,
+            title: support.title,
+            content: support.content,
+            relevanceScore,
+            extractedAt: new Date(),
+            keyTopics: this.extractKeyTopics(support.content, keywords),
+            codeExamples: this.extractCodeExamples(support.content),
+            useCases: this.extractUseCases(support.content)
+          });
+        }
+      }
+    }
+
+    return results;
+  }
+
   // Synthesize web content from URLs
   async synthesizeWebContent(urls: string[]): Promise<ResearchedContent[]> {
     const results: ResearchedContent[] = [];
@@ -455,11 +599,14 @@ class ContentResearchEngine {
   private getSourceDisplayName(source: ResearchSource): string {
     const displayNames = {
       [ResearchSource.DOCS_MAIN]: 'Sentry Documentation',
+      [ResearchSource.SENTRY_MAIN]: 'Sentry Platform',
       [ResearchSource.DOCS_PRODUCT]: 'Product Documentation',
       [ResearchSource.BLOG]: 'Sentry Blog',
-      [ResearchSource.CUSTOMERS]: 'Customer Stories',
       [ResearchSource.VS_LOGGING]: 'Comparison Content',
-      [ResearchSource.YOUTUBE]: 'YouTube Videos'
+      [ResearchSource.ANSWERS]: 'Sentry Answers',
+      [ResearchSource.SUPPORT]: 'Support Center',
+      [ResearchSource.YOUTUBE]: 'YouTube Videos',
+      [ResearchSource.CUSTOMERS]: 'Customer Stories'
     };
     return displayNames[source] || source;
   }
@@ -658,14 +805,159 @@ For more information, visit the Sentry documentation.`;
   }
 
   private getSourceFromUrl(url: string): ResearchSource {
-    if (url.includes('docs.sentry.io')) {
+    if (url.includes('docs.sentry.io/product')) {
+      return ResearchSource.DOCS_PRODUCT;
+    } else if (url.includes('docs.sentry.io')) {
       return ResearchSource.DOCS_MAIN;
-    } else if (url.includes('blog.sentry.io')) {
+    } else if (url.includes('sentry-blog.sentry.dev')) {
       return ResearchSource.BLOG;
+    } else if (url.includes('sentry.io/answers')) {
+      return ResearchSource.ANSWERS;
+    } else if (url.includes('sentry.zendesk.com')) {
+      return ResearchSource.SUPPORT;
     } else if (url.includes('youtube.com')) {
       return ResearchSource.YOUTUBE;
+    } else if (url.includes('sentry.io/customers')) {
+      return ResearchSource.CUSTOMERS;
+    } else if (url.includes('sentry.io')) {
+      return ResearchSource.SENTRY_MAIN;
     }
     return ResearchSource.DOCS_MAIN; // Default
+  }
+
+  private generateMockAnswersContent(topic: string, keywords: string[]): string {
+    return `# Q&A: ${topic}
+
+**Question:** How do I implement ${keywords[0]} effectively in my application?
+
+**Answer:** To implement ${keywords.join(' and ')} successfully, follow these community-recommended approaches:
+
+## Quick Solutions
+
+1. **Setup**: Start with proper SDK configuration
+2. **Configuration**: Set appropriate sampling rates and filters
+3. **Integration**: Connect with your existing monitoring tools
+4. **Optimization**: Fine-tune based on your application's needs
+
+## Common Issues & Solutions
+
+**Issue**: High noise in error reporting
+**Solution**: Implement proper error filtering and grouping rules
+
+**Issue**: Performance impact concerns
+**Solution**: Use appropriate sampling rates (typically 10-20% for performance monitoring)
+
+**Issue**: Missing context in error reports
+**Solution**: Add custom tags and user context to your Sentry configuration
+
+## Community Tips
+
+- Use breadcrumbs to track user actions leading to errors
+- Set up alerts for critical error thresholds
+- Regularly review and update your error grouping rules
+- Integrate with your deployment pipeline for release tracking
+
+## Code Examples
+
+\`\`\`javascript
+// Example configuration for ${keywords[0]}
+import * as Sentry from "@sentry/react";
+
+Sentry.init({
+  dsn: "YOUR_DSN_HERE",
+  environment: process.env.NODE_ENV,
+  beforeSend(event) {
+    // Custom filtering logic
+    return event;
+  }
+});
+\`\`\`
+
+**Helpful?** ✅ 45 users found this helpful | **Updated:** Recently`;
+  }
+
+  private generateMockSupportContent(topic: string, keywords: string[]): string {
+    return `# Support Guide: ${topic}
+
+This support article covers ${keywords.join(', ')} configuration and troubleshooting.
+
+## Overview
+
+${topic} is essential for effective monitoring with Sentry. This guide provides step-by-step instructions and troubleshooting tips.
+
+## Prerequisites
+
+Before implementing ${keywords[0]}, ensure you have:
+- A Sentry account and project set up
+- Appropriate SDK installed for your platform
+- Basic understanding of your application architecture
+
+## Step-by-Step Instructions
+
+### Step 1: Initial Setup
+Configure your Sentry SDK with the appropriate settings for ${keywords[0]}.
+
+### Step 2: Configuration
+Set up the necessary configuration options:
+- DSN configuration
+- Environment settings
+- Sampling rates
+- Custom tags and context
+
+### Step 3: Testing
+Verify your setup is working correctly:
+- Generate test errors
+- Check data appears in Sentry dashboard
+- Validate alert configurations
+
+### Step 4: Optimization
+Fine-tune your configuration based on your needs:
+- Adjust sampling rates
+- Configure error filtering
+- Set up custom dashboards
+
+## Troubleshooting
+
+### Common Issues
+
+**Problem**: Events not appearing in Sentry
+**Solution**: Check your DSN configuration and network connectivity
+
+**Problem**: Too many events being captured
+**Solution**: Implement proper filtering and sampling
+
+**Problem**: Missing context in events
+**Solution**: Add custom tags and user information
+
+### Advanced Configuration
+
+For complex setups involving ${keywords.join(' and ')}, consider:
+- Custom integrations
+- Advanced filtering rules
+- Multi-environment configurations
+- Team-specific alert routing
+
+## Code Examples
+
+\`\`\`javascript
+// Basic configuration example
+import * as Sentry from "@sentry/node";
+
+Sentry.init({
+  dsn: "YOUR_DSN_HERE",
+  tracesSampleRate: 0.1,
+  profilesSampleRate: 0.1,
+});
+\`\`\`
+
+## Need More Help?
+
+If you're still experiencing issues with ${keywords.join(', ')}, please:
+1. Check our troubleshooting guide
+2. Search existing support articles
+3. Contact our support team with specific details
+
+**Last Updated:** Recently | **Article ID:** SUP-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
   }
 }
 

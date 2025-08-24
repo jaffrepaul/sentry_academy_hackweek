@@ -67,12 +67,7 @@ const roleOptions: { id: EngineerRole; label: string; description: string; icon:
   }
 ];
 
-const popularKeywords = [
-  'profiling', 'insights', 'cron monitoring', 'uptime monitoring',
-  'session replay', 'distributed tracing', 'alerts', 'dashboards',
-  'release health', 'user feedback', 'logging', 'performance',
-  'error tracking', 'integrations', 'custom metrics'
-];
+
 
 export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
   onGenerationStarted,
@@ -156,14 +151,7 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
     }));
   };
 
-  const handleAddPopularKeyword = (keyword: string) => {
-    if (!formData.keywords.includes(keyword)) {
-      setFormData(prev => ({
-        ...prev,
-        keywords: [...prev.keywords, keyword]
-      }));
-    }
-  };
+
 
   const handleRoleToggle = (roleId: EngineerRole) => {
     setFormData(prev => ({
@@ -394,27 +382,7 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
               </button>
             </div>
 
-            {/* Popular Keywords */}
-            <div className="mb-3">
-              <p className="text-sm text-gray-600 mb-2">Popular keywords:</p>
-              <div className="flex flex-wrap gap-2">
-                {popularKeywords.map(keyword => (
-                  <button
-                    key={keyword}
-                    type="button"
-                    onClick={() => handleAddPopularKeyword(keyword)}
-                    disabled={formData.keywords.includes(keyword)}
-                    className={`px-3 py-1 text-sm rounded-full transition-colors ${
-                      formData.keywords.includes(keyword)
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {keyword}
-                  </button>
-                ))}
-              </div>
-            </div>
+
 
             {/* Selected Keywords */}
             {formData.keywords.length > 0 && (
@@ -563,7 +531,7 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
                           disabled={!sourceConfig.enabled}
                           className="px-2 py-1 border border-gray-300 rounded text-sm"
                         >
-                          {[1, 2, 3, 4, 5].map(priority => (
+                          {Array.from({ length: formData.selectedSources.length }, (_, i) => i + 1).map(priority => (
                             <option key={priority} value={priority}>{priority}</option>
                           ))}
                         </select>

@@ -4,9 +4,12 @@ import { EngineerRole, SentryFeature, LearningPathStep } from './roles';
 // Enum for research sources
 export enum ResearchSource {
   DOCS_MAIN = 'https://docs.sentry.io',
+  SENTRY_MAIN = 'https://sentry.io',
   DOCS_PRODUCT = 'https://docs.sentry.io/product/',
   BLOG = 'https://sentry-blog.sentry.dev/',
   VS_LOGGING = 'https://sentry.io/vs/logging/',
+  ANSWERS = 'https://sentry.io/answers/',
+  SUPPORT = 'https://sentry.zendesk.com/hc/en-us/',
   YOUTUBE = 'https://www.youtube.com/@Sentry-monitoring/videos',
   CUSTOMERS = 'https://sentry.io/customers/'
 }
