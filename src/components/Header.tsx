@@ -64,6 +64,11 @@ const Header: React.FC = memo(() => {
     navigate('/admin');
   }, [navigate]);
 
+  const handleConceptsClick = useCallback(() => {
+    setIsMenuOpen(false);
+    navigate('/concepts');
+  }, [navigate]);
+
   return (
     <header 
       className={headerClasses} 
@@ -114,9 +119,13 @@ const Header: React.FC = memo(() => {
             >
               Learning Paths
             </button>
-            <a href="#concepts" className={navLinkClasses}>
+            <button 
+              onClick={handleConceptsClick} 
+              className={navLinkClasses}
+              aria-label="Go to Concepts 101 page"
+            >
               Concepts 101
-            </a>
+            </button>
             <a href="#workshops" className={navLinkClasses}>
               Workshops
             </a>
@@ -175,9 +184,12 @@ const Header: React.FC = memo(() => {
               >
                 Learning Paths
               </button>
-              <a href="#concepts" className={navLinkClasses}>
+              <button 
+                onClick={handleConceptsClick} 
+                className={`${navLinkClasses} text-left`}
+              >
                 Concepts 101
-              </a>
+              </button>
               <a href="#workshops" className={navLinkClasses}>
                 Workshops
               </a>

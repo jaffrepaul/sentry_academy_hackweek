@@ -11,6 +11,7 @@ import CourseGrid from './components/CourseGrid';
 import StatsSection from './components/StatsSection';
 import Footer from './components/Footer';
 import CourseDetail from './components/CourseDetail';
+import Concepts101 from './components/Concepts101';
 import SiteBackgroundDemo from './components/SiteBackgroundDemo';
 import { AdminDashboard } from './components/AdminDashboard';
 
@@ -133,6 +134,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/course/:courseId" element={<CourseDetail />} />
+            <Route path="/concepts" element={<Concepts101 />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/demo/backgrounds" element={<SiteBackgroundDemo />} />
           </Routes>
