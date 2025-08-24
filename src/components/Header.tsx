@@ -126,7 +126,12 @@ const Header: React.FC = memo(() => {
             >
               Concepts 101
             </button>
-            <a href="#workshops" className={navLinkClasses}>
+            <a 
+              href="https://sentry-build.sentry.dev/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className={navLinkClasses}
+            >
               Workshops
             </a>
             <button
@@ -190,7 +195,12 @@ const Header: React.FC = memo(() => {
               >
                 Concepts 101
               </button>
-              <a href="#workshops" className={navLinkClasses}>
+              <a 
+                href="https://sentry-build.sentry.dev/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={navLinkClasses}
+              >
                 Workshops
               </a>
               <button
