@@ -3,7 +3,7 @@ import { RoleInfo, LearningPath, RolePersonalization, EngineerRole } from '../ty
 export const roles: RoleInfo[] = [
   {
     id: 'frontend',
-    title: 'Front-end Web Developer',
+    title: 'Frontend Web Developer',
     description: 'Monitor client-side issues, analyze user experience, and incorporate user feedback for rapid debugging.',
     icon: '🎨',
     commonTasks: [
@@ -80,7 +80,7 @@ export const learningPaths: LearningPath[] = [
   {
     id: 'frontend-path',
     roleId: 'frontend',
-    title: 'Front-end Web Developer Learning Path',
+    title: 'Frontend Web Developer Learning Path',
     description: 'Monitor client-side issues, analyze user experience, and incorporate user feedback for rapid debugging',
     totalEstimatedTime: '8.5 hours',
     steps: [

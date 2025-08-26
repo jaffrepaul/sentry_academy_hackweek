@@ -66,6 +66,13 @@ const PersonaPathDisplay: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showResetConfirm, setShowResetConfirm] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  // Trigger entrance animation on component mount
+  React.useEffect(() => {
+    // Immediate entrance - no delay
+    setIsVisible(true);
+  }, []);
 
   // Handle escape key to close modal and prevent body scroll
   React.useEffect(() => {
@@ -90,7 +97,7 @@ const PersonaPathDisplay: React.FC = () => {
     };
   }, [showResetConfirm]);
 
-  // Position last completed course at top of viewport when persona is first loaded or returning from course detail
+  // Handle scroll positioning when returning from course detail
   React.useEffect(() => {
     if (currentLearningPath && userProgress.role) {
       // Check if we're returning from a course detail page
@@ -98,54 +105,44 @@ const PersonaPathDisplay: React.FC = () => {
       const scrollToSection = location.state?.scrollToSection;
       const isReturningFromCourse = returnFromCourse && scrollToSection === 'learning-path';
       
-      // Use setTimeout with minimal delay to ensure DOM is rendered, then jump immediately
-      setTimeout(() => {
-        const completedSteps = currentLearningPath.steps
-          .filter(step => step.isCompleted)
-          .sort((a, b) => b.priority - a.priority); // Sort by priority descending to get last completed
+      // Only scroll when returning from a course, not on initial persona selection
+      if (isReturningFromCourse && isVisible) {
+        // Wait for elements to be visible, then position at last completed course
+        setTimeout(() => {
+          const completedSteps = currentLearningPath.steps
+            .filter(step => step.isCompleted)
+            .sort((a, b) => b.priority - a.priority); // Sort by priority descending to get last completed
 
-        if (completedSteps.length > 0) {
-          // Jump to position the last completed step with margin above
-          const lastCompletedStep = completedSteps[0];
-          const stepElement = document.getElementById(`step-${lastCompletedStep.id}`);
-          if (stepElement) {
-            // Get the absolute position of the element relative to the document
-            const rect = stepElement.getBoundingClientRect();
-            const absoluteTop = rect.top + window.scrollY;
-            const offset = absoluteTop - 100; // Position with 100px margin above the completed step (20px more space)
-            window.scrollTo({
-              top: offset,
-              behavior: isReturningFromCourse ? 'smooth' : 'auto' // Smooth when returning from course, instant on initial load
-            });
-          }
-        } else {
-          // No completed steps - position at the learning path title
-          const titleElement = document.getElementById('learning-path-title');
-          if (titleElement) {
-            const rect = titleElement.getBoundingClientRect();
-            const absoluteTop = rect.top + window.scrollY;
-            const offset = absoluteTop - 100; // Position with 100px margin above the title
-            window.scrollTo({
-              top: offset,
-              behavior: isReturningFromCourse ? 'smooth' : 'auto'
-            });
-          } else {
-            // Fallback: find the steps container and position at its top
-            const stepsContainer = document.querySelector('.space-y-6');
-            if (stepsContainer) {
-              const rect = stepsContainer.getBoundingClientRect();
+          if (completedSteps.length > 0) {
+            // Position the last completed step with margin above
+            const lastCompletedStep = completedSteps[0];
+            const stepElement = document.getElementById(`step-${lastCompletedStep.id}`);
+            if (stepElement) {
+              const rect = stepElement.getBoundingClientRect();
               const absoluteTop = rect.top + window.scrollY;
-              const offset = absoluteTop - 50 - 40; // 50px above the container, then 40px up
+              const offset = absoluteTop - 100; // Position with 100px margin above
               window.scrollTo({
                 top: offset,
-                behavior: isReturningFromCourse ? 'smooth' : 'auto'
+                behavior: 'smooth'
+              });
+            }
+          } else {
+            // No completed steps - position at the learning path title
+            const titleElement = document.getElementById('learning-path-title');
+            if (titleElement) {
+              const rect = titleElement.getBoundingClientRect();
+              const absoluteTop = rect.top + window.scrollY;
+              const offset = absoluteTop - 100; // Position with 100px margin above
+              window.scrollTo({
+                top: offset,
+                behavior: 'smooth'
               });
             }
           }
-        }
-      }, isReturningFromCourse ? 150 : 50); // Longer delay when returning from course to ensure smooth transition
+        }, 100); // Small delay to ensure all elements are rendered and visible
+      }
     }
-  }, [currentLearningPath, userProgress.role, location.state]);
+  }, [currentLearningPath, userProgress.role, location.state, isVisible]);
 
   if (!currentLearningPath || !userProgress.role) {
     return null;
@@ -163,7 +160,9 @@ const PersonaPathDisplay: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className={`text-center mb-12 transition-all duration-700 ease-out ${
+        isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-6'
+      }`}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex-1" />
           <div className="flex-1">
@@ -224,7 +223,12 @@ const PersonaPathDisplay: React.FC = () => {
             <div
               key={step.id}
               id={`step-${step.id}`}
-              className={`backdrop-blur-sm border rounded-2xl p-6 transition-smooth hover:scale-[1.01] ${
+              style={{ 
+                transitionDelay: isVisible ? `${index * 80}ms` : '0ms' 
+              }}
+              className={`backdrop-blur-sm border rounded-2xl p-6 transition-all duration-600 ease-out hover:scale-[1.01] ${
+                isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
+              } ${
                 isCompleted
                   ? isDark
                     ? 'bg-emerald-900/20 border-emerald-500/40'
@@ -363,7 +367,13 @@ const PersonaPathDisplay: React.FC = () => {
       </div>
 
       {/* Progress Summary */}
-      <div className={`mt-12 p-6 rounded-2xl backdrop-blur-sm border ${
+      <div 
+        style={{ 
+          transitionDelay: isVisible ? `${(currentLearningPath.steps.length) * 80 + 100}ms` : '0ms' 
+        }}
+        className={`mt-12 p-6 rounded-2xl backdrop-blur-sm border transition-all duration-600 ease-out ${
+          isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
+        } ${
         isDark
           ? 'bg-slate-900/40 border-slate-600/30'
           : 'bg-white/60 border-gray-300/40'

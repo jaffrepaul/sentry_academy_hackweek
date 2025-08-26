@@ -340,7 +340,11 @@ Sentry.init({
     
     // Navigate back with appropriate scroll behavior
     navigate('/', { 
-      state: fromCourseGrid ? { scrollToSection: 'courses' } : undefined,
+      state: fromCourseGrid 
+        ? { scrollToSection: 'courses' } 
+        : fromLearningPath 
+          ? { returnFromCourse: true, scrollToSection: 'learning-path' }
+          : undefined,
       replace: false 
     });
   }, [navigate, location.state, userProgress.role, currentLearningPath]);

@@ -3,7 +3,7 @@ import { backgroundOption4 } from './backgroundOptions'; // or 3, 4, 5
 export const getBackgroundStyle = backgroundOption4;
 
 export const getCardClasses = (isDark: boolean, isHover = true) => 
-  `backdrop-blur-sm border rounded-2xl transition-all duration-300 ${
+  `backdrop-blur-sm border rounded-2xl transition-all duration-500 ease-out ${
     isHover ? 'transform hover:scale-105 hover:shadow-xl' : ''          
   } ${
     isDark 
@@ -22,10 +22,10 @@ export const getTextClasses = (isDark: boolean, variant: 'primary' | 'secondary'
 
 export const getButtonClasses = (isDark: boolean, variant: 'primary' | 'secondary' = 'primary') => {
   if (variant === 'primary') {
-    return 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:from-purple-600 hover:to-violet-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-purple-500/30';
+    return 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:from-purple-600 hover:to-violet-700 transition-all duration-300 ease-out transform hover:scale-105 shadow-lg hover:shadow-purple-500/30';
   }
   
-  return `backdrop-blur-sm border transition-all duration-200 shadow-lg ${
+  return `backdrop-blur-sm border transition-all duration-300 ease-out shadow-lg ${
     isDark 
       ? 'bg-slate-900/50 border-purple-500/40 text-white hover:border-purple-400/60 hover:bg-slate-900/70 hover:shadow-purple-500/20'
       : 'bg-white/70 border-purple-400/50 text-gray-900 hover:border-purple-500/70 hover:bg-white/80 hover:shadow-purple-400/20'  // Improved opacity and border contrast
@@ -33,7 +33,7 @@ export const getButtonClasses = (isDark: boolean, variant: 'primary' | 'secondar
 };
 
 export const getNavLinkClasses = (isDark: boolean) => 
-  `transition-colors duration-200 ${
+  `transition-colors duration-300 ease-out ${
     isDark 
       ? 'text-gray-300 hover:text-purple-300' 
       : 'text-gray-800 hover:text-purple-700'  // Improved from gray-700 to gray-800 and purple-600 to purple-700
@@ -42,9 +42,8 @@ export const getNavLinkClasses = (isDark: boolean) =>
 export const scrollToSection = (sectionId: string) => {
   const element = document.getElementById(sectionId);
   if (element) {
-    // Account for fixed header height (approximately 80px)
     const elementPosition = element.offsetTop;
-    const offsetPosition = elementPosition - 80;
+    const offsetPosition = elementPosition;
 
     window.scrollTo({
       top: offsetPosition,

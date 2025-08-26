@@ -8,6 +8,12 @@ const Concepts101: React.FC = () => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Trigger entrance animation on component mount
+  React.useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const handleImageError = (conceptId: string) => {
     setImageErrors(prev => new Set(prev).add(conceptId));
@@ -17,7 +23,9 @@ const Concepts101: React.FC = () => {
     <section className="py-20 lg:py-32 relative min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-16">
+        <div className={`text-center mb-16 transition-all duration-700 ease-out ${
+          isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-6'
+        }`}>
           <h1 className={`text-3xl md:text-5xl font-bold mb-6 ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>
@@ -37,14 +45,19 @@ const Concepts101: React.FC = () => {
         <div className="space-y-16">
           {concepts
             .sort((a, b) => a.order - b.order)
-            .map((concept) => (
+            .map((concept, index) => (
               <section 
                 key={concept.id} 
                 id={concept.id}
-                className={`rounded-2xl p-8 md:p-12 border transition-all duration-300 hover:shadow-lg ${
+                style={{ 
+                  transitionDelay: isVisible ? `${index * 150}ms` : '0ms' 
+                }}
+                className={`rounded-2xl p-8 md:p-12 border transition-all duration-600 ease-out transform ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                } ${
                   isDark 
-                    ? 'bg-slate-900/50 border-purple-500/20 hover:border-purple-400/30' 
-                    : 'bg-white/70 border-purple-200/30 hover:border-purple-300/50'
+                    ? 'bg-slate-900/50 border-purple-500/20' 
+                    : 'bg-white/70 border-purple-200/30'
                 }`}
               >
                 <h2 className={`text-3xl md:text-4xl font-bold mb-8 ${
@@ -108,7 +121,7 @@ const Concepts101: React.FC = () => {
                               <img 
                                 src={concept.imageUrl}
                                 alt={concept.imageAlt || `${concept.title} visualization`}
-                                className={`w-full h-auto rounded-lg border transition-all duration-200 hover:scale-105 ${
+                                className={`w-full h-auto rounded-lg border transition-smooth transform hover:scale-105 ${
                                   isDark 
                                     ? 'border-gray-600/50 hover:border-gray-500/70' 
                                     : 'border-gray-200/50 hover:border-gray-300/70'
@@ -130,11 +143,17 @@ const Concepts101: React.FC = () => {
         </div>
 
         {/* Call to Action */}
-        <div className={`mt-20 text-center p-12 rounded-2xl border ${
-          isDark 
-            ? 'bg-gradient-to-r from-purple-900/20 to-violet-900/20 border-purple-500/30' 
-            : 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200/50'
-        }`}>
+        <div 
+          style={{ 
+            transitionDelay: isVisible ? `${(concepts.length) * 150 + 200}ms` : '0ms' 
+          }}
+          className={`mt-20 text-center p-12 rounded-2xl border transition-all duration-600 ease-out transform ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          } ${
+            isDark 
+              ? 'bg-gradient-to-r from-purple-900/20 to-violet-900/20 border-purple-500/30' 
+              : 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200/50'
+          }`}>
           <h2 className={`text-3xl font-bold mb-4 ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>
@@ -151,7 +170,7 @@ const Concepts101: React.FC = () => {
               onClick={() => {
                 navigate('/', { state: { scrollToSection: 'courses' } });
               }}
-              className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-3 rounded-lg font-medium hover:from-purple-600 hover:to-violet-700 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+              className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-3 rounded-lg font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
             >
               Browse Courses
             </button>
@@ -159,7 +178,7 @@ const Concepts101: React.FC = () => {
               onClick={() => {
                 navigate('/', { state: { scrollToSection: 'learning-path' } });
               }}
-              className={`px-8 py-3 rounded-lg font-medium border transition-all duration-200 transform hover:scale-105 ${
+              className={`px-8 py-3 rounded-lg font-medium border transition-smooth transform hover:scale-105 ${
                 isDark
                   ? 'border-purple-400/50 text-purple-300 hover:bg-purple-500/10'
                   : 'border-purple-300 text-purple-700 hover:bg-purple-50'

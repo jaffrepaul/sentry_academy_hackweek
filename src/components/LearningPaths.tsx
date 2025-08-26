@@ -1,10 +1,10 @@
 import React, { memo, useMemo } from 'react';
-import { ArrowRight, User, Code, Server, Settings, Trophy, RotateCcw, Layers, Bot, BarChart } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ArrowRight, User, Code, Server, Settings, Layers, Bot, BarChart } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRole } from '../contexts/RoleContext';
 import { getTextClasses } from '../utils/styles';
 import PersonaPathDisplay from './PersonaPathDisplay';
+import { EngineerRole } from '../types/roles';
 
 const UserInputForm: React.FC = () => {
   const { isDark } = useTheme();
@@ -25,7 +25,7 @@ const UserInputForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedRole) {
-      setUserRole(selectedRole as any, selectedFeatures);
+      setUserRole(selectedRole as EngineerRole, selectedFeatures);
       console.log('Selected role:', selectedRole);
       console.log('Selected features:', selectedFeatures);
     }
@@ -34,38 +34,38 @@ const UserInputForm: React.FC = () => {
   const roleOptions = [
     {
       value: 'frontend',
-      label: 'Front-end Web Developer',
-      icon: <Code className="w-5 h-5" />,
+      label: 'Frontend Web Developer',
+      icon: <Code className="w-6 h-6" />,
       description: 'Monitor client-side issues and user experience'
     },
     {
       value: 'backend',
       label: 'Backend Engineer',
-      icon: <Server className="w-5 h-5" />,
+      icon: <Server className="w-6 h-6" />,
       description: 'Deep visibility into backend performance'
     },
     {
       value: 'fullstack',
       label: 'Full-stack Engineer',
-      icon: <Layers className="w-5 h-5" />,
+      icon: <Layers className="w-6 h-6" />,
       description: 'End-to-end observability pipeline and tooling'
     },
     {
       value: 'sre',
       label: 'SRE/DevOps',
-      icon: <Settings className="w-5 h-5" />,
+      icon: <Settings className="w-6 h-6" />,
       description: 'High reliability and proactive alerting'
     },
     {
       value: 'ai-ml',
       label: 'AI/ML-Aware Developer',
-      icon: <Bot className="w-5 h-5" />,
+      icon: <Bot className="w-6 h-6" />,
       description: 'Debug AI pipelines with observability'
     },
     {
       value: 'pm-manager',
       label: 'Product/Engineering Manager',
-      icon: <BarChart className="w-5 h-5" />,
+      icon: <BarChart className="w-6 h-6" />,
       description: 'Turn data into actionable insights'
     }
   ];
@@ -204,117 +204,35 @@ const UserInputForm: React.FC = () => {
   );
 };
 
-const NextStepsDisplay: React.FC = () => {
-  const { isDark } = useTheme();
-  const { getNextRecommendation, userProgress, resetProgress } = useRole();
-  const navigate = useNavigate();
-  
-  const nextRecommendation = getNextRecommendation();
-  
-  const handleStartCourse = (courseId: string) => {
-    navigate(`/course/${courseId}`, { state: { from: 'learning-paths' } });
-  };
-
-  const handleReset = () => {
-    resetProgress();
-  };
-
-  return (
-    <div className="max-w-2xl mx-auto">
-      {nextRecommendation ? (
-        <div className={`backdrop-blur-sm border rounded-2xl p-8 transition-all duration-300 ${
-          isDark 
-            ? 'bg-slate-900/60 border-emerald-500/40'
-            : 'bg-white/60 border-emerald-300/40'
-        }`}>
-          <div className="text-center">
-            <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              🎯 Next Step: {nextRecommendation.stepId.split('-').slice(1).join(' ').replace(/\b\w/g, l => l.toUpperCase())}
-            </h3>
-            <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-              {nextRecommendation.reasoning}
-            </p>
-            <div className="mb-6">
-              <span className="inline-block bg-emerald-100 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300 text-sm px-4 py-2 rounded-full">
-                ⏱️ {nextRecommendation.timeEstimate}
-              </span>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <button
-                onClick={() => handleStartCourse(nextRecommendation.moduleId)}
-                className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-8 py-3 rounded-xl font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/30 inline-flex items-center space-x-2"
-              >
-                <span>Start Learning</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <button
-                onClick={handleReset}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 inline-flex items-center space-x-2 ${
-                  isDark
-                    ? 'bg-slate-700/60 text-gray-300 hover:bg-slate-600/80 border border-slate-600/50'
-                    : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50'
-                }`}
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>Start Over</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className={`backdrop-blur-sm border rounded-2xl p-8 text-center ${
-          isDark 
-            ? 'bg-slate-900/60 border-green-500/40'
-            : 'bg-white/60 border-green-300/40'
-        }`}>
-          <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
-            <Trophy className="w-8 h-8 text-white" />
-          </div>
-          <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            🎉 All Caught Up!
-          </h3>
-          <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-            You've completed your {userProgress.role} learning path. Great job!
-          </p>
-          <button
-            onClick={handleReset}
-            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 inline-flex items-center space-x-2 ${
-              isDark
-                ? 'bg-slate-700/60 text-gray-300 hover:bg-slate-600/80 border border-slate-600/50'
-                : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50'
-            }`}
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>Try Another Path</span>
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
 const LearningPaths: React.FC = memo(() => {
   const { isDark } = useTheme();
   const { userProgress } = useRole();
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+  const [showLearningPath, setShowLearningPath] = React.useState(false);
 
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
 
-  // Jump directly to learning path when persona is selected (no animation)
+  // Handle smooth transition when persona is selected
   React.useEffect(() => {
-    if (userProgress.role) {
-      // Use setTimeout with 0 to ensure DOM is updated first, then jump immediately
+    if (userProgress.role && !showLearningPath) {
+      // Show learning path immediately
+      setShowLearningPath(true);
+      // Start with transitioning state, then fade in quickly
+      setIsTransitioning(true);
+      
+      // Quick fade-in
       setTimeout(() => {
-        const pathsSection = document.getElementById('paths');
-        if (pathsSection) {
-          pathsSection.scrollIntoView({ 
-            behavior: 'auto', // Instant, no animation
-            block: 'start' 
-          });
-        }
-      }, 0);
+        setIsTransitioning(false);
+      }, 50);
     }
-  }, [userProgress.role]);
+    
+    // Reset states when no role is selected (e.g., after reset)
+    if (!userProgress.role) {
+      setIsTransitioning(false);
+      setShowLearningPath(false);
+    }
+  }, [userProgress.role, showLearningPath]);
 
   return (
     <section id="paths" className="py-20 lg:py-32 relative">
@@ -346,7 +264,23 @@ const LearningPaths: React.FC = memo(() => {
           </p>
         </div>
 
-        {userProgress.role ? <PersonaPathDisplay /> : <UserInputForm />}
+        {/* UserInputForm with fade-out animation */}
+        {!userProgress.role && (
+          <div className={`transition-all duration-300 ease-out ${
+            isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
+          }`}>
+            <UserInputForm />
+          </div>
+        )}
+        
+        {/* PersonaPathDisplay with fade-in animation */}
+        {userProgress.role && showLearningPath && (
+          <div className={`transition-all duration-300 ease-out ${
+            isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
+          }`}>
+            <PersonaPathDisplay />
+          </div>
+        )}
       </div>
     </section>
   );
