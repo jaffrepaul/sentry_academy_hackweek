@@ -1,74 +1,71 @@
-import React, { memo, useMemo } from 'react';
-import { ArrowRight, User, Code, Server, Settings, Layers, Bot, BarChart } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { useRole } from '../contexts/RoleContext';
-import { getTextClasses } from '../utils/styles';
-import PersonaPathDisplay from './PersonaPathDisplay';
-import { EngineerRole } from '../types/roles';
+'use client'
+
+import React, { memo, useMemo } from 'react'
+import { ArrowRight, User, Code, Server, Settings, BarChart, Layers, Bot } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getTextClasses } from '@/utils/styles'
 
 const UserInputForm: React.FC = () => {
-  const { isDark } = useTheme();
-  const [selectedRole, setSelectedRole] = React.useState('');
-  const [selectedFeatures, setSelectedFeatures] = React.useState<string[]>([]);
-  const [isHovered, setIsHovered] = React.useState(false);
+  const { isDark } = useTheme()
+  const [selectedRole, setSelectedRole] = React.useState('')
+  const [selectedFeatures, setSelectedFeatures] = React.useState<string[]>([])
+  const [isHovered, setIsHovered] = React.useState(false)
 
   const handleFeatureChange = (feature: string) => {
     setSelectedFeatures(prev => 
       prev.includes(feature) 
         ? prev.filter(f => f !== feature)
         : [...prev, feature]
-    );
-  };
-
-  const { setUserRole } = useRole();
+    )
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (selectedRole) {
-      setUserRole(selectedRole as EngineerRole, selectedFeatures);
-      console.log('Selected role:', selectedRole);
-      console.log('Selected features:', selectedFeatures);
+      console.log('Selected role:', selectedRole)
+      console.log('Selected features:', selectedFeatures)
+      // Here would integrate with RoleContext in full restoration
     }
-  };
+  }
 
   const roleOptions = [
     {
       value: 'frontend',
-      label: 'Frontend Web Developer',
-      icon: <Code className="w-6 h-6" />,
+      label: 'Front-end Web Developer',
+      icon: <Code className="w-5 h-5" />,
       description: 'Monitor client-side issues and user experience'
     },
     {
       value: 'backend',
       label: 'Backend Engineer',
-      icon: <Server className="w-6 h-6" />,
+      icon: <Server className="w-5 h-5" />,
       description: 'Deep visibility into backend performance'
     },
     {
       value: 'fullstack',
       label: 'Full-stack Engineer',
-      icon: <Layers className="w-6 h-6" />,
+      icon: <Layers className="w-5 h-5" />,
       description: 'End-to-end observability pipeline and tooling'
     },
     {
       value: 'sre',
       label: 'SRE/DevOps',
-      icon: <Settings className="w-6 h-6" />,
+      icon: <Settings className="w-5 h-5" />,
       description: 'High reliability and proactive alerting'
     },
     {
       value: 'ai-ml',
       label: 'AI/ML-Aware Developer',
-      icon: <Bot className="w-6 h-6" />,
+      icon: <Bot className="w-5 h-5" />,
       description: 'Debug AI pipelines with observability'
     },
     {
       value: 'pm-manager',
       label: 'Product/Engineering Manager',
-      icon: <BarChart className="w-6 h-6" />,
+      icon: <BarChart className="w-5 h-5" />,
       description: 'Turn data into actionable insights'
     }
-  ];
+  ]
 
   const sentryFeatures = [
     { value: 'error-tracking', label: 'Error Tracking' },
@@ -83,7 +80,7 @@ const UserInputForm: React.FC = () => {
     { value: 'seer-mcp', label: 'Seer / MCP' },
     { value: 'custom-metrics', label: 'Custom Metrics' },
     { value: 'metrics-insights', label: 'AI Agent Monitoring' }
-  ];
+  ]
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -113,10 +110,10 @@ const UserInputForm: React.FC = () => {
                   selectedRole === option.value
                     ? isDark 
                       ? 'border-purple-400/80 bg-slate-900/80 shadow-lg shadow-purple-500/25'
-                      : 'border-purple-500/80 bg-white/85 shadow-lg shadow-purple-400/25'  // Improved border and shadow contrast
+                      : 'border-purple-500/80 bg-white/85 shadow-lg shadow-purple-400/25'
                     : isDark
                       ? 'border-purple-500/30 bg-slate-900/40 hover:border-purple-400/60 hover:bg-slate-900/60 hover:shadow-purple-500/20'
-                      : 'border-purple-400/40 bg-white/75 hover:border-purple-500/60 hover:bg-white/85 hover:shadow-purple-400/20'  // Improved border and background opacity
+                      : 'border-purple-400/40 bg-white/75 hover:border-purple-500/60 hover:bg-white/85 hover:shadow-purple-400/20'
                 }`}
               >
                 <div className="text-center">
@@ -133,10 +130,10 @@ const UserInputForm: React.FC = () => {
                   </div>
                   <h3 className={`text-lg font-bold mb-2 transition-smooth ${
                     selectedRole === option.value 
-                      ? isDark ? 'text-purple-300' : 'text-purple-700'  // Improved from purple-600 to purple-700
+                      ? isDark ? 'text-purple-300' : 'text-purple-700'
                       : isDark 
                         ? 'text-white group-hover:text-purple-300' 
-                        : 'text-gray-900 group-hover:text-purple-700'   // Improved from purple-600 to purple-700
+                        : 'text-gray-900 group-hover:text-purple-700'
                   }`}>
                     {option.label}
                   </h3>
@@ -161,7 +158,7 @@ const UserInputForm: React.FC = () => {
                 <label className={`flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-smooth cursor-pointer hover:scale-[1.02] ${
                   isDark 
                     ? 'bg-slate-900/40 border-purple-500/30 hover:border-purple-400/60 hover:bg-slate-900/60'
-                    : 'bg-white/75 border-purple-400/40 hover:border-purple-500/60 hover:bg-white/85'  // Improved opacity and border contrast
+                    : 'bg-white/75 border-purple-400/40 hover:border-purple-500/60 hover:bg-white/85'
                 }`}>
                   <input
                     type="checkbox"
@@ -171,13 +168,13 @@ const UserInputForm: React.FC = () => {
                     className={`w-4 h-4 text-purple-500 rounded focus:ring-purple-400 focus:ring-2 focus:ring-offset-0 accent-purple-500 ${
                       isDark 
                         ? 'bg-slate-900/60 border-purple-500/50' 
-                        : 'bg-white border-purple-400/60'  // Improved border contrast from purple-300/50 to purple-400/60
+                        : 'bg-white border-purple-400/60'
                     }`}
                   />
                   <span className={`transition-smooth ${
                     isDark 
                       ? 'text-gray-300 group-hover:text-purple-300' 
-                      : 'text-gray-800 group-hover:text-purple-700'  // Improved from gray-700 to gray-800 and purple-600 to purple-700
+                      : 'text-gray-800 group-hover:text-purple-700'
                   }`}>
                     {feature.label}
                   </span>
@@ -201,38 +198,14 @@ const UserInputForm: React.FC = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
 const LearningPaths: React.FC = memo(() => {
-  const { isDark } = useTheme();
-  const { userProgress } = useRole();
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
-  const [showLearningPath, setShowLearningPath] = React.useState(false);
+  const { isDark } = useTheme()
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
-
-  // Handle smooth transition when persona is selected
-  React.useEffect(() => {
-    if (userProgress.role && !showLearningPath) {
-      // Show learning path immediately
-      setShowLearningPath(true);
-      // Start with transitioning state, then fade in quickly
-      setIsTransitioning(true);
-      
-      // Quick fade-in
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 50);
-    }
-    
-    // Reset states when no role is selected (e.g., after reset)
-    if (!userProgress.role) {
-      setIsTransitioning(false);
-      setShowLearningPath(false);
-    }
-  }, [userProgress.role, showLearningPath]);
+  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
+  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
 
   return (
     <section id="paths" className="py-20 lg:py-32 relative">
@@ -251,41 +224,21 @@ const LearningPaths: React.FC = memo(() => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
-            {userProgress.role ? 'Your' : 'Choose Your'}{' '}
+            Choose Your{' '}
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Learning Path
             </span>
           </h2>
           <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
-            {userProgress.role 
-              ? `Great! You're set up as a ${userProgress.role} engineer. Here's what we recommend next.`
-              : 'Every expert started somewhere. Pick the path that matches your current experience and let us guide you to Sentry mastery.'
-            }
+            Every expert started somewhere. Pick the path that matches your current experience and let us guide you to Sentry mastery.
           </p>
         </div>
 
-        {/* UserInputForm with fade-out animation */}
-        {!userProgress.role && (
-          <div className={`transition-all duration-300 ease-out ${
-            isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
-          }`}>
-            <UserInputForm />
-          </div>
-        )}
-        
-        {/* PersonaPathDisplay with fade-in animation */}
-        {userProgress.role && showLearningPath && (
-          <div className={`transition-all duration-300 ease-out ${
-            isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
-          }`}>
-            <PersonaPathDisplay />
-          </div>
-        )}
+        <UserInputForm />
       </div>
     </section>
-  );
-});
+  )
+})
 
-LearningPaths.displayName = 'LearningPaths';
-
-export default LearningPaths;
+LearningPaths.displayName = 'LearningPaths'
+export default LearningPaths

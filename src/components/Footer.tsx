@@ -1,20 +1,22 @@
-import React, { memo, useMemo } from 'react';
-import { Github, Twitter, Linkedin, ExternalLink } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { getTextClasses } from '../utils/styles';
+'use client'
+
+import React, { memo, useMemo } from 'react'
+import { Github, Twitter, Linkedin, ExternalLink } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getTextClasses } from '@/utils/styles'
 
 const Footer: React.FC = memo(() => {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme()
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
+  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
+  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
   const linkClasses = useMemo(() => 
     `transition-colors duration-200 ${
       isDark 
         ? 'text-gray-300 hover:text-purple-400' 
-        : 'text-gray-700 hover:text-purple-700'  // Improved from gray-600 to gray-700 and purple-600 to purple-700
+        : 'text-gray-700 hover:text-purple-700'
     }`, [isDark]
-  );
+  )
 
   const footerLinks = {
     product: [
@@ -40,13 +42,13 @@ const Footer: React.FC = memo(() => {
       { name: 'Partners', href: '#' },
       { name: 'Careers', href: '#' }
     ]
-  };
+  }
 
   return (
     <footer className={`backdrop-blur-xl border-t ${
       isDark 
         ? 'bg-slate-950/80 border-purple-500/30' 
-        : 'bg-white/80 border-purple-400/40'  // Improved border contrast
+        : 'bg-white/80 border-purple-400/40'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid lg:grid-cols-4 gap-12">
@@ -60,7 +62,6 @@ const Footer: React.FC = memo(() => {
                   src="/logos/sentry-logo.svg" 
                   alt="Sentry Logo" 
                   className="w-12 h-12"
-                  style={{ filter: isDark ? 'invert(1) brightness(1)' : 'brightness(0.1)' }}
                 />
               </div>
               <div>
@@ -106,7 +107,7 @@ const Footer: React.FC = memo(() => {
             </div>
           </div>
 
-          {/* Links Sections */}
+          {/* Product Links */}
           <div>
             <h4 className={`font-semibold mb-6 ${titleClasses}`}>
               Product
@@ -122,6 +123,7 @@ const Footer: React.FC = memo(() => {
             </ul>
           </div>
 
+          {/* Resources Links */}
           <div>
             <h4 className={`font-semibold mb-6 ${titleClasses}`}>
               Resources
@@ -142,6 +144,7 @@ const Footer: React.FC = memo(() => {
             </ul>
           </div>
 
+          {/* Company Links */}
           <div>
             <h4 className={`font-semibold mb-6 ${titleClasses}`}>
               Company
@@ -172,9 +175,8 @@ const Footer: React.FC = memo(() => {
         </div>
       </div>
     </footer>
-  );
-});
+  )
+})
 
-Footer.displayName = 'Footer';
-
-export default Footer;
+Footer.displayName = 'Footer'
+export default Footer

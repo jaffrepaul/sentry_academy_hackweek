@@ -1,21 +1,23 @@
-import React, { memo, useMemo } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
-import { getCardClasses, getTextClasses, getButtonClasses } from '../utils/styles';
-import { stats } from '../data/stats';
+'use client'
+
+import React, { memo, useMemo } from 'react'
+import { TrendingUp, Users, Award, Clock } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getCardClasses, getTextClasses, getButtonClasses } from '@/utils/styles'
 
 interface StatCardProps {
-  icon: any;
-  value: string;
-  label: string;
-  color: string;
+  icon: any
+  value: string
+  label: string
+  color: string
 }
 
 const StatCard: React.FC<StatCardProps> = memo(({ icon: Icon, value, label, color }) => {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme()
 
-  const cardClasses = useMemo(() => getCardClasses(isDark), [isDark]);
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const labelClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
+  const cardClasses = useMemo(() => getCardClasses(isDark), [isDark])
+  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
+  const labelClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
 
   return (
     <div className="group cursor-pointer">
@@ -31,18 +33,45 @@ const StatCard: React.FC<StatCardProps> = memo(({ icon: Icon, value, label, colo
         </div>
       </div>
     </div>
-  );
-});
+  )
+})
 
-StatCard.displayName = 'StatCard';
+StatCard.displayName = 'StatCard'
 
 const StatsSection: React.FC = memo(() => {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme()
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
-  const primaryButtonClasses = useMemo(() => getButtonClasses(isDark, 'primary'), [isDark]);
-  const secondaryButtonClasses = useMemo(() => getButtonClasses(isDark, 'secondary'), [isDark]);
+  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
+  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
+  const primaryButtonClasses = useMemo(() => getButtonClasses(isDark, 'primary'), [isDark])
+  const secondaryButtonClasses = useMemo(() => getButtonClasses(isDark, 'secondary'), [isDark])
+
+  const stats = [
+    { 
+      icon: Users,
+      value: '10K+', 
+      label: 'Active Learners',
+      color: 'bg-gradient-to-r from-blue-500 to-cyan-500'
+    },
+    { 
+      icon: Award,
+      value: '50+', 
+      label: 'Expert-Led Courses',
+      color: 'bg-gradient-to-r from-purple-500 to-violet-500'
+    },
+    { 
+      icon: TrendingUp,
+      value: '95%', 
+      label: 'Success Rate',
+      color: 'bg-gradient-to-r from-green-500 to-emerald-500'
+    },
+    { 
+      icon: Clock,
+      value: '24/7', 
+      label: 'Learning Support',
+      color: 'bg-gradient-to-r from-orange-500 to-red-500'
+    }
+  ]
 
   return (
     <section className="py-20 lg:py-32 relative">
@@ -51,7 +80,7 @@ const StatsSection: React.FC = memo(() => {
           ? 'bg-gradient-to-r from-purple-500/10 to-violet-500/10' 
           : 'bg-gradient-to-r from-purple-200/20 to-pink-200/20'
       }`}></div>
-      <div className={`absolute top-0 right-1/3 w-96 h-96 rounded-full blur-3xl animate-pulse ${
+      <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-3xl ${
         isDark ? 'bg-purple-500/10' : 'bg-purple-300/20'
       }`}></div>
       
@@ -97,9 +126,8 @@ const StatsSection: React.FC = memo(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})
 
-StatsSection.displayName = 'StatsSection';
-
-export default StatsSection;
+StatsSection.displayName = 'StatsSection'
+export default StatsSection

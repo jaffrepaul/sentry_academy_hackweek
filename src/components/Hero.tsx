@@ -1,16 +1,16 @@
-import React, { memo, useMemo } from 'react';
-import { ArrowRight, User, UserCog, Code, Globe, Rocket } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { getTextClasses, scrollToSection } from '../utils/styles';
+'use client'
+
+import React, { memo, useMemo } from 'react'
+import { ArrowRight, User, UserCog, Code, Globe, Rocket } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getTextClasses, scrollToSection } from '@/utils/styles'
 
 const Hero: React.FC = memo(() => {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme()
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
-  const accentClasses = useMemo(() => getTextClasses(isDark, 'accent'), [isDark]);
-
-
+  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
+  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
+  const accentClasses = useMemo(() => getTextClasses(isDark, 'accent'), [isDark])
 
   return (
     <section className="relative py-20 lg:py-32 overflow-hidden">
@@ -105,9 +105,8 @@ const Hero: React.FC = memo(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})
 
-Hero.displayName = 'Hero';
-
-export default Hero;
+Hero.displayName = 'Hero'
+export default Hero

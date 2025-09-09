@@ -1,14 +1,16 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Sun, Moon, Settings } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { getNavLinkClasses, scrollToSection } from '../utils/styles';
+'use client'
+
+import React, { memo, useCallback, useMemo } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import { Menu, X, Sun, Moon, Settings } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getNavLinkClasses, scrollToSection } from '@/utils/styles'
 
 const Header: React.FC = memo(() => {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const { isDark, toggleTheme } = useTheme();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+  const { isDark, toggleTheme } = useTheme()
+  const router = useRouter()
+  const pathname = usePathname()
 
   // Memoize style classes to prevent recalculation
   const headerClasses = useMemo(() => 
@@ -17,57 +19,53 @@ const Header: React.FC = memo(() => {
         ? 'border-purple-500/30 bg-slate-950/90' 
         : 'border-purple-300/30 bg-white/90'
     }`, [isDark]
-  );
+  )
 
-  const navLinkClasses = useMemo(() => getNavLinkClasses(isDark), [isDark]);
+  const navLinkClasses = useMemo(() => getNavLinkClasses(isDark), [isDark])
 
   const themeButtonClasses = useMemo(() => 
     `p-2 rounded-lg transition-smooth transform hover:scale-110 ${
       isDark
         ? 'bg-slate-800/50 hover:bg-slate-700/50 text-yellow-400'
-        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'  // Improved from gray-700 to gray-800 for better contrast
+        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
     }`, [isDark]
-  );
+  )
 
   const handleScrollToSection = useCallback((sectionId: string) => {
-    setIsMenuOpen(false); // Close mobile menu after clicking
+    setIsMenuOpen(false) // Close mobile menu after clicking
     
     // If we're not on the homepage, navigate there first
-    if (location.pathname !== '/') {
-      navigate('/', { replace: false });
-      // Use setTimeout to ensure the page has navigated before scrolling
-      setTimeout(() => {
-        scrollToSection(sectionId);
-      }, 100);
+    if (pathname !== '/') {
+      router.push(`/#${sectionId}`)
     } else {
       // We're already on the homepage, just scroll
-      scrollToSection(sectionId);
+      scrollToSection(sectionId)
     }
-  }, [location.pathname, navigate]);
+  }, [pathname, router])
 
   const toggleMenu = useCallback(() => {
-    setIsMenuOpen(prev => !prev);
-  }, []);
+    setIsMenuOpen(prev => !prev)
+  }, [])
 
   const handleLogoClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    if (location.pathname !== '/') {
-      navigate('/');
+    e.preventDefault()
+    if (pathname !== '/') {
+      router.push('/')
     } else {
       // If we're already on homepage, scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-  }, [location.pathname, navigate]);
+  }, [pathname, router])
 
   const handleAdminClick = useCallback(() => {
-    setIsMenuOpen(false);
-    navigate('/admin');
-  }, [navigate]);
+    setIsMenuOpen(false)
+    router.push('/admin')
+  }, [router])
 
   const handleConceptsClick = useCallback(() => {
-    setIsMenuOpen(false);
-    navigate('/concepts');
-  }, [navigate]);
+    setIsMenuOpen(false)
+    router.push('/concepts')
+  }, [router])
 
   return (
     <header 
@@ -90,7 +88,6 @@ const Header: React.FC = memo(() => {
                 src="/logos/sentry-logo.svg" 
                 alt="Sentry Logo" 
                 className="w-12 h-12"
-                style={{ filter: isDark ? 'invert(1) brightness(1)' : 'brightness(0.1)' }}
               />
             </div>
             <div className="text-left">
@@ -199,43 +196,42 @@ const Header: React.FC = memo(() => {
                 href="https://sentry-build.sentry.dev/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className={navLinkClasses}
+                className={`${navLinkClasses} text-left`}
+                onClick={() => setIsMenuOpen(false)}
               >
                 Workshops
               </a>
-              <button
-                onClick={handleAdminClick}
-                className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
-                  isDark
-                    ? 'bg-slate-800/50 hover:bg-slate-700/50 text-purple-400'
-                    : 'bg-gray-100 hover:bg-gray-200 text-purple-600'
-                }`}
-              >
-                <Settings className="w-5 h-5" />
-                <span>Admin</span>
-              </button>
-              <button
-                onClick={toggleTheme}
-                className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
-                  isDark
-                    ? 'bg-slate-800/50 hover:bg-slate-700/50 text-yellow-400'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                }`}
-              >
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-              </button>
-              <button className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium mt-2 shadow-lg shadow-purple-500/25">
-                Get Started
-              </button>
+              <div className="flex items-center space-x-3 pt-3 border-t border-purple-500/20">
+                <button
+                  onClick={handleAdminClick}
+                  className={`p-2 rounded-lg transition-smooth ${
+                    isDark
+                      ? 'bg-slate-800/50 hover:bg-slate-700/50 text-purple-400'
+                      : 'bg-gray-100 hover:bg-gray-200 text-purple-600'
+                  }`}
+                >
+                  <Settings className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={toggleTheme}
+                  className={themeButtonClasses}
+                >
+                  {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
+                <button 
+                  className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Get Started
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
     </header>
-  );
-});
+  )
+})
 
-Header.displayName = 'Header';
-
-export default Header;
+Header.displayName = 'Header'
+export default Header

@@ -1,12 +1,30 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Clock, Trophy, ChevronRight, Star } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { getCardClasses, getTextClasses, getButtonClasses } from '../utils/styles';
-import { getAllCourses, type Course } from '../data/courses';
+'use client'
 
-const CourseCard: React.FC<Course> = memo(({ 
+import React, { memo, useCallback, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import { Clock, Trophy, ChevronRight, Star } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getCardClasses, getTextClasses, getButtonClasses } from '@/utils/styles'
+
+interface Course {
+  id: number
+  slug: string
+  title: string
+  description: string
+  duration: string
+  level: string
+  rating: number
+  students: number
+  category: string
+  isPopular?: boolean
+  difficulty?: string
+}
+
+interface CourseCardProps extends Course {}
+
+const CourseCard: React.FC<CourseCardProps> = memo(({ 
   id,
+  slug,
   title, 
   description, 
   duration, 
@@ -16,16 +34,17 @@ const CourseCard: React.FC<Course> = memo(({
   category,
   isPopular = false
 }) => {
-  const { isDark } = useTheme();
-  const navigate = useNavigate();
+  const { isDark } = useTheme()
+  const router = useRouter()
 
   const handleCardClick = useCallback(() => {
-    if (id) {
-      navigate(`/course/${id}`, { state: { from: 'course-grid' } });
+    if (slug) {
+      router.push(`/courses/${slug}`)
     }
-  }, [id, navigate]);
+  }, [slug, router])
 
-  const cardClasses = useMemo(() => getCardClasses(isDark), [isDark]);
+  const cardClasses = useMemo(() => getCardClasses(isDark), [isDark])
+  
   return (
     <div className="group cursor-pointer relative transition-smooth hover:scale-[1.02]" onClick={handleCardClick}>
       {isPopular && (
@@ -51,7 +70,7 @@ const CourseCard: React.FC<Course> = memo(({
           </div>
         </div>
 
-        <h3 className={`text-xl font-bold mb-3 transition-smooth ${getTextClasses(isDark, 'primary')} group-hover:${getTextClasses(isDark, 'accent')} group-hover:translate-x-1`}>
+        <h3 className={`text-xl font-bold mb-3 transition-smooth ${getTextClasses(isDark, 'primary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')} group-hover:translate-x-1`}>
           {title}
         </h3>
 
@@ -79,21 +98,26 @@ const CourseCard: React.FC<Course> = memo(({
           <span className={`font-medium transition-colors ${getTextClasses(isDark, 'accent')}`}>
             Start Course
           </span>
-          <ChevronRight className={`w-5 h-5 group-hover:translate-x-2 transition-smooth ${getTextClasses(isDark, 'secondary')} group-hover:${getTextClasses(isDark, 'accent')}`} />
+          <ChevronRight className={`w-5 h-5 group-hover:translate-x-2 transition-smooth ${getTextClasses(isDark, 'secondary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')}`} />
         </div>
       </div>
     </div>
-  );
-});
+  )
+})
 
-CourseCard.displayName = 'CourseCard';
+CourseCard.displayName = 'CourseCard'
 
-const CourseGrid: React.FC = memo(() => {
-  const { isDark } = useTheme();
+interface CourseGridProps {
+  courses: Course[]
+  showFilters?: boolean
+}
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
-  const buttonClasses = useMemo(() => getButtonClasses(isDark, 'secondary'), [isDark]);
+const CourseGrid: React.FC<CourseGridProps> = memo(({ courses, showFilters = false }) => {
+  const { isDark } = useTheme()
+
+  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
+  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
+  const buttonClasses = useMemo(() => getButtonClasses(isDark, 'secondary'), [isDark])
 
   return (
     <section id="courses" className="py-20 lg:py-32 relative">
@@ -111,7 +135,7 @@ const CourseGrid: React.FC = memo(() => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {getAllCourses().map((course) => (
+          {courses.map((course) => (
             <CourseCard key={course.id} {...course} />
           ))}
         </div>
@@ -123,9 +147,8 @@ const CourseGrid: React.FC = memo(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})
 
-CourseGrid.displayName = 'CourseGrid';
-
-export default CourseGrid;
+CourseGrid.displayName = 'CourseGrid'
+export default CourseGrid
