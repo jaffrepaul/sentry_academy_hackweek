@@ -27,7 +27,11 @@ const NavigationLinks: React.FC<NavigationLinksProps> = memo(({
     
     // If we're not on the homepage, navigate there first
     if (window.location.pathname !== '/') {
-      router.push(`/#${sectionId}`)
+      router.push('/')
+      // After navigation, wait and scroll to section
+      setTimeout(() => {
+        scrollToSection(sectionId)
+      }, 200)
     } else {
       // We're already on the homepage, just scroll
       scrollToSection(sectionId)

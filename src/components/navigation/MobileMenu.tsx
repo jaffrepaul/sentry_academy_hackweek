@@ -55,7 +55,27 @@ const MobileMenu: React.FC<MobileMenuProps> = memo(({ isOpen, onClose }) => {
             <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
           </div>
           
-          <button className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium mt-2 shadow-lg shadow-purple-500/25">
+          <button 
+            onClick={() => {
+              onClose()
+              // Scroll to learning paths section to get started  
+              if (window.location.pathname !== '/') {
+                router.push('/')
+                setTimeout(() => {
+                  const element = document.getElementById('paths')
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }, 200)
+              } else {
+                const element = document.getElementById('paths')
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' })
+                }
+              }
+            }}
+            className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium mt-2 shadow-lg shadow-purple-500/25"
+          >
             Get Started
           </button>
         </div>

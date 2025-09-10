@@ -34,7 +34,26 @@ const DesktopNavigation: React.FC = memo(() => {
       
       <ThemeToggle />
       
-      <button className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40">
+      <button 
+        onClick={() => {
+          // Scroll to learning paths section to get started
+          if (window.location.pathname !== '/') {
+            router.push('/')
+            setTimeout(() => {
+              const element = document.getElementById('paths')
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' })
+              }
+            }, 200)
+          } else {
+            const element = document.getElementById('paths')
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' })
+            }
+          }
+        }}
+        className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+      >
         Get Started
       </button>
     </nav>

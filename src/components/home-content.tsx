@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
-import { getBackgroundStyle } from '@/utils/styles'
+import { getBackgroundStyle, handleHashNavigation } from '@/utils/styles'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import CourseGrid from '@/components/CourseGrid'
@@ -58,6 +58,11 @@ const HomePageContent = ({ courses }: HomeContentProps) => {
 
 export default function HomeContent({ courses }: HomeContentProps) {
   const { isDark } = useTheme()
+
+  // Handle hash fragments for direct URLs like /#courses
+  useEffect(() => {
+    handleHashNavigation(window.location.hash)
+  }, [])
 
   // Memoize background styles to prevent recalculation on every render
   const backgroundStyle = useMemo(() => getBackgroundStyle(isDark), [isDark])

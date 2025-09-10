@@ -39,15 +39,28 @@ export const getNavLinkClasses = (isDark: boolean) =>
       : 'text-gray-800 hover:text-purple-700'  // Improved from gray-700 to gray-800 and purple-600 to purple-700
   }`;
 
-export const scrollToSection = (sectionId: string) => {
+export const scrollToSection = (sectionId: string, smooth: boolean = true) => {
   const element = document.getElementById(sectionId);
   if (element) {
-    const elementPosition = element.offsetTop;
-    const offsetPosition = elementPosition;
+    // Account for fixed header height (80px) plus some padding
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - headerOffset;
 
     window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
+      top: Math.max(0, offsetPosition),
+      behavior: smooth ? 'smooth' : 'auto'
     });
+  }
+};
+
+// Utility function to handle hash navigation for App Router
+export const handleHashNavigation = (hash: string, delay: number = 500) => {
+  if (hash) {
+    const sectionId = hash.startsWith('#') ? hash.substring(1) : hash;
+    // Wait for the page to fully load before scrolling
+    setTimeout(() => {
+      scrollToSection(sectionId);
+    }, delay);
   }
 };

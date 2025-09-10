@@ -131,6 +131,7 @@ const PersonaPathDisplay: React.FC = () => {
   }
 
   const handleStartModule = (moduleId: string) => {
+    // Navigate to the course detail page using the module slug
     router.push(`/courses/${moduleId}`);
   };
 

@@ -1,11 +1,13 @@
 'use server'
 
+import { cache } from 'react'
 import { db } from '@/lib/db'
 import { courses, learningPaths, courseModules } from '@/lib/db/schema'
 import { eq, like, and, desc } from 'drizzle-orm'
 import { CourseFilters } from '@/types/api'
 
-export async function getCourses(filters: CourseFilters & { limit?: number } = {}) {
+// Cached version of course fetching for better performance
+export const getCourses = cache(async (filters: CourseFilters & { limit?: number } = {}) => {
   try {
     const query = db
       .select()
@@ -27,11 +29,12 @@ export async function getCourses(filters: CourseFilters & { limit?: number } = {
     return await query.execute()
   } catch (error) {
     console.error('Error fetching courses:', error)
-    return []
+    throw new Error('Failed to fetch courses')
   }
-}
+})
 
-export async function getCourseBySlug(slug: string) {
+// Cached version of single course fetching
+export const getCourseBySlug = cache(async (slug: string) => {
   try {
     const course = await db
       .select()
@@ -42,11 +45,12 @@ export async function getCourseBySlug(slug: string) {
     return course[0] || null
   } catch (error) {
     console.error('Error fetching course:', error)
-    return null
+    throw new Error(`Failed to fetch course: ${slug}`)
   }
-}
+})
 
-export async function getCourseModules(courseId: number) {
+// Cached course modules fetching
+export const getCourseModules = cache(async (courseId: number) => {
   try {
     return await db
       .select()
@@ -55,11 +59,12 @@ export async function getCourseModules(courseId: number) {
       .orderBy(courseModules.order)
   } catch (error) {
     console.error('Error fetching course modules:', error)
-    return []
+    throw new Error(`Failed to fetch modules for course: ${courseId}`)
   }
-}
+})
 
-export async function getLearningPaths() {
+// Cached learning paths fetching
+export const getLearningPaths = cache(async () => {
   try {
     return await db
       .select()
@@ -67,12 +72,12 @@ export async function getLearningPaths() {
       .orderBy(learningPaths.title)
   } catch (error) {
     console.error('Error fetching learning paths:', error)
-    return []
+    throw new Error('Failed to fetch learning paths')
   }
-}
+})
 
-// Mock data functions (temporary until database is set up)
-export async function getMockCourses(filters: CourseFilters & { limit?: number } = {}) {
+// Cached mock data functions (temporary until database is set up)
+export const getMockCourses = cache(async (filters: CourseFilters & { limit?: number } = {}) => {
   const mockCourses = [
     {
       id: 1,
@@ -314,4 +319,10 @@ export async function getMockCourses(filters: CourseFilters & { limit?: number }
   }
   
   return filtered
-}
+})
+
+// Export a function to get a single course by slug for the mock data
+export const getMockCourseBySlug = cache(async (slug: string) => {
+  const courses = await getMockCourses()
+  return courses.find(course => course.slug === slug) || null
+})
