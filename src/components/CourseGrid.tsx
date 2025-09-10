@@ -55,7 +55,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
         </div>
       )}
       
-      <div className={`${cardClasses} p-6 h-full transition-smooth group-hover:shadow-2xl`}>
+      <div className={`${cardClasses} p-6 h-full group-hover:shadow-2xl`}>
         <div className="flex items-center justify-between mb-4">
           <span className={`text-xs font-medium uppercase tracking-wider px-2 py-1 rounded-full ${
             isDark 
@@ -70,7 +70,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
           </div>
         </div>
 
-        <h3 className={`text-xl font-bold mb-3 transition-smooth ${getTextClasses(isDark, 'primary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')} group-hover:translate-x-1`}>
+        <h3 className={`text-xl font-bold mb-3 transition-all duration-300 ease-out ${getTextClasses(isDark, 'primary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')} group-hover:translate-x-1`}>
           {title}
         </h3>
 
@@ -98,7 +98,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
           <span className={`font-medium transition-colors ${getTextClasses(isDark, 'accent')}`}>
             Start Course
           </span>
-          <ChevronRight className={`w-5 h-5 group-hover:translate-x-2 transition-smooth ${getTextClasses(isDark, 'secondary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')}`} />
+          <ChevronRight className={`w-5 h-5 group-hover:translate-x-2 transition-all duration-300 ease-out ${getTextClasses(isDark, 'secondary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')}`} />
         </div>
       </div>
     </div>

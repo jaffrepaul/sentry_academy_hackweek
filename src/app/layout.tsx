@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { RoleProvider } from '@/contexts/RoleContext'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <ThemeProvider>
-          {children}
+          <RoleProvider>
+            {children}
+          </RoleProvider>
         </ThemeProvider>
       </body>
     </html>

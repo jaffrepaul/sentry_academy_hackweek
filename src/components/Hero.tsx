@@ -3,7 +3,7 @@
 import React, { memo, useMemo } from 'react'
 import { ArrowRight, User, UserCog, Code, Globe, Rocket } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
-import { getTextClasses, scrollToSection } from '@/utils/styles'
+import { getTextClasses, getCardClasses, scrollToSection } from '@/utils/styles'
 
 const Hero: React.FC = memo(() => {
   const { isDark } = useTheme()
@@ -44,13 +44,11 @@ const Hero: React.FC = memo(() => {
 
           {/* Path Selection Cards */}
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
-            <div className="group cursor-pointer" onClick={() => scrollToSection('courses')}>
-              <div className={`backdrop-blur-sm border rounded-2xl p-8 transition-smooth transform hover:scale-105 hover:shadow-2xl ${
-                isDark 
-                  ? 'bg-slate-900/60 border-purple-500/40 hover:border-purple-400/70 hover:bg-slate-900/80 hover:shadow-purple-500/30'
-                  : 'bg-white/60 border-purple-300/40 hover:border-purple-400/70 hover:bg-white/80 hover:shadow-purple-300/30'
+            <div className="group cursor-pointer relative transition-smooth hover:scale-[1.02]" onClick={() => scrollToSection('courses')}>
+              <div className={`${getCardClasses(isDark)} p-8 h-full group-hover:shadow-2xl ${
+                isDark ? 'group-hover:shadow-purple-500/25' : 'group-hover:shadow-purple-400/25'
               }`}>
-                <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:rotate-6 transition-smooth">
+                <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-xl flex items-center justify-center mb-6 mx-auto transition-all duration-500 ease-out group-hover:scale-105 group-hover:rotate-6">
                   <User className="w-8 h-8 text-white" />
                 </div>
                 <h3 className={`text-2xl font-bold mb-4 ${titleClasses}`}>
@@ -60,18 +58,16 @@ const Hero: React.FC = memo(() => {
                   Start from the basics. Learn what Sentry is, how to set it up, and why error monitoring matters for your applications.
                 </p>
                 <div className={`inline-flex items-center transition-colors ${accentClasses}`}>
-                  Start Learning <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-smooth" />
+                  Start Learning <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-all duration-300 ease-out" />
                 </div>
               </div>
             </div>
 
-            <div className="group cursor-pointer" onClick={() => scrollToSection('paths')}>
-              <div className={`backdrop-blur-sm border rounded-2xl p-8 transition-smooth transform hover:scale-105 hover:shadow-2xl ${
-                isDark 
-                  ? 'bg-slate-900/60 border-purple-500/40 hover:border-purple-400/70 hover:bg-slate-900/80 hover:shadow-purple-500/30'
-                  : 'bg-white/60 border-purple-300/40 hover:border-purple-400/70 hover:bg-white/80 hover:shadow-purple-300/30'
+            <div className="group cursor-pointer relative transition-smooth hover:scale-[1.02]" onClick={() => scrollToSection('paths')}>
+              <div className={`${getCardClasses(isDark)} p-8 h-full group-hover:shadow-2xl ${
+                isDark ? 'group-hover:shadow-purple-500/25' : 'group-hover:shadow-purple-400/25'
               }`}>
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-violet-500 rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:rotate-6 transition-smooth">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-violet-500 rounded-xl flex items-center justify-center mb-6 mx-auto transition-all duration-500 ease-out group-hover:scale-105 group-hover:rotate-6">
                   <UserCog className="w-8 h-8 text-white" />
                 </div>
                 <h3 className={`text-2xl font-bold mb-4 ${titleClasses}`}>
@@ -81,7 +77,7 @@ const Hero: React.FC = memo(() => {
                   Already using Sentry? Level up with advanced features, performance monitoring, and enterprise-grade workflows.
                 </p>
                 <div className={`inline-flex items-center transition-colors ${accentClasses}`}>
-                  Advanced Courses <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-smooth" />
+                  Advanced Courses <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-all duration-300 ease-out" />
                 </div>
               </div>
             </div>

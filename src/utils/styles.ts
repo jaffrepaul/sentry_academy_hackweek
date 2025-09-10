@@ -1,9 +1,9 @@
 // Style utility functions for consistent theming
-import { backgroundOption4 } from './backgroundOptions'; // or 3, 4, 5
+import { backgroundOption4 } from './utils/backgroundOptions'; // or 3, 4, 5
 export const getBackgroundStyle = backgroundOption4;
 
 export const getCardClasses = (isDark: boolean, isHover = true) => 
-  `backdrop-blur-sm border rounded-2xl transition-all duration-500 ease-out ${
+  `backdrop-blur-sm border rounded-2xl transition-all duration-300 ease-out ${
     isHover ? 'transform hover:scale-105 hover:shadow-xl' : ''          
   } ${
     isDark 
@@ -22,7 +22,7 @@ export const getTextClasses = (isDark: boolean, variant: 'primary' | 'secondary'
 
 export const getButtonClasses = (isDark: boolean, variant: 'primary' | 'secondary' = 'primary') => {
   if (variant === 'primary') {
-    return 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:from-purple-600 hover:to-violet-700 transition-all duration-300 ease-out transform hover:scale-105 shadow-lg hover:shadow-purple-500/30';
+    return 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg hover:shadow-purple-500/30';
   }
   
   return `backdrop-blur-sm border transition-all duration-300 ease-out shadow-lg ${

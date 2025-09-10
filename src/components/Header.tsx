@@ -80,7 +80,7 @@ const Header: React.FC = memo(() => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <button onClick={handleLogoClick} className="flex items-center space-x-3 hover:opacity-80 transition-smooth transform hover:scale-105">
+          <button onClick={handleLogoClick} className="flex items-center space-x-3">
             <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
               isDark ? 'text-white' : 'text-gray-900'
             }`}>
@@ -204,24 +204,27 @@ const Header: React.FC = memo(() => {
               <div className="flex items-center space-x-3 pt-3 border-t border-purple-500/20">
                 <button
                   onClick={handleAdminClick}
-                  className={`p-2 rounded-lg transition-smooth ${
-                    isDark
-                      ? 'bg-slate-800/50 hover:bg-slate-700/50 text-purple-400'
-                      : 'bg-gray-100 hover:bg-gray-200 text-purple-600'
-                  }`}
+                className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
+                  isDark
+                    ? 'bg-slate-800/50 hover:bg-slate-700/50 text-purple-400'
+                    : 'bg-gray-100 hover:bg-gray-200 text-purple-600'
+                }`}
                 >
                   <Settings className="w-5 h-5" />
+                  <span>Admin</span>
                 </button>
                 <button
                   onClick={toggleTheme}
-                  className={themeButtonClasses}
+                  className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
+                    isDark
+                      ? 'bg-slate-800/50 hover:bg-slate-700/50 text-yellow-400'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                  }`}
                 >
                   {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
-                <button 
-                  className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                <button className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-lg font-medium mt-2 shadow-lg shadow-purple-500/25">
                   Get Started
                 </button>
               </div>

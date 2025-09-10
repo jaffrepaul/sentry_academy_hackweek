@@ -1,13 +1,4 @@
 // Re-export database types for easy importing
-import type {
-  User,
-  Course,
-  LearningPath,
-  UserProgress,
-  AIGeneratedContent,
-  CourseModule
-} from '@/lib/db/schema'
-
 export type {
   User,
   Course,
@@ -15,7 +6,7 @@ export type {
   UserProgress,
   AIGeneratedContent,
   CourseModule
-}
+} from '@/lib/db/schema'
 
 // Additional types for API responses
 export interface CourseWithModules extends Course {

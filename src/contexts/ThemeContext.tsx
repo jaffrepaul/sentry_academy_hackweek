@@ -50,7 +50,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (wrapper) {
       const backgroundStyle = getBackgroundStyle(isDark)
       Object.assign(wrapper.style, backgroundStyle)
-      wrapper.className = `min-h-screen transition-all duration-500 ease-out ${
+      wrapper.className = `min-h-screen transition-smooth-slow ${
         isDark ? 'text-white' : 'text-gray-900'
       }`
     }

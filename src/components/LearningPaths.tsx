@@ -3,7 +3,10 @@
 import React, { memo, useMemo } from 'react'
 import { ArrowRight, User, Code, Server, Settings, BarChart, Layers, Bot } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useRole } from '@/contexts/RoleContext'
 import { getTextClasses } from '@/utils/styles'
+import PersonaPathDisplay from './PersonaPathDisplay'
+import { EngineerRole } from '@/types/roles'
 
 const UserInputForm: React.FC = () => {
   const { isDark } = useTheme()
@@ -19,12 +22,14 @@ const UserInputForm: React.FC = () => {
     )
   }
 
+  const { setUserRole } = useRole()
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (selectedRole) {
+      setUserRole(selectedRole as EngineerRole, selectedFeatures)
       console.log('Selected role:', selectedRole)
       console.log('Selected features:', selectedFeatures)
-      // Here would integrate with RoleContext in full restoration
     }
   }
 
@@ -94,7 +99,7 @@ const UserInputForm: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {roleOptions.map((option) => (
-            <div key={option.value} className="group cursor-pointer">
+            <div key={option.value} className="group cursor-pointer relative transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1">
               <input
                 type="radio"
                 id={option.value}
@@ -106,7 +111,7 @@ const UserInputForm: React.FC = () => {
               />
               <label
                 htmlFor={option.value}
-                className={`block backdrop-blur-sm border rounded-2xl p-6 transition-smooth transform hover:scale-105 hover:shadow-xl cursor-pointer ${
+                className={`block backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer ${
                   selectedRole === option.value
                     ? isDark 
                       ? 'border-purple-400/80 bg-slate-900/80 shadow-lg shadow-purple-500/25'
@@ -117,7 +122,7 @@ const UserInputForm: React.FC = () => {
                 }`}
               >
                 <div className="text-center">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-smooth ${
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-all duration-300 ${
                     selectedRole === option.value
                       ? 'bg-gradient-to-r from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30'
                       : 'bg-gradient-to-r from-purple-400/20 to-violet-500/20 group-hover:from-purple-400/30 group-hover:to-violet-500/30'
@@ -128,16 +133,22 @@ const UserInputForm: React.FC = () => {
                       {option.icon}
                     </div>
                   </div>
-                  <h3 className={`text-lg font-bold mb-2 transition-smooth ${
+                  <h3 className={`text-lg font-bold mb-2 transition-all duration-300 ${
                     selectedRole === option.value 
                       ? isDark ? 'text-purple-300' : 'text-purple-700'
                       : isDark 
-                        ? 'text-white group-hover:text-purple-300' 
-                        : 'text-gray-900 group-hover:text-purple-700'
+                        ? 'text-white group-hover:text-purple-200' 
+                        : 'text-gray-900 group-hover:text-purple-800'
                   }`}>
                     {option.label}
                   </h3>
-                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
+                  <p className={`text-sm transition-all duration-300 ${
+                    selectedRole === option.value 
+                      ? isDark ? 'text-gray-300' : 'text-gray-600'
+                      : isDark 
+                        ? 'text-gray-400 group-hover:text-gray-300' 
+                        : 'text-gray-700 group-hover:text-gray-600'
+                  }`}>
                     {option.description}
                   </p>
                 </div>
@@ -155,7 +166,7 @@ const UserInputForm: React.FC = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {sentryFeatures.map((feature) => (
               <div key={feature.value} className="group">
-                <label className={`flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-smooth cursor-pointer hover:scale-[1.02] ${
+                <label className={`flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-all duration-300 cursor-pointer hover:scale-[1.02] ${
                   isDark 
                     ? 'bg-slate-900/40 border-purple-500/30 hover:border-purple-400/60 hover:bg-slate-900/60'
                     : 'bg-white/75 border-purple-400/40 hover:border-purple-500/60 hover:bg-white/85'
@@ -171,7 +182,7 @@ const UserInputForm: React.FC = () => {
                         : 'bg-white border-purple-400/60'
                     }`}
                   />
-                  <span className={`transition-smooth ${
+                  <span className={`transition-all duration-300 ${
                     isDark 
                       ? 'text-gray-300 group-hover:text-purple-300' 
                       : 'text-gray-800 group-hover:text-purple-700'
@@ -190,10 +201,10 @@ const UserInputForm: React.FC = () => {
             disabled={!selectedRole}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="group bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-xl font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg hover:shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:from-purple-500 disabled:hover:to-violet-600 inline-flex items-center space-x-2"
+            className="group bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-xl font-medium hover:from-purple-600 hover:to-violet-700 transition-all duration-300 ease-out transform hover:scale-105 shadow-lg hover:shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:from-purple-500 disabled:hover:to-violet-600 inline-flex items-center space-x-2"
           >
             <span>Get My Personalized Path</span>
-            <ArrowRight className={`w-5 h-5 transition-smooth ${isHovered && selectedRole ? 'translate-x-2' : ''}`} />
+            <ArrowRight className={`w-5 h-5 transition-all duration-300 ease-out ${isHovered && selectedRole ? 'translate-x-2' : ''}`} />
           </button>
         </div>
       </form>
@@ -201,11 +212,29 @@ const UserInputForm: React.FC = () => {
   )
 }
 
+
 const LearningPaths: React.FC = memo(() => {
   const { isDark } = useTheme()
+  const { userProgress } = useRole()
 
   const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
   const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
+
+  // Jump directly to learning path when persona is selected (no animation)
+  React.useEffect(() => {
+    if (userProgress.role) {
+      // Use setTimeout with 0 to ensure DOM is updated first, then jump immediately
+      setTimeout(() => {
+        const pathsSection = document.getElementById('paths')
+        if (pathsSection) {
+          pathsSection.scrollIntoView({ 
+            behavior: 'auto', // Instant, no animation
+            block: 'start' 
+          })
+        }
+      }, 0)
+    }
+  }, [userProgress.role])
 
   return (
     <section id="paths" className="py-20 lg:py-32 relative">
@@ -224,17 +253,20 @@ const LearningPaths: React.FC = memo(() => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
-            Choose Your{' '}
+            {userProgress.role ? 'Your' : 'Choose Your'}{' '}
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Learning Path
             </span>
           </h2>
           <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
-            Every expert started somewhere. Pick the path that matches your current experience and let us guide you to Sentry mastery.
+            {userProgress.role 
+              ? `Great! You're set up as a ${userProgress.role} engineer. Here's what we recommend next.`
+              : 'Every expert started somewhere. Pick the path that matches your current experience and let us guide you to Sentry mastery.'
+            }
           </p>
         </div>
 
-        <UserInputForm />
+        {userProgress.role ? <PersonaPathDisplay /> : <UserInputForm />}
       </div>
     </section>
   )
