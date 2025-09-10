@@ -61,7 +61,8 @@ const Footer: React.FC = memo(() => {
                 <img 
                   src="/logos/sentry-logo.svg" 
                   alt="Sentry Logo" 
-                  className="w-12 h-12"
+                  className={`w-12 h-12 ${isDark ? 'filter invert brightness-0' : ''}`}
+                  style={{ filter: isDark ? 'invert(1) brightness(2)' : 'none' }}
                 />
               </div>
               <div>
