@@ -8,8 +8,11 @@ import { getMockCourses } from '@/lib/actions/course-actions'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Clock, Star, Users, Trophy, CheckCircle, Circle, Code, FileText, Lightbulb, Monitor, Github, ArrowRight } from 'lucide-react'
 import { Arcade } from '@/components/Arcade'
+import StructuredData from '@/components/StructuredData'
+import { generateCourseStructuredData, generateBreadcrumbStructuredData } from '@/lib/seo'
 
 // Course modules data based on course type
 const getCourseModules = (slug: string) => {
@@ -448,8 +451,31 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
     }, 50)
   }, [course.slug])
 
+  const breadcrumbItems = [
+    { name: 'Home', url: '/' },
+    { name: 'Courses', url: '/courses' },
+    { name: course.title, url: `/courses/${course.slug}` }
+  ]
+
+  const courseStructuredData = generateCourseStructuredData({
+    id: course.id,
+    title: course.title,
+    description: course.description,
+    duration: course.duration,
+    level: course.difficulty || course.level,
+    category: course.category,
+    rating: course.rating,
+    reviewCount: course.reviews?.length
+  })
+
   return (
     <div className="min-h-screen pt-20">
+      <StructuredData 
+        data={[
+          courseStructuredData,
+          generateBreadcrumbStructuredData(breadcrumbItems)
+        ]} 
+      />
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -739,9 +765,11 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
                             ? 'bg-slate-800/50 border border-slate-700/50' 
                             : 'bg-gray-50 border border-gray-200'
                         }`}>
-                          <img 
+                          <Image 
                             src={isDark ? "/logos/rootly-logo-light.svg" : "/logos/rootly-logo.svg"}
                             alt="Rootly Logo" 
+                            width={120}
+                            height={24}
                             className="h-6 w-auto"
                           />
                         </div>

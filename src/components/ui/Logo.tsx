@@ -3,6 +3,7 @@
 import React, { memo, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from '@/contexts/ThemeContext'
+import Image from 'next/image'
 
 const Logo: React.FC = memo(() => {
   const { isDark } = useTheme()
@@ -28,11 +29,14 @@ const Logo: React.FC = memo(() => {
       <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
         isDark ? 'text-white' : 'text-gray-900'
       }`}>
-        <img 
+        <Image 
           src="/logos/sentry-logo.svg" 
           alt="Sentry Logo" 
+          width={48}
+          height={48}
           className={`w-12 h-12 ${isDark ? 'filter invert brightness-0' : ''}`}
           style={{ filter: isDark ? 'invert(1) brightness(2)' : 'none' }}
+          priority
         />
       </div>
       <div className="text-left">

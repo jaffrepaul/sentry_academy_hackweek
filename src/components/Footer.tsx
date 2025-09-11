@@ -4,6 +4,7 @@ import React, { memo, useMemo } from 'react'
 import { Github, Twitter, Linkedin, ExternalLink } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { getTextClasses } from '@/utils/styles'
+import Image from 'next/image'
 
 const Footer: React.FC = memo(() => {
   const { isDark } = useTheme()
@@ -58,9 +59,11 @@ const Footer: React.FC = memo(() => {
               <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                 isDark ? 'text-white' : 'text-gray-900'
               }`}>
-                <img 
+                <Image 
                   src="/logos/sentry-logo.svg" 
                   alt="Sentry Logo" 
+                  width={48}
+                  height={48}
                   className={`w-12 h-12 ${isDark ? 'filter invert brightness-0' : ''}`}
                   style={{ filter: isDark ? 'invert(1) brightness(2)' : 'none' }}
                 />

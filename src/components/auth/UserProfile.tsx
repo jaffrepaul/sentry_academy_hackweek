@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { User, Star, BookOpen, Award } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
+import Image from 'next/image'
 
 export default function UserProfile() {
   const { data: session } = useSession()
@@ -22,9 +23,11 @@ export default function UserProfile() {
         {/* Profile Image */}
         <div className="relative">
           {session.user?.image ? (
-            <img
+            <Image
               src={session.user.image}
               alt={session.user.name || 'User'}
+              width={64}
+              height={64}
               className="w-16 h-16 rounded-full"
             />
           ) : (

@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { SessionProvider } from 'next-auth/react'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { RoleProvider } from '@/contexts/RoleContext'
 import ErrorBoundary from './ErrorBoundary'
@@ -32,13 +33,15 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <ErrorBoundary onError={handleProviderError}>
-      <ThemeProvider>
-        <ErrorBoundary onError={handleProviderError}>
-          <RoleProvider>
-            {children}
-          </RoleProvider>
-        </ErrorBoundary>
-      </ThemeProvider>
+      <SessionProvider>
+        <ThemeProvider>
+          <ErrorBoundary onError={handleProviderError}>
+            <RoleProvider>
+              {children}
+            </RoleProvider>
+          </ErrorBoundary>
+        </ThemeProvider>
+      </SessionProvider>
     </ErrorBoundary>
   )
 }

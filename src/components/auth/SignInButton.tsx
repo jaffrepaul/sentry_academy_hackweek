@@ -3,6 +3,7 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { LogIn, LogOut, User } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
+import Image from 'next/image'
 
 export default function SignInButton() {
   const { data: session, status } = useSession()
@@ -22,9 +23,11 @@ export default function SignInButton() {
         {/* User Profile */}
         <div className="flex items-center space-x-2">
           {session.user?.image ? (
-            <img
+            <Image
               src={session.user.image}
               alt={session.user.name || 'User'}
+              width={32}
+              height={32}
               className="w-8 h-8 rounded-full"
             />
           ) : (

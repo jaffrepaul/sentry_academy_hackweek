@@ -1,25 +1,10 @@
 import type { Metadata } from 'next'
 import { Providers } from '@/components/providers'
+import StructuredData from '@/components/StructuredData'
+import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData } from '@/lib/seo'
 import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'Sentry Academy',
-  description: 'Learn application monitoring and error tracking with Sentry',
-  keywords: ['Sentry', 'error monitoring', 'application observability', 'performance monitoring'],
-  authors: [{ name: 'Sentry Academy Team' }],
-  creator: 'Sentry Academy',
-  publisher: 'Sentry',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
-}
+export const metadata: Metadata = generateSEO()
 
 export default function RootLayout({
   children,
@@ -28,6 +13,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <StructuredData 
+          data={[
+            generateOrganizationStructuredData(),
+            generateWebsiteStructuredData()
+          ]} 
+        />
+      </head>
       <body className="antialiased">
         <Providers>
           {children}

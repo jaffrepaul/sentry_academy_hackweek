@@ -1,6 +1,19 @@
 # Sentry Academy
 
-A feature adoption engine disguised as a learning platform experience. Sentry Academy strategically guides current Sentry users beyond basic error tracking to discover and implement advanced features, ultimately accelerating their time-to-value and increasing product adoption.
+A modern, feature-rich learning platform built with Next.js 15 App Router. Sentry Academy strategically guides current Sentry users beyond basic error tracking to discover and implement advanced features, ultimately accelerating their time-to-value and increasing product adoption.
+
+## ✨ What's New in the Modernized Version
+
+This application has been completely modernized with:
+
+- **⚡ Next.js 15 App Router** - Server components, streaming, and enhanced performance
+- **🗄️ Neon Postgres Database** - Cloud-native serverless database with Drizzle ORM
+- **🔐 NextAuth.js Authentication** - Secure, role-based authentication system
+- **🎨 Enhanced UI/UX** - Improved responsive design with Tailwind CSS
+- **📱 Image Optimization** - Next.js Image component for better performance
+- **🔍 Advanced SEO** - Dynamic meta tags, structured data, and Open Graph support
+- **📊 Performance Optimizations** - Code splitting, dynamic imports, and bundle optimization
+- **🛠️ Modern Development** - TypeScript strict mode, ESLint, Prettier, and error boundaries
 
 ## 🚀 Quick Start
 
@@ -49,21 +62,31 @@ npm install -g pnpm
 - `pnpm preview` - Preview the production build locally
 - `pnpm lint` - Run ESLint to check for code issues
 
-## 🏗️ Tech Stack
+## 🏗️ Modern Tech Stack
 
 ### Frontend
+- **Next.js 15** - React framework with App Router and Server Components
+- **React 18** - Modern React with hooks, Suspense, and concurrent features
+- **TypeScript** - Type-safe development with strict mode enabled
+- **Tailwind CSS** - Utility-first CSS framework with optimizations
 
-- **React 18** - Modern React with hooks and functional components
-- **TypeScript** - Type-safe JavaScript development
-- **Vite** - Fast build tool and development server
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Utility-first CSS framework
+### Backend & Database
+- **Next.js Server Actions** - Type-safe server functions
+- **Drizzle ORM** - Type-safe database ORM with migrations
+- **Neon Postgres** - Serverless PostgreSQL database
+- **NextAuth.js** - Authentication with role-based access control
+
+### Performance & SEO
+- **Next.js Image** - Optimized image loading with WebP/AVIF support
+- **Dynamic Imports** - Code splitting for optimal bundle size
+- **Structured Data** - Rich snippets and SEO optimization
+- **Server-Side Rendering** - Enhanced SEO and performance
 
 ### Development Tools
-
-- **ESLint** - Code linting and formatting
-- **PostCSS** - CSS processing and autoprefixer
-- **Lucide React** - Beautiful icon library
+- **ESLint** - Advanced linting with Next.js and TypeScript rules
+- **Prettier** - Consistent code formatting with Tailwind sorting
+- **TypeScript Strict Mode** - Maximum type safety and error prevention
+- **Error Boundaries** - Graceful error handling and recovery
 
 ## 📁 Project Structure
 

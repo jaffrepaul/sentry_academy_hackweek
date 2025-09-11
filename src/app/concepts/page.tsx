@@ -1,20 +1,9 @@
 import { Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Concepts101 from '@/components/Concepts101'
 import LoadingCard from '@/components/ui/LoadingCard'
-
-// Static metadata
-export const metadata = {
-  title: 'Concepts 101 | Sentry Academy',
-  description: 'Master the core concepts that power Sentry Observability. Learn the fundamentals of error monitoring, performance tracking, and application observability.',
-  keywords: ['Sentry concepts', 'error monitoring basics', 'observability fundamentals', 'Sentry 101'],
-  openGraph: {
-    title: 'Concepts 101 | Sentry Academy',
-    description: 'Master the core concepts that power Sentry Observability',
-    type: 'website',
-  },
-}
+import { generateSEO } from '@/lib/seo'
 
 // Loading fallback for concepts content
 function ConceptsLoadingFallback() {
@@ -32,6 +21,22 @@ function ConceptsLoadingFallback() {
     </div>
   )
 }
+
+// Dynamic import for Concepts101 to reduce initial bundle size
+const Concepts101 = dynamic(() => import('@/components/Concepts101'), {
+  loading: () => <ConceptsLoadingFallback />,
+  ssr: true // Keep SSR for better SEO on educational content
+})
+
+// Static metadata
+export const metadata = generateSEO({
+  title: 'Concepts 101 - Core Observability Fundamentals',
+  description: 'Master the core concepts that power Sentry Observability. Learn the fundamentals of error monitoring, performance tracking, and application observability through interactive examples.',
+  keywords: ['Sentry concepts', 'error monitoring basics', 'observability fundamentals', 'Sentry 101', 'monitoring concepts', 'application observability guide'],
+  url: '/concepts',
+  type: 'article',
+  section: 'Education'
+})
 
 export default function ConceptsPage() {
   return (

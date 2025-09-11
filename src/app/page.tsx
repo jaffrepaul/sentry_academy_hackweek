@@ -12,17 +12,15 @@ import CourseGridSkeleton from '@/components/CourseGridSkeleton'
  * 3. Static generation for better performance
  */
 
+import { generateSEO } from '@/lib/seo'
+
 // Static metadata for SEO
-export const metadata = {
-  title: 'Sentry Academy - Master Application Observability',
+export const metadata = generateSEO({
+  title: 'Master Application Observability',
   description: 'Interactive learning platform to master Sentry\'s powerful observability tools through hands-on experience and personalized learning paths.',
-  keywords: ['Sentry', 'error monitoring', 'application observability', 'performance monitoring', 'session replay'],
-  openGraph: {
-    title: 'Sentry Academy - Master Application Observability',
-    description: 'Interactive learning platform to master Sentry\'s powerful observability tools.',
-    type: 'website',
-  },
-}
+  keywords: ['Sentry courses', 'error monitoring tutorials', 'application observability training', 'performance monitoring guide', 'session replay learning'],
+  url: '/',
+})
 
 // Server component that fetches data
 async function CoursesData() {

@@ -1,8 +1,15 @@
 import { Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import { notFound } from 'next/navigation'
 import { getCourses, getCourseBySlug } from '@/lib/actions/course-actions'
-import CourseDetailClient from './CourseDetailClient'
+import { generateSEO } from '@/lib/seo'
 import LoadingCard from '@/components/ui/LoadingCard'
+
+// Dynamic import for CourseDetailClient to reduce initial bundle size
+const CourseDetailClient = dynamic(() => import('./CourseDetailClient'), {
+  loading: () => <CourseDetailSkeleton />,
+  ssr: true // Keep SSR for better SEO
+})
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -69,22 +76,21 @@ export async function generateMetadata({ params }: Props) {
   const course = await getCourseBySlug(slug)
   
   if (!course) {
-    return {
-      title: 'Course Not Found | Sentry Academy',
+    return generateSEO({
+      title: 'Course Not Found',
       description: 'The requested course could not be found.',
-    }
+      url: `/courses/${slug}`,
+    })
   }
 
-  return {
-    title: `${course.title} | Sentry Academy`,
-    description: course.description || 'Learn Sentry with this comprehensive course.',
-    keywords: [course.category, course.difficulty, 'Sentry', course.title].filter(Boolean),
-    openGraph: {
-      title: `${course.title} | Sentry Academy`,
-      description: course.description || 'Learn Sentry with this comprehensive course.',
-      type: 'website',
-    },
-  }
+  return generateSEO({
+    title: course.title,
+    description: course.description || `Learn ${course.title} with this comprehensive Sentry course. Master ${course.category.toLowerCase()} concepts with hands-on experience.`,
+    keywords: [course.category, course.difficulty, 'Sentry course', course.title, 'tutorial', 'training'],
+    url: `/courses/${slug}`,
+    type: 'article',
+    section: course.category,
+  })
 }
 
 // Enable ISR for course pages

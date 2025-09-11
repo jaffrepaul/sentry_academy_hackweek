@@ -1,14 +1,34 @@
 'use client'
 
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import { useTheme } from '@/contexts/ThemeContext'
 import { getBackgroundStyle, handleHashNavigation } from '@/utils/styles'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import CourseGrid from '@/components/CourseGrid'
-import LearningPaths from '@/components/LearningPaths'
 import StatsSection from '@/components/StatsSection'
 import Footer from '@/components/Footer'
+
+// Dynamic imports for heavy components
+const LearningPaths = dynamic(() => import('@/components/LearningPaths'), {
+  loading: () => (
+    <div className="py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <div className="animate-pulse bg-gray-300/50 h-8 w-64 mx-auto rounded mb-6" />
+          <div className="animate-pulse bg-gray-300/50 h-4 w-96 mx-auto rounded" />
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="animate-pulse bg-gray-300/50 h-64 rounded-xl" />
+          ))}
+        </div>
+      </div>
+    </div>
+  ),
+  ssr: true
+})
 
 interface Course {
   id: number

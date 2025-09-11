@@ -6,6 +6,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { ArrowLeft } from 'lucide-react'
 import { concepts } from '@/data/concepts'
 import { Arcade } from './Arcade'
+import Image from 'next/image'
 
 const Concepts101: React.FC = () => {
   const { isDark } = useTheme()
@@ -133,15 +134,16 @@ const Concepts101: React.FC = () => {
                                 </p>
                               </div>
                             ) : (
-                              <img 
+                              <Image 
                                 src={concept.imageUrl}
                                 alt={concept.imageAlt || `${concept.title} visualization`}
+                                width={800}
+                                height={600}
                                 className={`w-full h-auto rounded-lg border transition-smooth transform hover:scale-105 ${
                                   isDark 
                                     ? 'border-gray-600/50 hover:border-gray-500/70' 
                                     : 'border-gray-200/50 hover:border-gray-300/70'
                                 }`}
-                                loading="lazy"
                                 onError={() => handleImageError(concept.id)}
                               />
                             )}
