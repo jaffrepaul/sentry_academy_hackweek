@@ -1,0 +1,118 @@
+import NextAuth from 'next-auth'
+import type { NextAuthOptions } from 'next-auth'
+import { DrizzleAdapter } from '@auth/drizzle-adapter'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
+import GitHubProvider from 'next-auth/providers/github'
+import { db } from './db'
+import { users, accounts, sessions, verificationTokens } from './db/schema'
+// import bcrypt from 'bcryptjs' // TODO: Install bcryptjs for password hashing
+import { eq } from 'drizzle-orm'
+
+export const authOptions: NextAuthOptions = {
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  }),
+  
+  providers: [
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null
+        }
+
+        try {
+          const user = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, credentials.email))
+            .limit(1)
+
+          if (!user.length) {
+            return null
+          }
+
+          const foundUser = user[0]
+          
+          // For now, we'll skip password verification since we don't have a password field
+          // In a real app, you'd verify the password here
+          // const isPasswordValid = await bcrypt.compare(credentials.password, foundUser.password)
+          
+          return {
+            id: foundUser.id,
+            email: foundUser.email,
+            name: foundUser.name,
+            image: foundUser.image,
+            role: foundUser.role || 'user',
+          }
+        } catch (error) {
+          console.error('Authentication error:', error)
+          return null
+        }
+      }
+    }),
+
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
+      GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      })
+    ] : []),
+
+    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET ? [
+      GitHubProvider({
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      })
+    ] : []),
+  ],
+
+  session: {
+    strategy: 'jwt' as const,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role || 'user'
+      }
+      return token
+    },
+
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.sub!
+        session.user.role = token.role as string
+      }
+      return session
+    },
+  },
+
+  pages: {
+    signIn: '/auth/signin',
+    // signUp: '/auth/signup', // Custom sign up page if needed
+    // error: '/auth/error',
+  },
+
+  events: {
+    async createUser({ user }) {
+      console.log('New user created:', user.email)
+      // Here you could send welcome emails, set up default preferences, etc.
+    },
+  },
+}
+
+export default NextAuth(authOptions)
+
+// Helper to get server-side session
+export { getServerSession } from 'next-auth/next'
+export const getAuthSession = () => getServerSession(authOptions)

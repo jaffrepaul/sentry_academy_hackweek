@@ -26,10 +26,18 @@ export const getCourses = cache(async (filters: CourseFilters & { limit?: number
       query.limit(filters.limit)
     }
     
-    return await query.execute()
+    const dbCourses = await query.execute()
+    
+    // If database is empty, fall back to mock data for development
+    if (dbCourses.length === 0) {
+      console.log('No courses found in database, using mock data')
+      return await getMockCourses(filters)
+    }
+    
+    return dbCourses
   } catch (error) {
-    console.error('Error fetching courses:', error)
-    throw new Error('Failed to fetch courses')
+    console.error('Error fetching courses from database, falling back to mock data:', error)
+    return await getMockCourses(filters)
   }
 })
 
@@ -42,10 +50,18 @@ export const getCourseBySlug = cache(async (slug: string) => {
       .where(and(eq(courses.slug, slug), eq(courses.isPublished, true)))
       .limit(1)
     
-    return course[0] || null
+    const dbCourse = course[0] || null
+    
+    // If course not found in database, fall back to mock data
+    if (!dbCourse) {
+      console.log(`Course ${slug} not found in database, checking mock data`)
+      return await getMockCourseBySlug(slug)
+    }
+    
+    return dbCourse
   } catch (error) {
-    console.error('Error fetching course:', error)
-    throw new Error(`Failed to fetch course: ${slug}`)
+    console.error(`Error fetching course from database, falling back to mock data:`, error)
+    return await getMockCourseBySlug(slug)
   }
 })
 

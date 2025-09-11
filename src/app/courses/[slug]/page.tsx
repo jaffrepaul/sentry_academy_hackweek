@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import { getMockCourses } from '@/lib/actions/course-actions'
+import { getCourses, getCourseBySlug } from '@/lib/actions/course-actions'
 import CourseDetailClient from './CourseDetailClient'
 import LoadingCard from '@/components/ui/LoadingCard'
 
@@ -10,14 +10,12 @@ interface Props {
 
 // Generate static params for common courses
 export async function generateStaticParams() {
-  const courses = await getMockCourses()
+  const courses = await getCourses({ limit: 20 })
   
-  // Generate params for the most popular courses
-  return courses
-    .filter(course => course.isPopular)
-    .map((course) => ({
-      slug: course.slug,
-    }))
+  // Generate params for published courses
+  return courses.map((course) => ({
+    slug: course.slug,
+  }))
 }
 
 // Loading fallback for course detail
@@ -46,8 +44,7 @@ function CourseDetailSkeleton() {
 
 // Server component to fetch course data
 async function CourseData({ slug }: { slug: string }) {
-  const courses = await getMockCourses()
-  const course = courses.find(c => c.slug === slug)
+  const course = await getCourseBySlug(slug)
   
   if (!course) {
     notFound()
@@ -69,8 +66,7 @@ export default async function CoursePage({ params }: Props) {
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
-  const courses = await getMockCourses()
-  const course = courses.find(c => c.slug === slug)
+  const course = await getCourseBySlug(slug)
   
   if (!course) {
     return {
@@ -81,11 +77,11 @@ export async function generateMetadata({ params }: Props) {
 
   return {
     title: `${course.title} | Sentry Academy`,
-    description: course.description,
-    keywords: [course.category, course.difficulty, 'Sentry', course.title],
+    description: course.description || 'Learn Sentry with this comprehensive course.',
+    keywords: [course.category, course.difficulty, 'Sentry', course.title].filter(Boolean),
     openGraph: {
       title: `${course.title} | Sentry Academy`,
-      description: course.description,
+      description: course.description || 'Learn Sentry with this comprehensive course.',
       type: 'website',
     },
   }

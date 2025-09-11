@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next'
-import { getMockCourses } from '@/lib/actions/course-actions'
+import { getCourses } from '@/lib/actions/course-actions'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const courses = await getMockCourses()
+  const courses = await getCourses()
   
   // Static pages
   const staticPages = [

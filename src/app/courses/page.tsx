@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { getMockCourses } from '@/lib/actions/course-actions'
+import { getCourses } from '@/lib/actions/course-actions'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CourseGrid from '@/components/CourseGrid'
@@ -19,7 +19,7 @@ export const metadata = {
 
 // Server component for fetching courses with filters
 async function FilteredCourses({ searchParams }: { searchParams: SearchParams }) {
-  const courses = await getMockCourses({
+  const courses = await getCourses({
     category: searchParams.category,
     difficulty: searchParams.difficulty,
     search: searchParams.search,

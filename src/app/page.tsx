@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { getMockCourses } from '@/lib/actions/course-actions'
+import { getCourses } from '@/lib/actions/course-actions'
 import HomeContent from '@/components/home-content'
 import CourseGridSkeleton from '@/components/CourseGridSkeleton'
 
@@ -27,7 +27,7 @@ export const metadata = {
 // Server component that fetches data
 async function CoursesData() {
   // This will be cached automatically by Next.js
-  const courses = await getMockCourses()
+  const courses = await getCourses({ limit: 9 })
   return <HomeContent courses={courses} />
 }
 
