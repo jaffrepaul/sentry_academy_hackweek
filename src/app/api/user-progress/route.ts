@@ -25,14 +25,14 @@ export async function GET(request: NextRequest) {
 
     // If userId is provided and current user is admin, get that user's progress
     let targetUserId = currentUser.id
-    if (userId && currentUser.role === 'admin') {
-      targetUserId = parseInt(userId)
-      if (isNaN(targetUserId)) {
-        return NextResponse.json(
-          { success: false, error: 'Invalid user ID' },
-          { status: 400 }
-        )
-      }
+    if (userId && (currentUser.role === 'admin' || currentUser.role === 'super_admin')) {
+      targetUserId = userId // userId is now string, no need to parseInt
+    } else if (userId && currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
+      // Non-admin users can only access their own progress
+      return NextResponse.json(
+        { success: false, error: 'Permission denied' },
+        { status: 403 }
+      )
     }
 
     if (courseId) {

@@ -85,8 +85,8 @@ export const learningPaths = pgTable('learning_paths', {
 // User progress table
 export const userProgress = pgTable('user_progress', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id),
-  courseId: integer('course_id').references(() => courses.id),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  courseId: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }),
   completed: boolean('completed').default(false),
   progress: integer('progress').default(0), // Percentage 0-100
   lastAccessedAt: timestamp('last_accessed_at').defaultNow(),

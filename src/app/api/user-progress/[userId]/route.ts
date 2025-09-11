@@ -18,16 +18,10 @@ export async function GET(
       )
     }
 
-    const targetUserId = parseInt(params.userId)
-    if (isNaN(targetUserId)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid user ID' },
-        { status: 400 }
-      )
-    }
+    const targetUserId = params.userId
 
     // Check permissions - users can only see their own progress unless admin
-    if (currentUser.id !== targetUserId && currentUser.role !== 'admin') {
+    if (currentUser.id !== targetUserId && currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
       return NextResponse.json(
         { success: false, error: 'Permission denied' },
         { status: 403 }
@@ -120,20 +114,14 @@ export async function DELETE(
 ) {
   try {
     const currentUser = await getCurrentUser()
-    if (!currentUser || currentUser.role !== 'admin') {
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'super_admin')) {
       return NextResponse.json(
         { success: false, error: 'Permission denied - admin required' },
         { status: 403 }
       )
     }
 
-    const targetUserId = parseInt(params.userId)
-    if (isNaN(targetUserId)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid user ID' },
-        { status: 400 }
-      )
-    }
+    const targetUserId = params.userId
 
     const { searchParams } = new URL(request.url)
     const courseId = searchParams.get('courseId')

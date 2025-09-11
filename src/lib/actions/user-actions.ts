@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 import { users, userProgress } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
 
-export async function getUserById(id: number) {
+export async function getUserById(id: string) {
   try {
     const user = await db
       .select()
@@ -19,7 +19,7 @@ export async function getUserById(id: number) {
   }
 }
 
-export async function getUserProgress(userId: number) {
+export async function getUserProgress(userId: string) {
   try {
     return await db
       .select()
@@ -32,7 +32,7 @@ export async function getUserProgress(userId: number) {
 }
 
 export async function updateUserProgress(
-  userId: number,
+  userId: string,
   courseId: number,
   progress: number,
   completed: boolean = false

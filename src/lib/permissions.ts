@@ -91,13 +91,6 @@ export async function checkPermission(permission: Permission): Promise<boolean> 
   return hasPermission(session?.user?.role, permission)
 }
 
-export async function requirePermission(permission: Permission): Promise<void> {
-  const hasAccess = await checkPermission(permission)
-  if (!hasAccess) {
-    throw new Error(`Access denied. Required permission: ${permission}`)
-  }
-}
-
 // Client-side permission hooks (for use in components)
 export function usePermissions() {
   // This should be imported and used in components that need permission checking
@@ -109,37 +102,12 @@ export function usePermissions() {
   }
 }
 
-// Permission checking for React components
-interface PermissionGuardProps {
-  permission: Permission
-  fallback?: React.ReactNode
-  children: React.ReactNode
-}
-
-export function PermissionGuard({ permission, fallback = null, children }: PermissionGuardProps) {
-  // Import usePermissions dynamically to avoid circular imports
-  const { usePermissions } = require('@/hooks/usePermissions')
-  const { hasPermission: checkPermission } = usePermissions()
-  
-  if (!checkPermission(permission)) {
-    return <>{fallback}</>
+// Main permission checking function - server-side only
+export async function requirePermission(permission: Permission): Promise<void> {
+  const hasAccess = await checkPermission(permission)
+  if (!hasAccess) {
+    throw new Error(`Permission denied: ${permission}`)
   }
-  
-  return <>{children}</>
-}
-
-// Admin route guard
-interface AdminGuardProps {
-  children: React.ReactNode
-  fallback?: React.ReactNode
-}
-
-export function AdminGuard({ children, fallback }: AdminGuardProps) {
-  return (
-    <PermissionGuard permission={Permission.ACCESS_ADMIN} fallback={fallback}>
-      {children}
-    </PermissionGuard>
-  )
 }
 
 export default {
@@ -150,6 +118,4 @@ export default {
   hasAllPermissions,
   checkPermission,
   requirePermission,
-  PermissionGuard,
-  AdminGuard,
 }

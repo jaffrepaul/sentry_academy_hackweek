@@ -40,6 +40,7 @@ interface OpenAIConfig {
 class AIContentService {
   private config: OpenAIConfig;
   private rateLimitTracker: Map<string, number[]> = new Map();
+  private backgroundTasks: Map<string, NodeJS.Timeout> = new Map();
 
   constructor(apiKey?: string) {
     this.config = {
@@ -706,10 +707,14 @@ Make it highly relevant and actionable for this specific role.`
   // Public method to start content generation
   async startContentGeneration(request: ContentGenerationRequest): Promise<GenerationResponse> {
     try {
+      // Cancel any existing task for this request
+      this.cancelBackgroundTask(request.id);
+      
       // Simulate async processing - in a real implementation, this would
       // trigger a background job or queue processing
       console.log('AIContentService: Starting async content generation for request:', request.id);
-      setTimeout(async () => {
+      
+      const timeoutId = setTimeout(async () => {
         console.log('AIContentService: Executing background generation for:', request.id);
         try {
           // This would normally fetch from external sources
@@ -730,8 +735,14 @@ Make it highly relevant and actionable for this specific role.`
           await this.generateCourseContent(request, mockResearchedContent);
         } catch (error) {
           console.error('Background generation failed:', error);
+        } finally {
+          // Clean up the task reference
+          this.backgroundTasks.delete(request.id);
         }
       }, 3000); // Increased delay to 3 seconds to simulate real processing
+
+      // Store the timeout ID for cleanup
+      this.backgroundTasks.set(request.id, timeoutId);
 
       return {
         success: true,
@@ -746,6 +757,25 @@ Make it highly relevant and actionable for this specific role.`
         error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
+  }
+
+  // Cancel a background task
+  public cancelBackgroundTask(requestId: string): void {
+    const timeoutId = this.backgroundTasks.get(requestId);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      this.backgroundTasks.delete(requestId);
+      console.log('AIContentService: Cancelled background task for request:', requestId);
+    }
+  }
+
+  // Cancel all background tasks (cleanup method)
+  public cancelAllBackgroundTasks(): void {
+    for (const [requestId, timeoutId] of this.backgroundTasks.entries()) {
+      clearTimeout(timeoutId);
+      console.log('AIContentService: Cancelled background task for request:', requestId);
+    }
+    this.backgroundTasks.clear();
   }
 
   // Update configuration

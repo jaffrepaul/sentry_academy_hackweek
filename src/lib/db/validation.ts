@@ -299,7 +299,7 @@ export class DataValidator {
       const orphanedProgress = await db
         .select({ id: schema.userProgress.id })
         .from(schema.userProgress)
-        .leftJoin(schema.users, eq(schema.userProgress.userId, sql`${schema.users.id}::integer`))
+        .leftJoin(schema.users, eq(schema.userProgress.userId, schema.users.id))
         .where(isNull(schema.users.id))
 
       if (orphanedProgress.length > 0) {
