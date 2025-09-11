@@ -90,12 +90,13 @@ jobs:
       - name: Run data validation
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-        run: node -e "
+        run: |
+          node -e "
           import('./src/lib/db/validation.js').then(async ({ quickValidation }) => {
             const isValid = await quickValidation();
             process.exit(isValid ? 0 : 1);
           });
-        "
+          "
 
   # Deploy to staging
   deploy-staging:
