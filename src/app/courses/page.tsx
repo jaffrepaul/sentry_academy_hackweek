@@ -19,11 +19,12 @@ export const metadata = {
 
 // Server component for fetching courses with filters
 async function FilteredCourses({ searchParams }: { searchParams: SearchParams }) {
-  const courses = await getCourses({
-    category: searchParams.category,
-    difficulty: searchParams.difficulty,
-    search: searchParams.search,
-  })
+  const filters: any = {}
+  if (searchParams.category) filters.category = searchParams.category
+  if (searchParams.difficulty) filters.difficulty = searchParams.difficulty
+  if (searchParams.search) filters.search = searchParams.search
+  
+  const courses = await getCourses(filters)
 
   return <CourseGrid courses={courses} showFilters={true} />
 }

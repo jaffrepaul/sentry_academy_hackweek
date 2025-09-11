@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { 
   generateAIContent, 
-  approveAIContent, 
   getAIGeneratedContent,
-  convertAIContentToCourse,
-  deleteAIContent,
   type AIContentRequest
 } from '@/lib/actions/ai-actions'
 import { checkUserPermission } from '@/lib/actions/auth-actions'

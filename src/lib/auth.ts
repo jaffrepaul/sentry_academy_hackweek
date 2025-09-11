@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth'
 import type { NextAuthOptions } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
@@ -177,5 +178,4 @@ export const authOptions: NextAuthOptions = {
 export default NextAuth(authOptions)
 
 // Helper to get server-side session
-export { getServerSession } from 'next-auth/next'
 export const getAuthSession = () => getServerSession(authOptions)

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const offset = searchParams.get('offset')
     const published = searchParams.get('published') !== 'false' // Default to true
 
-    let query = db
+    const queryBuilder = db
       .select()
       .from(courses)
       .where(
@@ -28,16 +28,18 @@ export async function GET(request: NextRequest) {
         )
       )
       .orderBy(desc(courses.createdAt))
+      .$dynamic()
 
+    // Apply limit and offset if provided
+    let query = queryBuilder
     if (limit) {
       query = query.limit(parseInt(limit))
     }
-
     if (offset) {
       query = query.offset(parseInt(offset))
     }
 
-    const coursesList = await query.execute()
+    const coursesList = await query
 
     return NextResponse.json({
       success: true,

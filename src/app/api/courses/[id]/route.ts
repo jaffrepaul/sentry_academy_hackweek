@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { courses, courseModules } from '@/lib/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { checkUserPermission } from '@/lib/actions/auth-actions'
 import { revalidatePath } from 'next/cache'
 
 // GET /api/courses/[id] - Get course details
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const courseId = parseInt(params.id)
     
     if (isNaN(courseId)) {
@@ -60,9 +61,10 @@ export async function GET(
 // PUT /api/courses/[id] - Update course (instructor/admin only)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const courseId = parseInt(params.id)
     
     if (isNaN(courseId)) {
@@ -143,10 +145,11 @@ export async function PUT(
 
 // DELETE /api/courses/[id] - Delete course (admin only)
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const courseId = parseInt(params.id)
     
     if (isNaN(courseId)) {

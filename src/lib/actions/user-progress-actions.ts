@@ -42,10 +42,10 @@ export async function getUserProgress() {
   }
 }
 
-export async function updateUserRole(role: EngineerRole, selectedFeatures: string[] = []) {
+export async function updateUserRole(role: EngineerRole, selectedFeatures: string[] = []): Promise<{ success: boolean; error?: string }> {
   const session = await getAuthSession()
   if (!session?.user?.id) {
-    throw new Error('User not authenticated')
+    return { success: false, error: 'User not authenticated' }
   }
 
   try {
@@ -65,7 +65,7 @@ export async function updateUserRole(role: EngineerRole, selectedFeatures: strin
     return { success: true }
   } catch (error) {
     console.error('Error updating user role:', error)
-    throw error
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 

@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { 
-  getUserProgress, 
   updateUserProgress 
 } from '@/lib/actions/user-actions'
 import { getCurrentUser } from '@/lib/actions/auth-actions'
 import { db } from '@/lib/db'
-import { userProgress, users, courses } from '@/lib/db/schema'
+import { userProgress, courses } from '@/lib/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
 
 // GET /api/user-progress - Get user progress

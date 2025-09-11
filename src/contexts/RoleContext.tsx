@@ -48,11 +48,25 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     // For authenticated users, use the server action
     try {
       const { updateUserRole } = await import('@/lib/actions/user-progress-actions')
-      await updateUserRole(role, selectedFeatures)
-      // The useUserProgress hook will automatically refetch the data
+      const result = await updateUserRole(role, selectedFeatures)
+      
+      if (!result.success) {
+        // Fallback to local update for unauthenticated users or errors
+        console.log('Server update failed, using local fallback:', result.error)
+        updateProgress({
+          role,
+          currentStep: 0,
+          completedSteps: completedStepIds,
+          completedModules,
+          completedFeatures,
+          onboardingCompleted: selectedFeatures.length > 0,
+          hasSeenOnboarding: true
+        })
+      }
+      // The useUserProgress hook will automatically refetch the data on success
     } catch (error) {
       console.error('Failed to update user role on server:', error)
-      // Fallback to local update for unauthenticated users
+      // Fallback to local update for any unexpected errors
       updateProgress({
         role,
         currentStep: 0,

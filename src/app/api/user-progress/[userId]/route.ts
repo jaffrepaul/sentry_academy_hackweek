@@ -6,10 +6,11 @@ import { eq, and, desc, count } from 'drizzle-orm'
 
 // GET /api/user-progress/[userId] - Get specific user's progress (admin only or own progress)
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { userId: string } }
+  _request: NextRequest,
+  context: { params: Promise<{ userId: string }> }
 ) {
   try {
+    const params = await context.params
     const currentUser = await getCurrentUser()
     if (!currentUser) {
       return NextResponse.json(
@@ -79,7 +80,7 @@ export async function GET(
 
     // Calculate average progress
     const avgProgress = progressList.length > 0 
-      ? Math.round(progressList.reduce((sum, p) => sum + p.progress, 0) / progressList.length)
+      ? Math.round(progressList.reduce((sum, p) => sum + (p.progress || 0), 0) / progressList.length)
       : 0
 
     return NextResponse.json({
@@ -110,9 +111,10 @@ export async function GET(
 // DELETE /api/user-progress/[userId] - Reset user's progress (admin only)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: Promise<{ userId: string }> }
 ) {
   try {
+    const params = await context.params
     const currentUser = await getCurrentUser()
     if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'super_admin')) {
       return NextResponse.json(

@@ -10,14 +10,14 @@ interface Course {
   id: number
   slug: string
   title: string
-  description: string
-  duration: string
-  level: string
-  rating: number
-  students: number
-  category: string
+  description: string | null
+  duration: string | null
+  level?: string
+  rating?: number
+  students?: number
+  category: string | null
   isPopular?: boolean
-  difficulty?: string
+  difficulty?: string | null
 }
 
 interface CourseCardProps extends Course {}
@@ -32,6 +32,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
   rating, 
   students, 
   category,
+  difficulty,
   isPopular = false
 }) => {
   const { isDark } = useTheme()
@@ -62,11 +63,11 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
               ? 'text-purple-300 bg-purple-500/20' 
               : 'text-purple-700 bg-purple-200/60'
           }`}>
-            {category}
+            {category || 'General'}
           </span>
           <div className="flex items-center space-x-1">
             <Star className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{rating}</span>
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{rating || '4.5'}</span>
           </div>
         </div>
 
@@ -75,21 +76,21 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
         </h3>
 
         <p className={`mb-6 leading-relaxed line-clamp-3 ${getTextClasses(isDark, 'secondary')}`}>
-          {description}
+          {description || 'Course description not available.'}
         </p>
 
         <div className={`flex items-center justify-between text-sm mb-6 ${getTextClasses(isDark, 'secondary')}`}>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
               <Clock className="w-4 h-4" />
-              <span>{duration}</span>
+              <span>{duration || '30 min'}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Trophy className="w-4 h-4" />
-              <span>{level}</span>
+              <span>{level || difficulty || 'Beginner'}</span>
             </div>
           </div>
-          <span className="text-xs">{students.toLocaleString()} students</span>
+          <span className="text-xs">{students?.toLocaleString() || '0'} students</span>
         </div>
 
         <div className={`flex items-center justify-between pt-4 border-t ${

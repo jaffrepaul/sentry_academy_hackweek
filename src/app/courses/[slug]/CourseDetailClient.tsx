@@ -464,8 +464,8 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
     duration: course.duration,
     level: course.difficulty || course.level,
     category: course.category,
-    rating: course.rating,
-    reviewCount: course.reviews?.length
+    rating: course.rating || 4.5,
+    reviewCount: course.reviews?.length || 0
   })
 
   return (
@@ -498,15 +498,15 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
             <div className="flex items-center space-x-4 mt-2">
               <div className="flex items-center space-x-1">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className={`text-sm ${getTextClasses(isDark, 'secondary')}`}>{course.rating}</span>
+                <span className={`text-sm ${getTextClasses(isDark, 'secondary')}`}>{course.rating || '4.5'}</span>
               </div>
               <div className={`flex items-center space-x-1 text-sm ${getTextClasses(isDark, 'secondary')}`}>
                 <Users className="w-4 h-4" />
-                <span>{course.students.toLocaleString()} students</span>
+                <span>{course.students?.toLocaleString() || '0'} students</span>
               </div>
               <div className={`flex items-center space-x-1 text-sm ${getTextClasses(isDark, 'secondary')}`}>
                 <Trophy className="w-4 h-4" />
-                <span>{course.level}</span>
+                <span>{course.level || course.difficulty || 'Beginner'}</span>
               </div>
             </div>
           </div>
@@ -575,10 +575,10 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
               <div className="course-content-section space-y-6">
                 <div>
                   <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {currentModule.title}
+                    {currentModule?.title || 'Module Title'}
                   </h3>
                   <p className={`text-lg leading-relaxed mb-6 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                    {currentModule.description}
+                    {currentModule?.description || 'Module description'}
                   </p>
                 </div>
 

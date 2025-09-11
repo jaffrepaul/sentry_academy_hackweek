@@ -1,3 +1,5 @@
+'use client'
+
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -22,12 +24,7 @@ const AdminDashboard = dynamic(() => import('@/components/AdminDashboard').then(
   ssr: false // Admin dashboard doesn't need SSR
 })
 
-// Static metadata
-export const metadata = {
-  title: 'Admin Dashboard | Sentry Academy',
-  description: 'Administrative dashboard for managing Sentry Academy content and users.',
-  robots: 'noindex,nofollow', // Don't index admin pages
-}
+// Note: Metadata is handled by the parent layout since this is a Client Component
 
 export default function AdminPage() {
   return (
@@ -37,5 +34,4 @@ export default function AdminPage() {
   )
 }
 
-// No caching for admin pages
-export const revalidate = 0
+// No caching for admin pages - handled by parent layout

@@ -9,9 +9,10 @@ import { checkUserPermission } from '@/lib/actions/auth-actions'
 // PUT /api/ai-content/[id] - Approve AI content or convert to course
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const contentId = parseInt(params.id)
     
     if (isNaN(contentId)) {
@@ -88,10 +89,11 @@ export async function PUT(
 
 // DELETE /api/ai-content/[id] - Delete AI generated content
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const contentId = parseInt(params.id)
     
     if (isNaN(contentId)) {

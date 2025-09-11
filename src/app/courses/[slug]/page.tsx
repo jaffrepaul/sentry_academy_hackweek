@@ -83,14 +83,19 @@ export async function generateMetadata({ params }: Props) {
     })
   }
 
-  return generateSEO({
+  const seoData: any = {
     title: course.title,
-    description: course.description || `Learn ${course.title} with this comprehensive Sentry course. Master ${course.category.toLowerCase()} concepts with hands-on experience.`,
-    keywords: [course.category, course.difficulty, 'Sentry course', course.title, 'tutorial', 'training'],
+    description: course.description || `Learn ${course.title} with this comprehensive Sentry course. Master ${course.category?.toLowerCase() || 'advanced'} concepts with hands-on experience.`,
+    keywords: [course.category, course.difficulty, 'Sentry course', course.title, 'tutorial', 'training'].filter(Boolean) as string[],
     url: `/courses/${slug}`,
-    type: 'article',
-    section: course.category,
-  })
+    type: 'article' as const,
+  }
+  
+  if (course.category) {
+    seoData.section = course.category
+  }
+  
+  return generateSEO(seoData)
 }
 
 // Enable ISR for course pages
