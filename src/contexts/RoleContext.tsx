@@ -10,10 +10,12 @@ interface RoleContextType {
   userProgress: UserProgress
   currentLearningPath: LearningPath | null
   currentStep: LearningPathStep | null
-  setUserRole: (role: EngineerRole, selectedFeatures?: string[]) => void
+  setUserRole: (role: EngineerRole, selectedFeatures?: string[]) => Promise<void>
   completeModule: (moduleId: string) => void
   resetProgress: () => void
   getNextRecommendation: () => NextContentRecommendation | null
+  isLoading?: boolean
+  isPending?: boolean
 }
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined)
@@ -29,30 +31,38 @@ interface RoleProviderProps {
  * - Role/feature mapping (roleProgressMapper utility)
  */
 export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
-  const { userProgress, updateProgress, completeModule, resetProgress } = useUserProgress()
+  const { userProgress, updateProgress, completeModule, resetProgress, isLoading, isPending } = useUserProgress()
   const { currentLearningPath, currentStep, getNextRecommendation } = useLearningPath(
     userProgress.role,
     userProgress.completedSteps,
     userProgress.completedFeatures
   )
 
-  const setUserRole = useCallback((role: EngineerRole, selectedFeatures: string[] = []) => {
+  const setUserRole = useCallback(async (role: EngineerRole, selectedFeatures: string[] = []) => {
     // Use the separated mapper utility for cleaner code
     const { completedModules, completedFeatures, completedStepIds } = mapFeaturesToProgress(
       role, 
       selectedFeatures
     )
 
-    // Update user progress with new role and computed progress
-    updateProgress({
-      role,
-      currentStep: 0,
-      completedSteps: completedStepIds,
-      completedModules,
-      completedFeatures,
-      onboardingCompleted: selectedFeatures.length > 0,
-      hasSeenOnboarding: true
-    })
+    // For authenticated users, use the server action
+    try {
+      const { updateUserRole } = await import('@/lib/actions/user-progress-actions')
+      await updateUserRole(role, selectedFeatures)
+      // The useUserProgress hook will automatically refetch the data
+    } catch (error) {
+      console.error('Failed to update user role on server:', error)
+      // Fallback to local update for unauthenticated users
+      updateProgress({
+        role,
+        currentStep: 0,
+        completedSteps: completedStepIds,
+        completedModules,
+        completedFeatures,
+        onboardingCompleted: selectedFeatures.length > 0,
+        hasSeenOnboarding: true
+      })
+    }
   }, [updateProgress])
 
   const contextValue: RoleContextType = {
@@ -62,7 +72,9 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     setUserRole,
     completeModule,
     resetProgress,
-    getNextRecommendation
+    getNextRecommendation,
+    isLoading,
+    isPending
   }
 
   return (

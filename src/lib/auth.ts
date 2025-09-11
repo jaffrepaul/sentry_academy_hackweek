@@ -9,6 +9,33 @@ import { users, accounts, sessions, verificationTokens } from './db/schema'
 // import bcrypt from 'bcryptjs' // TODO: Install bcryptjs for password hashing
 import { eq } from 'drizzle-orm'
 
+// Extend NextAuth types
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string
+      email?: string | null
+      name?: string | null
+      image?: string | null
+      role?: string | null
+    }
+  }
+
+  interface User {
+    id: string
+    email?: string | null
+    name?: string | null
+    image?: string | null
+    role?: string | null
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    role?: string | null
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -83,7 +110,22 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role || 'user'
+        token.role = user.role || 'student'
+      } else if (token.sub) {
+        // Refresh user role from database if token exists but no user object
+        try {
+          const dbUser = await db
+            .select({ role: users.role })
+            .from(users)
+            .where(eq(users.id, token.sub))
+            .limit(1)
+          
+          if (dbUser.length > 0) {
+            token.role = dbUser[0].role || 'student'
+          }
+        } catch (error) {
+          console.error('Error fetching user role:', error)
+        }
       }
       return token
     },
@@ -91,9 +133,30 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.sub!
-        session.user.role = token.role as string
+        session.user.role = token.role as string || 'student'
       }
       return session
+    },
+
+    async signIn({ user, account, profile }) {
+      // For OAuth providers, set default role if not exists
+      if (account?.provider !== 'credentials' && user.email) {
+        try {
+          const existingUser = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, user.email))
+            .limit(1)
+
+          if (existingUser.length === 0) {
+            // This is handled by the adapter, but we can ensure role is set
+            user.role = 'student'
+          }
+        } catch (error) {
+          console.error('Error in signIn callback:', error)
+        }
+      }
+      return true
     },
   },
 

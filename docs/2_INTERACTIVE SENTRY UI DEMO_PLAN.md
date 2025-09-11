@@ -1,4 +1,4 @@
-# Interactive Sentry UI Demo Feature Plan
+# INTERACTIVE SENTRY UI DEMO Feature Plan
 
 ## Description
 

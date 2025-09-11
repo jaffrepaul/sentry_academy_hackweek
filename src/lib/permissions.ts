@@ -100,10 +100,10 @@ export async function requirePermission(permission: Permission): Promise<void> {
 
 // Client-side permission hooks (for use in components)
 export function usePermissions() {
-  // This would be used in a custom hook with useSession
-  // For now, returning basic structure
+  // This should be imported and used in components that need permission checking
+  // Implementation would be provided by a separate hook file to avoid circular imports
   return {
-    hasPermission: (permission: Permission) => false, // Placeholder
+    hasPermission: (permission: Permission) => false, // Placeholder - implement in usePermissions hook
     hasAnyPermission: (permissions: Permission[]) => false, // Placeholder
     hasAllPermissions: (permissions: Permission[]) => false, // Placeholder
   }
@@ -117,8 +117,14 @@ interface PermissionGuardProps {
 }
 
 export function PermissionGuard({ permission, fallback = null, children }: PermissionGuardProps) {
-  // This would use useSession to check permissions
-  // For now, return children (placeholder implementation)
+  // Import usePermissions dynamically to avoid circular imports
+  const { usePermissions } = require('@/hooks/usePermissions')
+  const { hasPermission: checkPermission } = usePermissions()
+  
+  if (!checkPermission(permission)) {
+    return <>{fallback}</>
+  }
+  
   return <>{children}</>
 }
 
