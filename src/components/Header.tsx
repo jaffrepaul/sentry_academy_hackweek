@@ -2,7 +2,6 @@
 
 import React, { memo, useCallback, useMemo } from 'react'
 import { Menu, X } from 'lucide-react'
-import { useTheme } from '@/contexts/ThemeContext'
 import Logo from './ui/Logo'
 import DesktopNavigation from './navigation/DesktopNavigation'
 import MobileMenu from './navigation/MobileMenu'
@@ -14,19 +13,15 @@ import MobileMenu from './navigation/MobileMenu'
  * - Logo handling
  * - Desktop navigation
  * - Mobile menu
- * - Theme management
+ * - Theme management (now handled by Tailwind dark: classes)
  */
 const Header: React.FC = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
-  const { isDark } = useTheme()
 
-  // Memoize header styles to prevent recalculation
+  // Header styles using Tailwind dark mode
   const headerClasses = useMemo(() => 
-    `w-full border-b backdrop-blur-xl ${
-      isDark 
-        ? 'border-purple-500/30 bg-slate-950/90' 
-        : 'border-purple-300/30 bg-white/90'
-    }`, [isDark]
+    'w-full border-b backdrop-blur-xl border-gray-200/20 bg-white/90 dark:border-gray-700/20 dark:bg-slate-950/90', 
+    []
   )
 
   const toggleMenu = useCallback(() => {
@@ -53,22 +48,23 @@ const Header: React.FC = memo(() => {
           <Logo />
           
           <DesktopNavigation />
-
-          {/* Mobile Menu Button */}
-          <button 
-            className={`md:hidden transition-colors ${
-              isDark ? 'text-white hover:text-purple-300' : 'text-gray-900 hover:text-purple-600'
-            }`}
+          
+          {/* Mobile menu button */}
+          <button
             onClick={toggleMenu}
-            aria-label="Toggle mobile menu"
-            aria-expanded={isMenuOpen}
+            className="md:hidden p-2 rounded-lg transition-colors text-gray-600 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400"
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
-
-        <MobileMenu isOpen={isMenuOpen} onClose={closeMenu} />
       </div>
+
+      <MobileMenu isOpen={isMenuOpen} onClose={closeMenu} />
     </header>
   )
 })

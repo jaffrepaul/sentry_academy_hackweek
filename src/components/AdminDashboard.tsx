@@ -10,7 +10,7 @@ import {
 import { ContentGenerationForm } from '@/components/ContentGenerationForm';
 import { GeneratedContentPreview } from '@/components/GeneratedContentPreview';
 import { AIContentManager } from '@/components/AIContentManager';
-import { useTheme } from '@/contexts/ThemeContext';
+// Theme handled automatically by Tailwind dark: classes
 import { getBackgroundStyle, getCardClasses, getTextClasses, getButtonClasses } from '@/utils/styles';
 import Header from '@/components/Header';
 
@@ -31,7 +31,7 @@ interface DashboardStats {
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
-  const { isDark } = useTheme();
+  // Theme handled automatically by Tailwind dark: classes
   const [currentView, setCurrentView] = useState<DashboardView>('overview');
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentCourses, setRecentCourses] = useState<AIGeneratedCourse[]>([]);
@@ -92,8 +92,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className={`text-3xl font-bold ${getTextClasses(isDark, 'primary')}`}>AI Content Generation</h1>
-          <p className={`mt-1 ${getTextClasses(isDark, 'secondary')}`}>Manage AI-generated course content and workflows</p>
+          <h1 className={`text-3xl font-bold ${getTextClasses('primary')}`}>AI Content Generation</h1>
+          <p className={`mt-1 ${getTextClasses('secondary')}`}>Manage AI-generated course content and workflows</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -103,7 +103,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               console.log('Refresh clicked');
               refreshData();
             }}
-            className={`px-4 py-2 text-sm rounded-lg font-medium ${getButtonClasses(isDark, 'secondary')}`}
+            className={`px-4 py-2 text-sm rounded-lg font-medium ${getButtonClasses('secondary')}`}
           >
             🔄 Refresh
           </button>
@@ -114,7 +114,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               console.log('Generate clicked');
               setCurrentView('generate');
             }}
-            className={`px-4 py-2 rounded-lg font-medium ${getButtonClasses(isDark, 'primary')}`}
+            className={`px-4 py-2 rounded-lg font-medium ${getButtonClasses('primary')}`}
           >
             ✨ Generate New Content
           </button>
@@ -124,50 +124,50 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       {/* Stats Grid */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className={`${getCardClasses(isDark)} p-6`}>
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/20' : 'bg-blue-100'}`}>
+              <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-500/20">
                 <span className="text-2xl">📊</span>
               </div>
               <div className="ml-4">
-                <p className={`text-sm font-medium ${getTextClasses(isDark, 'secondary')}`}>Total Requests</p>
-                <p className={`text-2xl font-bold ${getTextClasses(isDark, 'primary')}`}>{stats.totalRequests}</p>
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Total Requests</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>{stats.totalRequests}</p>
               </div>
             </div>
           </div>
 
-          <div className={`${getCardClasses(isDark)} p-6`}>
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className={`p-2 rounded-lg ${isDark ? 'bg-green-500/20' : 'bg-green-100'}`}>
+              <div className="p-2 rounded-lg bg-green-100 dark:bg-green-500/20">
                 <span className="text-2xl">✅</span>
               </div>
               <div className="ml-4">
-                <p className={`text-sm font-medium ${getTextClasses(isDark, 'secondary')}`}>Approved Courses</p>
-                <p className={`text-2xl font-bold ${getTextClasses(isDark, 'primary')}`}>{stats.approvedCourses}</p>
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Approved Courses</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>{stats.approvedCourses}</p>
               </div>
             </div>
           </div>
 
-          <div className={`${getCardClasses(isDark)} p-6`}>
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className={`p-2 rounded-lg ${isDark ? 'bg-orange-500/20' : 'bg-orange-100'}`}>
+              <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-500/20">
                 <span className="text-2xl">⏳</span>
               </div>
               <div className="ml-4">
-                <p className={`text-sm font-medium ${getTextClasses(isDark, 'secondary')}`}>Pending Review</p>
-                <p className={`text-2xl font-bold ${getTextClasses(isDark, 'primary')}`}>{stats.pendingApprovals}</p>
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Pending Review</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>{stats.pendingApprovals}</p>
               </div>
             </div>
           </div>
 
-          <div className={`${getCardClasses(isDark)} p-6`}>
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className={`p-2 rounded-lg ${isDark ? 'bg-purple-500/20' : 'bg-purple-100'}`}>
+              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-500/20">
                 <span className="text-2xl">⭐</span>
               </div>
               <div className="ml-4">
-                <p className={`text-sm font-medium ${getTextClasses(isDark, 'secondary')}`}>Avg Quality</p>
-                <p className={`text-2xl font-bold ${getTextClasses(isDark, 'primary')}`}>
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Avg Quality</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>
                   {(stats.averageQualityScore * 100).toFixed(0)}%
                 </p>
               </div>
@@ -178,8 +178,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
       {/* Active Generations */}
       {activeGenerations.length > 0 && (
-        <div className={`${getCardClasses(isDark, false)} p-6`}>
-          <h2 className={`text-lg font-semibold mb-4 ${getTextClasses(isDark, 'primary')}`}>Active Generations</h2>
+        <div className={`${getCardClasses(false)} p-6`}>
+          <h2 className={`text-lg font-semibold mb-4 ${getTextClasses('primary')}`}>Active Generations</h2>
           <div className="space-y-3">
             {activeGenerations.slice(0, 5).map(courseId => {
               const course = aiGeneratedCoursesStore.getCourse(courseId);
@@ -188,30 +188,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               if (!course || !progress) return null;
 
               return (
-                <div key={courseId} className={`flex items-center justify-between p-3 rounded-lg border ${
-                  isDark 
-                    ? 'border-slate-700/50 bg-slate-800/30' 
-                    : 'border-gray-200 bg-gray-50/50'
-                }`}>
+                <div key={courseId} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-slate-700/50 dark:bg-slate-800/30">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(progress.status)}`}>
                         {progress.status}
                       </span>
-                      <span className={`font-medium ${getTextClasses(isDark, 'primary')}`}>
+                      <span className={`font-medium ${getTextClasses('primary')}`}>
                         {course.generationRequest.keywords.join(', ')}
                       </span>
                     </div>
-                    <p className={`text-sm mt-1 ${getTextClasses(isDark, 'secondary')}`}>{progress.currentStep}</p>
+                    <p className={`text-sm mt-1 ${getTextClasses('secondary')}`}>{progress.currentStep}</p>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className={`w-32 rounded-full h-2 ${isDark ? 'bg-slate-700' : 'bg-gray-200'}`}>
+                    <div className="w-32 rounded-full h-2 bg-gray-200 dark:bg-slate-700">
                       <div
-                        className={`h-2 rounded-full transition-all duration-300 ${isDark ? 'bg-purple-500' : 'bg-blue-600'}`}
+                        className="h-2 rounded-full transition-all duration-300 bg-blue-600 dark:bg-purple-500"
                         style={{ width: `${progress.progress}%` }}
                       ></div>
                     </div>
-                    <span className={`text-sm w-12 ${getTextClasses(isDark, 'secondary')}`}>{progress.progress}%</span>
+                    <span className={`text-sm w-12 ${getTextClasses('secondary')}`}>{progress.progress}%</span>
                   </div>
                 </div>
               );
@@ -221,9 +217,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       )}
 
       {/* Recent Courses */}
-      <div className={`${getCardClasses(isDark, false)} p-6`}>
+      <div className={`${getCardClasses(false)} p-6`}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className={`text-lg font-semibold ${getTextClasses(isDark, 'primary')}`}>Recent Courses</h2>
+          <h2 className={`text-lg font-semibold ${getTextClasses('primary')}`}>Recent Courses</h2>
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -231,9 +227,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               console.log('View All clicked');
               setCurrentView('manage');
             }}
-            className={`text-sm font-medium transition-colors ${
-              isDark ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-700'
-            }`}
+            className="text-sm font-medium transition-colors text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
           >
             View All →
           </button>
@@ -242,7 +236,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         {recentCourses.length === 0 ? (
           <div className="text-center py-8">
             <span className="text-4xl mb-4 block">📚</span>
-            <p className={getTextClasses(isDark, 'secondary')}>No courses generated yet</p>
+            <p className={getTextClasses('secondary')}>No courses generated yet</p>
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -250,9 +244,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 console.log('Generate first course clicked');
                 setCurrentView('generate');
               }}
-              className={`mt-2 font-medium transition-colors ${
-                isDark ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-700'
-              }`}
+              className="mt-2 font-medium transition-colors text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
             >
               Generate your first course
             </button>
@@ -265,11 +257,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               return (
                 <div 
                   key={course.id} 
-                  className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors border ${
-                    isDark 
-                      ? 'border-slate-700/50 bg-slate-800/30 hover:bg-slate-700/30' 
-                      : 'border-gray-200 bg-gray-50/50 hover:bg-gray-100/50'
-                  }`}
+                  className="flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors border border-gray-200 bg-gray-50/50 hover:bg-gray-100/50 dark:border-slate-700/50 dark:bg-slate-800/30 dark:hover:bg-slate-700/30"
                   onClick={(e) => {
                     e.preventDefault();
                     setSelectedCourse(course);
@@ -282,15 +270,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       }`}>
                         {progress?.status || 'unknown'}
                       </span>
-                      <span className={`font-medium ${getTextClasses(isDark, 'primary')}`}>{course.title}</span>
+                      <span className={`font-medium ${getTextClasses('primary')}`}>{course.title}</span>
                     </div>
-                    <p className={`text-sm mt-1 ${getTextClasses(isDark, 'secondary')}`}>{course.description}</p>
+                    <p className={`text-sm mt-1 ${getTextClasses('secondary')}`}>{course.description}</p>
                   </div>
                   <div className="text-right">
-                    <p className={`text-sm ${getTextClasses(isDark, 'secondary')}`}>
+                    <p className={`text-sm ${getTextClasses('secondary')}`}>
                       Quality: {(course.qualityScore * 100).toFixed(0)}%
                     </p>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-400'}`}>
+                    <p className="text-xs text-gray-400">
                       {course.generatedAt.toLocaleDateString()}
                     </p>
                   </div>
@@ -304,11 +292,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   );
 
   const renderNavigation = () => (
-    <nav className={`border-b mb-6 ${
-      isDark 
-        ? 'border-purple-500/30 bg-slate-950/50' 
-        : 'border-purple-300/30 bg-white/50'
-    } backdrop-blur-sm`}>
+    <nav className="border-b mb-6 border-purple-300/30 bg-white/50 dark:border-purple-500/30 dark:bg-slate-950/50 backdrop-blur-sm">
       <div className="flex space-x-8">
         {[
           { id: 'overview', label: 'Overview', icon: '📊' },
@@ -326,10 +310,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             }}
             className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               currentView === tab.id
-                ? `${isDark ? 'border-purple-400 text-purple-400' : 'border-purple-500 text-purple-600'}`
-                : `border-transparent ${getTextClasses(isDark, 'secondary')} hover:${getTextClasses(isDark, 'primary')} ${
-                    isDark ? 'hover:border-purple-500/50' : 'hover:border-purple-300'
-                  }`
+                ? 'border-purple-500 text-purple-600 dark:border-purple-400 dark:text-purple-400'
+                : `border-transparent ${getTextClasses('secondary')} hover:${getTextClasses('primary')} hover:border-purple-300 dark:hover:border-purple-500/50`
             }`}
           >
             <span>{tab.icon}</span>
@@ -366,28 +348,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   };
 
   const renderSettings = () => (
-    <div className={`${getCardClasses(isDark, false)} p-6`}>
-      <h2 className={`text-lg font-semibold mb-4 ${getTextClasses(isDark, 'primary')}`}>AI Generation Settings</h2>
+    <div className={`${getCardClasses(false)} p-6`}>
+      <h2 className={`text-lg font-semibold mb-4 ${getTextClasses('primary')}`}>AI Generation Settings</h2>
       <div className="space-y-4">
         <div>
-          <label className={`block text-sm font-medium mb-2 ${getTextClasses(isDark, 'primary')}`}>
+          <label className={`block text-sm font-medium mb-2 ${getTextClasses('primary')}`}>
             OpenAI API Key
           </label>
           <input
             type="password"
             placeholder="sk-..."
-            className={`w-full px-3 py-2 border rounded-lg transition-colors ${
-              isDark
-                ? 'border-slate-600 bg-slate-800/50 text-white placeholder-gray-400 focus:ring-purple-500 focus:border-purple-500'
-                : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500'
-            }`}
+            className="w-full px-3 py-2 border rounded-lg transition-colors border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500 dark:border-slate-600 dark:bg-slate-800/50 dark:text-white dark:placeholder-gray-400"
           />
-          <p className={`text-xs mt-1 ${getTextClasses(isDark, 'secondary')}`}>
+          <p className={`text-xs mt-1 ${getTextClasses('secondary')}`}>
             Required for AI content generation. Your key is stored securely.
           </p>
         </div>
         
-        <div className={`text-sm ${getTextClasses(isDark, 'secondary')}`}>
+        <div className={`text-sm ${getTextClasses('secondary')}`}>
           <p>Settings panel for future configuration options.</p>
           <p className="mt-2">Currently all course approvals require manual review.</p>
         </div>
@@ -398,7 +376,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   return (
     <div 
       className="min-h-screen"
-      style={getBackgroundStyle(isDark)}
+      style={getBackgroundStyle()}
     >
       <Header />
       
@@ -413,9 +391,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       {/* Course Preview Modal */}
       {selectedCourse && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{ zIndex: 10000 }}>
-          <div className={`rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col ${
-            isDark ? 'bg-slate-900' : 'bg-white'
-          }`}>
+          <div className="rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col bg-white dark:bg-slate-900">
             <GeneratedContentPreview
               course={selectedCourse}
               onClose={() => setSelectedCourse(null)}

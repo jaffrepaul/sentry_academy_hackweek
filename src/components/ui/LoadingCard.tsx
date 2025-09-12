@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { useTheme } from '@/contexts/ThemeContext'
 
 interface LoadingCardProps {
   className?: string
@@ -12,17 +11,8 @@ const LoadingCard: React.FC<LoadingCardProps> = ({
   className = '', 
   lines = 3 
 }) => {
-  const { isDark } = useTheme()
-
-  const cardClasses = `backdrop-blur-sm border rounded-2xl p-6 ${
-    isDark 
-      ? 'bg-slate-900/40 border-purple-500/30' 
-      : 'bg-white/75 border-purple-400/40'
-  }`
-
-  const skeletonClasses = `animate-pulse rounded ${
-    isDark ? 'bg-slate-700/50' : 'bg-gray-300/50'
-  }`
+  const cardClasses = 'backdrop-blur-sm border rounded-2xl p-6 bg-white/75 border-purple-400/40 dark:bg-slate-900/40 dark:border-purple-500/30'
+  const skeletonClasses = 'animate-pulse rounded bg-gray-300/50 dark:bg-slate-700/50'
 
   return (
     <div className={`${cardClasses} ${className}`} aria-label="Loading content">

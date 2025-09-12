@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { signIn, getProviders, useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Github, Mail, Eye, EyeOff } from 'lucide-react'
-import { useTheme } from '@/contexts/ThemeContext'
+// Theme handled automatically by Tailwind dark: classes
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -19,7 +19,7 @@ export default function SignInPage() {
   const { data: session } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
   
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   const errorParam = searchParams.get('error')
@@ -72,7 +72,7 @@ export default function SignInPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className={isDark ? 'text-white' : 'text-gray-900'}>
+          <p className="text-gray-900 dark:text-white">
             You are already signed in. Redirecting...
           </p>
         </div>
@@ -87,23 +87,15 @@ export default function SignInPage() {
       <main className="pt-20 pb-16">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h1 className={`text-3xl font-bold mb-4 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
               Welcome Back
             </h1>
-            <p className={`text-lg ${
-              isDark ? 'text-gray-300' : 'text-gray-600'
-            }`}>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
               Sign in to continue your Sentry Academy journey
             </p>
           </div>
 
-          <div className={`rounded-2xl p-8 backdrop-blur-sm border ${
-            isDark
-              ? 'bg-slate-900/40 border-purple-500/30'
-              : 'bg-white/75 border-purple-400/40'
-          }`}>
+          <div className="rounded-2xl p-8 backdrop-blur-sm border bg-white/75 border-purple-400/40 dark:bg-slate-900/40 dark:border-purple-500/30">
             {error && (
               <div className="mb-6 p-4 rounded-lg bg-red-100 border border-red-300 text-red-700">
                 {error}
@@ -116,11 +108,7 @@ export default function SignInPage() {
                 {providers.google && (
                   <button
                     onClick={() => handleProviderSignIn('google')}
-                    className={`w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-[1.02] ${
-                      isDark
-                        ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
-                        : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-sm'
-                    }`}
+                    className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-[1.02] bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-sm dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white dark:border-slate-600"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -135,11 +123,7 @@ export default function SignInPage() {
                 {providers.github && (
                   <button
                     onClick={() => handleProviderSignIn('github')}
-                    className={`w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-[1.02] ${
-                      isDark
-                        ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
-                        : 'bg-gray-900 hover:bg-gray-800 text-white'
-                    }`}
+                    className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-[1.02] bg-gray-900 hover:bg-gray-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600"
                   >
                     <Github className="w-5 h-5" />
                     <span>Continue with GitHub</span>
@@ -150,17 +134,11 @@ export default function SignInPage() {
 
             {/* Divider */}
             <div className="relative my-6">
-              <div className={`absolute inset-0 flex items-center ${
-                isDark ? 'text-gray-500' : 'text-gray-400'
-              }`}>
+              <div className="absolute inset-0 flex items-center text-gray-400 dark:text-gray-500">
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className={`px-2 ${
-                  isDark 
-                    ? 'bg-slate-900/40 text-gray-400' 
-                    : 'bg-white/75 text-gray-500'
-                }`}>
+                <span className="px-2 bg-white/75 text-gray-500 dark:bg-slate-900/40 dark:text-gray-400">
                   Or continue with email
                 </span>
               </div>
@@ -169,24 +147,16 @@ export default function SignInPage() {
             {/* Email/Password Form */}
             <form onSubmit={handleCredentialsSignIn} className="space-y-4">
               <div>
-                <label className={`block text-sm font-medium mb-2 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-                    isDark ? 'text-gray-400' : 'text-gray-500'
-                  }`} />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'bg-slate-800 border-slate-600 text-white placeholder-gray-400 focus:border-purple-500'
-                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-purple-500'
-                    } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border transition-colors bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-purple-500 dark:bg-slate-800 dark:border-slate-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                     placeholder="Enter your email"
                     required
                   />
@@ -194,9 +164,7 @@ export default function SignInPage() {
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                   Password
                 </label>
                 <div className="relative">
@@ -204,20 +172,14 @@ export default function SignInPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full pl-4 pr-10 py-3 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'bg-slate-800 border-slate-600 text-white placeholder-gray-400 focus:border-purple-500'
-                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-purple-500'
-                    } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                    className="w-full pl-4 pr-10 py-3 rounded-lg border transition-colors bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-purple-500 dark:bg-slate-800 dark:border-slate-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                     placeholder="Enter your password"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
-                      isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'
-                    }`}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -233,15 +195,11 @@ export default function SignInPage() {
               </button>
             </form>
 
-            <p className={`text-center text-sm mt-6 ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            }`}>
+            <p className="text-center text-sm mt-6 text-gray-600 dark:text-gray-400">
               Don't have an account?{' '}
               <button
                 onClick={() => {/* For demo purposes, you can implement sign up later */}}
-                className={`font-medium hover:underline ${
-                  isDark ? 'text-purple-400' : 'text-purple-600'
-                }`}
+                className="font-medium hover:underline text-purple-600 dark:text-purple-400"
               >
                 Contact your administrator
               </button>

@@ -2,7 +2,6 @@
 
 import React, { Suspense } from 'react'
 import LoadingSpinner from './ui/LoadingSpinner'
-import { useTheme } from '@/contexts/ThemeContext'
 
 interface SuspenseBoundaryProps {
   children: React.ReactNode
@@ -11,13 +10,11 @@ interface SuspenseBoundaryProps {
 }
 
 const DefaultFallback: React.FC = () => {
-  const { isDark } = useTheme()
-  
   return (
     <div className="flex items-center justify-center min-h-[200px]">
       <div className="text-center">
         <LoadingSpinner size="lg" />
-        <p className={`mt-4 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
           Loading content...
         </p>
       </div>

@@ -2,7 +2,7 @@
 
 import React, { memo, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTheme } from '@/contexts/ThemeContext'
+// Theme handled automatically by Tailwind dark: classes
 import { getNavLinkClasses, scrollToSection } from '@/utils/styles'
 
 interface NavigationLinksProps {
@@ -14,12 +14,12 @@ const NavigationLinks: React.FC<NavigationLinksProps> = memo(({
   isMobile = false, 
   onLinkClick 
 }) => {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
   const router = useRouter()
 
   const navLinkClasses = useMemo(() => 
-    `${getNavLinkClasses(isDark)} ${isMobile ? 'text-left' : ''}`, 
-    [isDark, isMobile]
+    `${getNavLinkClasses()} ${isMobile ? 'text-left' : ''}`, 
+    [isMobile]
   )
 
   const handleScrollToSection = useCallback((sectionId: string) => {

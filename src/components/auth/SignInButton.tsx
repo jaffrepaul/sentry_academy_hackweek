@@ -2,18 +2,14 @@
 
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { LogIn, LogOut, User } from 'lucide-react'
-import { useTheme } from '@/contexts/ThemeContext'
 import Image from 'next/image'
 
 export default function SignInButton() {
   const { data: session, status } = useSession()
-  const { isDark } = useTheme()
 
   if (status === 'loading') {
     return (
-      <div className={`animate-pulse h-9 w-24 rounded-lg ${
-        isDark ? 'bg-slate-700' : 'bg-gray-200'
-      }`} />
+      <div className="animate-pulse h-9 w-24 rounded-lg bg-gray-200 dark:bg-slate-700" />
     )
   }
 
@@ -31,15 +27,11 @@ export default function SignInButton() {
               className="w-8 h-8 rounded-full"
             />
           ) : (
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              isDark ? 'bg-slate-700' : 'bg-gray-200'
-            }`}>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-slate-700">
               <User className="w-4 h-4" />
             </div>
           )}
-          <span className={`text-sm font-medium hidden sm:inline ${
-            isDark ? 'text-gray-300' : 'text-gray-700'
-          }`}>
+          <span className="text-sm font-medium hidden sm:inline text-gray-700 dark:text-gray-300">
             {session.user?.name || session.user?.email}
           </span>
         </div>
@@ -47,11 +39,7 @@ export default function SignInButton() {
         {/* Sign Out Button */}
         <button
           onClick={() => signOut()}
-          className={`inline-flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
-            isDark
-              ? 'bg-slate-700/60 text-gray-300 hover:bg-slate-600/80 border border-slate-600/50'
-              : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50'
-          }`}
+          className="inline-flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50 dark:bg-slate-700/60 dark:text-gray-300 dark:hover:bg-slate-600/80 dark:border-slate-600/50"
         >
           <LogOut className="w-4 h-4" />
           <span className="hidden sm:inline">Sign Out</span>

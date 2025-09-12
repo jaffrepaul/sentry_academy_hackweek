@@ -3,7 +3,7 @@
 import React, { memo, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Clock, Trophy, ChevronRight, Star } from 'lucide-react'
-import { useTheme } from '@/contexts/ThemeContext'
+// Theme handled automatically by Tailwind dark: classes
 import { getCardClasses, getTextClasses, getButtonClasses } from '@/utils/styles'
 
 interface Course {
@@ -35,7 +35,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
   difficulty,
   isPopular = false
 }) => {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
   const router = useRouter()
 
   const handleCardClick = useCallback(() => {
@@ -44,7 +44,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
     }
   }, [slug, router])
 
-  const cardClasses = useMemo(() => getCardClasses(isDark), [isDark])
+  const cardClasses = useMemo(() => getCardClasses(), [])
   
   return (
     <div className="group cursor-pointer relative transition-smooth hover:scale-[1.02]" onClick={handleCardClick}>
@@ -58,28 +58,24 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
       
       <div className={`${cardClasses} p-6 h-full group-hover:shadow-2xl`}>
         <div className="flex items-center justify-between mb-4">
-          <span className={`text-xs font-medium uppercase tracking-wider px-2 py-1 rounded-full ${
-            isDark 
-              ? 'text-purple-300 bg-purple-500/20' 
-              : 'text-purple-700 bg-purple-200/60'
-          }`}>
+          <span className="text-xs font-medium uppercase tracking-wider px-2 py-1 rounded-full text-purple-700 bg-purple-200/60 dark:text-purple-300 dark:bg-purple-500/20">
             {category || 'General'}
           </span>
           <div className="flex items-center space-x-1">
             <Star className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{rating || '4.5'}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-300">{rating || '4.5'}</span>
           </div>
         </div>
 
-        <h3 className={`text-xl font-bold mb-3 transition-all duration-300 ease-out ${getTextClasses(isDark, 'primary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')} group-hover:translate-x-1`}>
+        <h3 className={`text-xl font-bold mb-3 transition-smooth text-white group-hover:text-purple-400 group-hover:translate-x-1 ${getTextClasses('primary')}`}>
           {title}
         </h3>
 
-        <p className={`mb-6 leading-relaxed line-clamp-3 ${getTextClasses(isDark, 'secondary')}`}>
+        <p className={`mb-6 leading-relaxed line-clamp-3 ${getTextClasses('secondary')}`}>
           {description || 'Course description not available.'}
         </p>
 
-        <div className={`flex items-center justify-between text-sm mb-6 ${getTextClasses(isDark, 'secondary')}`}>
+        <div className={`flex items-center justify-between text-sm mb-6 ${getTextClasses('secondary')}`}>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
               <Clock className="w-4 h-4" />
@@ -94,12 +90,12 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
         </div>
 
         <div className={`flex items-center justify-between pt-4 border-t ${
-          isDark ? 'border-slate-700/50' : 'border-gray-200/50'
+          'border-gray-200/50 dark:border-slate-700/50'
         }`}>
-          <span className={`font-medium transition-colors ${getTextClasses(isDark, 'accent')}`}>
+          <span className={`font-medium transition-colors ${getTextClasses('accent')}`}>
             Start Course
           </span>
-          <ChevronRight className={`w-5 h-5 group-hover:translate-x-2 transition-all duration-300 ease-out ${getTextClasses(isDark, 'secondary')} group-hover:${getTextClasses(isDark, 'accent').replace('text-', 'text-')}`} />
+          <ChevronRight className={`w-5 h-5 group-hover:translate-x-2 transition-all duration-300 ease-out ${getTextClasses('secondary')} group-hover:${getTextClasses('accent')}`} />
         </div>
       </div>
     </div>
@@ -114,11 +110,11 @@ interface CourseGridProps {
 }
 
 const CourseGrid: React.FC<CourseGridProps> = memo(({ courses, showFilters = false }) => {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark])
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark])
-  const buttonClasses = useMemo(() => getButtonClasses(isDark, 'secondary'), [isDark])
+  const titleClasses = useMemo(() => getTextClasses('primary'), [])
+  const subtitleClasses = useMemo(() => getTextClasses('secondary'), [])
+  const buttonClasses = useMemo(() => getButtonClasses('secondary'), [])
 
   return (
     <section id="courses" className="py-20 lg:py-32 relative">
@@ -135,7 +131,7 @@ const CourseGrid: React.FC<CourseGridProps> = memo(({ courses, showFilters = fal
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-8">
           {courses.map((course) => (
             <CourseCard key={course.id} {...course} />
           ))}

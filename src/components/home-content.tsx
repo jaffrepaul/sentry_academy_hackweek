@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState, Suspense } from 'react'
 import dynamic from 'next/dynamic'
-import { useTheme } from '@/contexts/ThemeContext'
+// Theme handled automatically by Tailwind dark: classes
 import { getBackgroundStyle, handleHashNavigation } from '@/utils/styles'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
@@ -16,12 +16,12 @@ const LearningPaths = dynamic(() => import('@/components/LearningPaths'), {
     <div className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="animate-pulse bg-gray-300/50 h-8 w-64 mx-auto rounded mb-6" />
-          <div className="animate-pulse bg-gray-300/50 h-4 w-96 mx-auto rounded" />
+          <div className="animate-pulse bg-gray-300/50 dark:bg-gray-600/50 h-8 w-64 mx-auto rounded mb-6" />
+          <div className="animate-pulse bg-gray-300/50 dark:bg-gray-600/50 h-4 w-96 mx-auto rounded" />
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="animate-pulse bg-gray-300/50 h-64 rounded-xl" />
+            <div key={index} className="animate-pulse bg-gray-300/50 dark:bg-gray-600/50 h-64 rounded-xl" />
           ))}
         </div>
       </div>
@@ -77,24 +77,13 @@ const HomePageContent = ({ courses }: HomeContentProps) => {
 }
 
 export default function HomeContent({ courses }: HomeContentProps) {
-  const { isDark } = useTheme()
-
   // Handle hash fragments for direct URLs like /#courses
   useEffect(() => {
     handleHashNavigation(window.location.hash)
   }, [])
 
-  // Memoize background styles to prevent recalculation on every render
-  const backgroundStyle = useMemo(() => getBackgroundStyle(isDark), [isDark])
-
-  // Memoize gradient classes for better performance
-  const gradientClasses = useMemo(() => ({
-    primary: isDark 
-      ? 'bg-gradient-to-r from-purple-500/10 via-transparent to-violet-500/10' 
-      : 'bg-gradient-to-r from-purple-200/20 via-transparent to-pink-200/20',
-    accent1: isDark ? 'bg-purple-500/10' : 'bg-purple-300/20',
-    accent2: isDark ? 'bg-violet-500/10' : 'bg-pink-300/20'
-  }), [isDark])
+  // Background styles now use CSS custom properties that work with dark mode
+  const backgroundStyle = useMemo(() => getBackgroundStyle(), [])
 
   return (
     <>
@@ -109,10 +98,10 @@ export default function HomeContent({ courses }: HomeContentProps) {
           contain: 'layout style paint'
         }}
       >
-        {/* Animated background elements */}
-        <div className={`absolute inset-0 ${gradientClasses.primary}`} style={{ pointerEvents: 'none' }} />
+        {/* Animated background elements using Tailwind dark: classes */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-200/20 via-transparent to-pink-200/20 dark:from-purple-500/10 dark:via-transparent dark:to-violet-500/10" style={{ pointerEvents: 'none' }} />
         <div 
-          className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl ${gradientClasses.accent1}`}
+          className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl bg-purple-300/20 dark:bg-purple-500/10"
           style={{
             animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             willChange: 'auto',
@@ -120,7 +109,7 @@ export default function HomeContent({ courses }: HomeContentProps) {
           }}
         />
         <div 
-          className={`absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl ${gradientClasses.accent2}`}
+          className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl bg-pink-300/20 dark:bg-violet-500/10"
           style={{
             animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s',
             willChange: 'auto',

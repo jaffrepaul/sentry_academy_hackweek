@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTheme } from '@/contexts/ThemeContext'
+// Theme handled automatically by Tailwind dark: classes
 import { getTextClasses } from '@/utils/styles'
 import { getMockCourses } from '@/lib/actions/course-actions'
 import Header from '@/components/Header'
@@ -245,18 +245,14 @@ const ContentModule = ({ title, description, duration, isCompleted = false, isAc
   isActive?: boolean
   onClick: () => void
 }) => {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
 
   const cardClasses = useMemo(() => {
     if (isActive) {
-      return isDark 
-        ? 'border-purple-400/80 bg-slate-900/80 shadow-lg shadow-purple-500/25'
-        : 'border-purple-400/80 bg-white/80 shadow-lg shadow-purple-300/25'
+      return 'border-purple-400/80 bg-white/80 shadow-lg shadow-purple-300/25 dark:bg-slate-900/80 dark:shadow-purple-500/25'
     }
-    return isDark
-      ? 'border-purple-500/30 bg-slate-900/40 hover:border-purple-400/60 hover:bg-slate-900/60'
-      : 'border-purple-300/30 bg-white/60 hover:border-purple-400/60 hover:bg-white/80'
-  }, [isDark, isActive])
+    return 'border-purple-300/30 bg-white/60 hover:border-purple-400/60 hover:bg-white/80 dark:border-purple-500/30 dark:bg-slate-900/40 dark:hover:border-purple-400/60 dark:hover:bg-slate-900/60'
+  }, [isActive])
 
   return (
     <div 
@@ -271,18 +267,18 @@ const ContentModule = ({ title, description, duration, isCompleted = false, isAc
             {isCompleted ? (
               <CheckCircle className="w-6 h-6 text-green-400" />
             ) : (
-              <Circle className={`w-6 h-6 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+              <Circle className="w-6 h-6 text-gray-500 dark:text-gray-400" />
             )}
-            <h3 className={`text-lg font-bold ${getTextClasses(isDark, 'primary')}`}>
+            <h3 className={`text-lg font-bold ${getTextClasses('primary')}`}>
               {title}
             </h3>
           </div>
-          <div className={`flex items-center space-x-1 text-sm ${getTextClasses(isDark, 'secondary')}`}>
+          <div className={`flex items-center space-x-1 text-sm ${getTextClasses('secondary')}`}>
             <Clock className="w-4 h-4" />
             <span>{duration}</span>
           </div>
         </div>
-        <p className={getTextClasses(isDark, 'secondary')}>
+        <p className={getTextClasses('secondary')}>
           {description}
         </p>
       </div>
@@ -292,7 +288,7 @@ const ContentModule = ({ title, description, duration, isCompleted = false, isAc
 
 // Course Navigation Component
 const CourseNavigation = ({ currentCourse }: { currentCourse: any }) => {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
   const router = useRouter()
   const [allCourses, setAllCourses] = useState<any[]>([])
 
@@ -323,38 +319,32 @@ const CourseNavigation = ({ currentCourse }: { currentCourse: any }) => {
           {previousCourse ? (
             <button 
               onClick={() => router.push(`/courses/${previousCourse.slug}`)}
-              className={`w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] hover:shadow-lg ${
-                isDark
-                  ? 'bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50 hover:border-slate-500/70'
-                  : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300'
-              }`}
+              className="w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] hover:shadow-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 dark:border-slate-600/50 dark:hover:border-slate-500/70"
             >
               <div className="flex items-start space-x-3 h-full">
-                <ArrowLeft className={`w-5 h-5 mt-1 flex-shrink-0 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+                <ArrowLeft className="w-5 h-5 mt-1 flex-shrink-0 text-gray-500 dark:text-gray-400" />
                 <div className="flex-1 min-h-0">
-                  <div className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
                     Previous Course
                   </div>
-                  <div className={`font-semibold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <div className="font-semibold mt-1 text-gray-900 dark:text-white">
                     {previousCourse.title}
                   </div>
-                  <div className={`text-sm mt-2 line-clamp-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <div className="text-sm mt-2 line-clamp-2 text-gray-600 dark:text-gray-300">
                     {previousCourse.description}
                   </div>
                 </div>
               </div>
             </button>
           ) : (
-            <div className={`w-full h-32 p-4 rounded-xl ${
-              isDark ? 'bg-slate-800/30 border border-slate-700/30' : 'bg-gray-50/50 border border-gray-200/50'
-            }`}>
+            <div className="w-full h-32 p-4 rounded-xl bg-gray-50/50 border border-gray-200/50 dark:bg-slate-800/30 dark:border-slate-700/30">
               <div className="flex items-start space-x-3 h-full">
-                <ArrowLeft className={`w-5 h-5 mt-1 flex-shrink-0 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} />
+                <ArrowLeft className="w-5 h-5 mt-1 flex-shrink-0 text-gray-400 dark:text-gray-600" />
                 <div className="flex-1">
-                  <div className={`text-sm font-medium ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                  <div className="text-sm font-medium text-gray-400 dark:text-gray-600">
                     First Course
                   </div>
-                  <div className={`font-semibold mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                  <div className="font-semibold mt-1 text-gray-400 dark:text-gray-500">
                     Start of your learning path
                   </div>
                 </div>
@@ -368,41 +358,35 @@ const CourseNavigation = ({ currentCourse }: { currentCourse: any }) => {
           {nextCourse ? (
             <button 
               onClick={() => router.push(`/courses/${nextCourse.slug}`)}
-              className={`w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] hover:shadow-xl bg-gradient-to-r from-purple-500/20 to-pink-400/20 hover:from-purple-500/30 hover:to-pink-400/30 ${
-                isDark
-                  ? 'border border-purple-500/40 hover:border-purple-400/60'
-                  : 'border border-purple-300/40 hover:border-purple-400/60'
-              }`}
+              className="w-full h-32 p-4 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02] hover:shadow-xl bg-gradient-to-r from-purple-500/20 to-pink-400/20 hover:from-purple-500/30 hover:to-pink-400/30 border border-purple-300/40 hover:border-purple-400/60 dark:border-purple-500/40"
             >
               <div className="flex items-start justify-between h-full">
                 <div className="flex-1 min-h-0">
-                  <div className={`text-sm font-medium ${isDark ? 'text-purple-300' : 'text-purple-600'}`}>
+                  <div className="text-sm font-medium text-purple-600 dark:text-purple-300">
                     🎯 Recommended Next Course
                   </div>
-                  <div className={`font-semibold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <div className="font-semibold mt-1 text-gray-900 dark:text-white">
                     {nextCourse.title}
                   </div>
-                  <div className={`text-sm mt-2 line-clamp-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <div className="text-sm mt-2 line-clamp-2 text-gray-600 dark:text-gray-300">
                     {nextCourse.description}
                   </div>
                 </div>
-                <ArrowRight className={`w-5 h-5 mt-1 ${isDark ? 'text-purple-400' : 'text-purple-500'} flex-shrink-0 ml-3`} />
+                <ArrowRight className="w-5 h-5 mt-1 text-purple-500 dark:text-purple-400 flex-shrink-0 ml-3" />
               </div>
             </button>
           ) : (
-            <div className={`w-full h-32 p-4 rounded-xl ${
-              isDark ? 'bg-slate-800/30 border border-slate-700/30' : 'bg-gray-50/50 border border-gray-200/50'
-            }`}>
+            <div className="w-full h-32 p-4 rounded-xl bg-gray-50/50 border border-gray-200/50 dark:bg-slate-800/30 dark:border-slate-700/30">
               <div className="flex items-start justify-between h-full">
                 <div className="flex-1">
-                  <div className={`text-sm font-medium ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                  <div className="text-sm font-medium text-gray-400 dark:text-gray-600">
                     Learning Path Complete
                   </div>
-                  <div className={`font-semibold mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                  <div className="font-semibold mt-1 text-gray-400 dark:text-gray-500">
                     Great job finishing your path!
                   </div>
                 </div>
-                <CheckCircle className={`w-5 h-5 mt-1 ${isDark ? 'text-gray-600' : 'text-gray-400'} flex-shrink-0`} />
+                <CheckCircle className="w-5 h-5 mt-1 text-gray-400 dark:text-gray-600 flex-shrink-0" />
               </div>
             </div>
           )}
@@ -417,7 +401,7 @@ interface CourseDetailClientProps {
 }
 
 export default function CourseDetailClient({ initialCourse }: CourseDetailClientProps) {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
   const [activeModule, setActiveModule] = useState(0)
   const course = initialCourse
   const modules = getCourseModules(course.slug)
@@ -469,7 +453,7 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
   })
 
   return (
-    <div className="min-h-screen pt-20">
+    <>
       <StructuredData 
         data={[
           courseStructuredData,
@@ -478,33 +462,53 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
       />
       <Header />
       
+      {/* Main content with background matching home page */}
+      <div 
+        className="min-h-screen relative pt-20"
+        style={{ contain: 'layout style paint' }}
+      >
+        {/* Animated background elements using Tailwind dark: classes */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-200/20 via-transparent to-pink-200/20 dark:from-purple-500/10 dark:via-transparent dark:to-violet-500/10" style={{ pointerEvents: 'none' }} />
+        <div 
+          className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl bg-purple-300/20 dark:bg-purple-500/10"
+          style={{
+            animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            willChange: 'auto',
+            pointerEvents: 'none'
+          }}
+        />
+        <div 
+          className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl bg-pink-300/20 dark:bg-violet-500/10"
+          style={{
+            animation: 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s',
+            willChange: 'auto',
+            pointerEvents: 'none'
+          }}
+        />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <Link 
             href="/courses"
-            className={`p-2 rounded-lg transition-all duration-200 transform hover:scale-110 shadow-lg backdrop-blur-sm hover:shadow-xl ${
-              isDark
-                ? 'bg-slate-800/50 hover:bg-slate-700/50 text-gray-300 hover:text-white border border-purple-500/30 hover:border-purple-400/60 hover:shadow-purple-500/20'
-                : 'bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 hover:text-gray-900 border border-purple-300/30 hover:border-purple-400/60 hover:shadow-purple-300/20'
-            }`}
+            className="p-2 rounded-lg transition-all duration-200 transform hover:scale-110 shadow-lg backdrop-blur-sm hover:shadow-xl bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 hover:text-gray-900 border border-purple-300/30 hover:border-purple-400/60 hover:shadow-purple-300/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 dark:text-gray-300 dark:hover:text-white dark:border-purple-500/30 dark:hover:shadow-purple-500/20"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className={`text-3xl font-bold ${getTextClasses(isDark, 'primary')}`}>
+            <h1 className={`text-3xl font-bold ${getTextClasses('primary')}`}>
               {course.title}
             </h1>
             <div className="flex items-center space-x-4 mt-2">
               <div className="flex items-center space-x-1">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className={`text-sm ${getTextClasses(isDark, 'secondary')}`}>{course.rating || '4.5'}</span>
+                <span className={`text-sm ${getTextClasses('secondary')}`}>{course.rating || '4.5'}</span>
               </div>
-              <div className={`flex items-center space-x-1 text-sm ${getTextClasses(isDark, 'secondary')}`}>
+              <div className={`flex items-center space-x-1 text-sm ${getTextClasses('secondary')}`}>
                 <Users className="w-4 h-4" />
                 <span>{course.students?.toLocaleString() || '0'} students</span>
               </div>
-              <div className={`flex items-center space-x-1 text-sm ${getTextClasses(isDark, 'secondary')}`}>
+              <div className={`flex items-center space-x-1 text-sm ${getTextClasses('secondary')}`}>
                 <Trophy className="w-4 h-4" />
                 <span>{course.level || course.difficulty || 'Beginner'}</span>
               </div>
@@ -515,12 +519,8 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Content Modules Sidebar */}
           <div className="lg:col-span-1">
-            <div className={`course-content-section backdrop-blur-sm border rounded-2xl p-6 ${
-              isDark 
-                ? 'bg-slate-900/40 border-purple-500/30'
-                : 'bg-white/60 border-purple-300/30'
-            }`}>
-              <h2 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <div className="course-content-section backdrop-blur-sm border rounded-2xl p-6 bg-white/60 border-purple-300/30 dark:bg-slate-900/40 dark:border-purple-500/30">
+              <h2 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">
                 Content Modules
               </h2>
               <div className="space-y-4">
@@ -538,7 +538,7 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
               </div>
               
               <div className="mt-8 pt-6 border-t border-purple-500/20">
-                <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
                   Progress: {completedModules} of {modules.length} completed
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
@@ -550,15 +550,9 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
 
           {/* Main Content Area */}
           <div className="lg:col-span-2">
-            <div className={`backdrop-blur-sm border rounded-2xl p-8 ${
-              isDark 
-                ? 'bg-slate-900/40 border-purple-500/30'
-                : 'bg-white/60 border-purple-300/30'
-            }`}>
+            <div className="backdrop-blur-sm border rounded-2xl p-8 bg-white/60 border-purple-300/30 dark:bg-slate-900/40 dark:border-purple-500/30">
               {/* Video/Content Player */}
-              <div className={`course-content-section aspect-video rounded-xl mb-8 overflow-hidden ${
-                isDark ? 'bg-slate-800/50' : 'bg-gray-100/50'
-              }`}>
+              <div className="course-content-section aspect-video rounded-xl mb-8 overflow-hidden bg-gray-100/50 dark:bg-slate-800/50">
                 <iframe
                   width="100%"
                   height="100%"
@@ -574,27 +568,23 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
               {/* Module Content */}
               <div className="course-content-section space-y-6">
                 <div>
-                  <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
                     {currentModule?.title || 'Module Title'}
                   </h3>
-                  <p className={`text-lg leading-relaxed mb-6 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <p className="text-lg leading-relaxed mb-6 text-gray-600 dark:text-gray-300">
                     {currentModule?.description || 'Module description'}
                   </p>
                 </div>
 
                 {/* Key Takeaways */}
-                <div className={`course-content-section border rounded-xl p-6 ${
-                  isDark 
-                    ? 'border-purple-500/30 bg-slate-800/30'
-                    : 'border-purple-300/30 bg-purple-50/30'
-                }`}>
+                <div className="course-content-section border rounded-xl p-6 border-purple-300/30 bg-purple-50/30 dark:border-purple-500/30 dark:bg-slate-800/30">
                   <div className="flex items-center space-x-2 mb-4">
                     <Lightbulb className="w-5 h-5 text-purple-400" />
-                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="font-bold text-gray-900 dark:text-white">
                       Key Takeaways
                     </h4>
                   </div>
-                  <ul className={`space-y-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                     {contentConfig.keyTakeaways.map((takeaway, index) => (
                       <li key={index} className="flex items-start space-x-2">
                         <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
@@ -605,30 +595,22 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
                 </div>
 
                 {/* Real World Scenario */}
-                <div className={`course-content-section border rounded-xl p-6 ${
-                  isDark 
-                    ? 'border-green-500/30 bg-green-900/10'
-                    : 'border-green-300/30 bg-green-50/30'
-                }`}>
+                <div className="course-content-section border rounded-xl p-6 border-green-300/30 bg-green-50/30 dark:border-green-500/30 dark:bg-green-900/10">
                   <div className="flex items-center space-x-2 mb-4">
                     <Users className="w-5 h-5 text-green-400" />
-                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="font-bold text-gray-900 dark:text-white">
                       Real World Scenario
                     </h4>
                   </div>
-                  <div className={`${isDark ? 'text-gray-300' : 'text-gray-600'} space-y-4`}>
-                    <div className={`p-4 rounded-lg ${
-                      isDark ? 'bg-slate-800/30' : 'bg-white/50'
-                    }`}>
-                      <h5 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <div className="text-gray-600 dark:text-gray-300 space-y-4">
+                    <div className="p-4 rounded-lg bg-white/50 dark:bg-slate-800/30">
+                      <h5 className="font-semibold mb-2 text-gray-900 dark:text-white">
                         {contentConfig.scenario.title}
                       </h5>
                       <p className="mb-3">
                         {contentConfig.scenario.description}
                       </p>
-                      <div className={`p-3 rounded border-l-4 border-green-400 ${
-                        isDark ? 'bg-green-900/20' : 'bg-green-50'
-                      }`}>
+                      <div className="p-3 rounded border-l-4 border-green-400 bg-green-50 dark:bg-green-900/20">
                         <p className="text-sm">
                           <strong>Solution:</strong> {contentConfig.scenario.solution}
                         </p>
@@ -641,48 +623,34 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
                 </div>
 
                 {/* Code Example */}
-                <div className={`course-content-section border rounded-xl p-6 ${
-                  isDark 
-                    ? 'border-purple-500/30 bg-slate-800/30'
-                    : 'border-purple-300/30 bg-gray-50/30'
-                }`}>
+                <div className="course-content-section border rounded-xl p-6 border-purple-300/30 bg-gray-50/30 dark:border-purple-500/30 dark:bg-slate-800/30">
                   <div className="flex items-center space-x-2 mb-4">
                     <Code className="w-5 h-5 text-purple-400" />
-                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="font-bold text-gray-900 dark:text-white">
                       {contentConfig.codeExample.title}
                     </h4>
                   </div>
-                  <div className={`rounded-lg p-4 font-mono text-sm ${
-                    isDark ? 'bg-slate-900/50 text-green-400' : 'bg-white/50 text-green-600'
-                  }`}>
-                    <div className={`${isDark ? 'text-gray-400' : 'text-gray-500'} mb-2`}>// {contentConfig.codeExample.filename}</div>
+                  <div className="rounded-lg p-4 font-mono text-sm bg-white/50 text-green-600 dark:bg-slate-900/50 dark:text-green-400">
+                    <div className="text-gray-500 dark:text-gray-400 mb-2">// {contentConfig.codeExample.filename}</div>
                     <pre className="whitespace-pre-wrap">{contentConfig.codeExample.code}</pre>
                   </div>
                 </div>
 
                 {/* Interactive Demo */}
-                <div className={`course-content-section border rounded-xl p-6 ${
-                  isDark 
-                    ? 'border-blue-500/30 bg-blue-900/10'
-                    : 'border-blue-300/30 bg-blue-50/30'
-                }`}>
+                <div className="course-content-section border rounded-xl p-6 border-blue-300/30 bg-blue-50/30 dark:border-blue-500/30 dark:bg-blue-900/10">
                   <div className="flex items-center space-x-2 mb-4">
                     <Monitor className="w-5 h-5 text-blue-400" />
-                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="font-bold text-gray-900 dark:text-white">
                       Interactive Sentry UI Demo
                     </h4>
                   </div>
                   <div className="space-y-4">
-                    <div className={`max-w-4xl border rounded-xl overflow-hidden ${
-                      isDark 
-                        ? 'border-slate-700/50 bg-slate-800/30' 
-                        : 'border-gray-200 bg-gray-50/50'
-                    }`}>
+                    <div className="max-w-4xl border rounded-xl overflow-hidden border-gray-200 bg-gray-50/50 dark:border-slate-700/50 dark:bg-slate-800/30">
                       <Arcade 
                         src={contentConfig.arcadeUrl}
                       />
                     </div>
-                    <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
                       💡 <strong>Try it yourself:</strong> Explore the Sentry dashboard, view error details with stack traces, 
                       watch session replays, and see how performance monitoring identifies bottlenecks across your application.
                     </div>
@@ -690,19 +658,15 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
                 </div>
 
                 {/* GitHub Repository Callout */}
-                <div className={`course-content-section border rounded-xl p-6 ${
-                  isDark 
-                    ? 'border-green-500/30 bg-green-900/10'
-                    : 'border-green-300/30 bg-green-50/30'
-                }`}>
+                <div className="course-content-section border rounded-xl p-6 border-green-300/30 bg-green-50/30 dark:border-green-500/30 dark:bg-green-900/10">
                   <div className="flex items-center space-x-2 mb-4">
                     <Github className="w-5 h-5 text-green-400" />
-                    <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="font-bold text-gray-900 dark:text-white">
                       Code Along with This Course
                     </h4>
                   </div>
                   <div className="space-y-4">
-                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <p className="text-gray-600 dark:text-gray-300">
                       Get hands-on experience with Sentry's complete monitoring stack. Fork this repository to access 
                       working Next.js examples with error tracking, performance monitoring, session replay, and user feedback.
                     </p>
@@ -711,11 +675,7 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
                         href="https://github.com/getsentry/sentry-academy"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 ${
-                          isDark
-                            ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-green-500/30'
-                            : 'bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-green-500/30'
-                        }`}
+                        className="inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-green-500/30"
                       >
                         <Github className="w-4 h-4" />
                         <span>Fork Repository</span>
@@ -724,16 +684,12 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
                         href="https://github.com/getsentry/sentry-academy"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                          isDark
-                            ? 'border border-green-500/50 text-green-400 hover:bg-green-500/10 hover:border-green-400/70'
-                            : 'border border-green-500/50 text-green-600 hover:bg-green-50 hover:border-green-500/70'
-                        }`}
+                        className="inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 border border-green-500/50 text-green-600 hover:bg-green-50 hover:border-green-500/70 dark:text-green-400 dark:hover:bg-green-500/10 dark:hover:border-green-400/70"
                       >
                         View Repository
                       </a>
                     </div>
-                    <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
                       💡 <strong>Repository includes:</strong> Complete Next.js Sentry setup, error handling examples, 
                       custom tracing implementations, session replay configuration, and user feedback integration.
                     </div>
@@ -747,53 +703,44 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
                   rel="noopener noreferrer"
                   className="course-content-section block transition-all duration-200 hover:transform hover:scale-[1.025]"
                 >
-                  <div className={`border rounded-xl p-6 cursor-pointer transition-all duration-200 ${
-                    isDark 
-                      ? 'border-orange-500/30 bg-orange-900/10 hover:border-orange-400/50 hover:bg-orange-900/20'
-                      : 'border-orange-300/30 bg-orange-50/30 hover:border-orange-400/50 hover:bg-orange-50/50'
-                  }`}>
+                  <div className="border rounded-xl p-6 cursor-pointer transition-all duration-200 border-orange-300/30 bg-orange-50/30 hover:border-orange-400/50 hover:bg-orange-50/50 dark:border-orange-500/30 dark:bg-orange-900/10 dark:hover:border-orange-400/50 dark:hover:bg-orange-900/20">
                     <div className="flex items-center space-x-2 mb-4">
                       <FileText className="w-5 h-5 text-orange-400" />
-                      <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      <h4 className="font-bold text-gray-900 dark:text-white">
                         People Like Us!
                       </h4>
                     </div>
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
-                        <div className={`flex items-center space-x-3 px-4 py-2 rounded-lg ${
-                          isDark 
-                            ? 'bg-slate-800/50 border border-slate-700/50' 
-                            : 'bg-gray-50 border border-gray-200'
-                        }`}>
+                        <div className="flex items-center space-x-3 px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 dark:bg-slate-800/50 dark:border-slate-700/50">
                           <Image 
-                            src={isDark ? "/logos/rootly-logo-light.svg" : "/logos/rootly-logo.svg"}
+                            src="/logos/rootly-logo.svg"
                             alt="Rootly Logo" 
                             width={120}
                             height={24}
-                            className="h-6 w-auto"
+                            className="h-6 w-auto dark:hidden"
+                          />
+                          <Image 
+                            src="/logos/rootly-logo-light.svg"
+                            alt="Rootly Logo" 
+                            width={120}
+                            height={24}
+                            className="h-6 w-auto hidden dark:block"
                           />
                         </div>
-                        <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
                           AI-native incident response platform
                         </span>
                       </div>
-                      <h5 className={`font-semibold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      <h5 className="font-semibold text-lg text-gray-900 dark:text-white">
                         How Rootly Reduces MTTR by 50% with Sentry's Complete Stack
                       </h5>
-                      <div className={`${isDark ? 'text-gray-300' : 'text-gray-600'} space-y-3`}>
+                      <div className="text-gray-600 dark:text-gray-300 space-y-3">
                         <div className="flex flex-wrap gap-2">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            isDark ? 'bg-red-500/20 text-red-300' : 'bg-red-100 text-red-700'
-                          }`}>Error Monitoring</span>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            isDark ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-700'
-                          }`}>Performance Monitoring</span>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            isDark ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-700'
-                          }`}>Session Replay</span>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            isDark ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700'
-                          }`}>User Feedback</span>
+                          <span className="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300">Error Monitoring</span>
+                          <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">Performance Monitoring</span>
+                          <span className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300">Session Replay</span>
+                          <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300">User Feedback</span>
                         </div>
                         <p>
                           Rootly achieved <strong>50% faster MTTR</strong> and avoided <strong>$100,000+ ARR impact</strong> 
@@ -817,7 +764,9 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
         </div>
       </div>
       
+      </div> {/* Close background div */}
+      
       <Footer />
-    </div>
+    </>
   )
 }

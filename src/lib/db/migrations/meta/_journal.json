@@ -8,6 +8,13 @@
       "when": 1757614890263,
       "tag": "0000_sour_energizer",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1757715439956,
+      "tag": "0001_melted_quicksilver",
+      "breakpoints": true
     }
   ]
 }

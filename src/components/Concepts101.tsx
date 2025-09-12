@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTheme } from '@/contexts/ThemeContext'
+// Theme handled automatically by Tailwind dark: classes
 import { ArrowLeft } from 'lucide-react'
 import { concepts } from '@/data/concepts'
 import { Arcade } from './Arcade'
 import Image from 'next/image'
 
 const Concepts101: React.FC = () => {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
   const router = useRouter()
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const [isVisible, setIsVisible] = useState(false)
@@ -34,11 +34,7 @@ const Concepts101: React.FC = () => {
         <div className="mb-8">
           <button
             onClick={handleBackClick}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:scale-105 ${
-              isDark
-                ? 'bg-slate-800/50 hover:bg-slate-700/70 text-gray-300 hover:text-purple-400'
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-purple-600'
-            }`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:scale-105 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-purple-600 dark:bg-slate-800/50 dark:hover:bg-slate-700/70 dark:text-gray-300 dark:hover:text-purple-400"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Home
@@ -49,17 +45,13 @@ const Concepts101: React.FC = () => {
         <div className={`text-center mb-16 transition-all duration-700 ease-out ${
           isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-6'
         }`}>
-          <h1 className={`text-3xl md:text-5xl font-bold mb-6 ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>
+          <h1 className="text-3xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
             Sentry{' '}
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Concepts 101
             </span>
           </h1>
-          <p className={`text-xl max-w-2xl mx-auto ${
-            isDark ? 'text-gray-300' : 'text-gray-600'
-          }`}>
+          <p className="text-xl max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
             Master the core concepts that power Sentry Observability
           </p>
         </div>
@@ -77,15 +69,9 @@ const Concepts101: React.FC = () => {
                 }}
                 className={`rounded-2xl p-8 md:p-12 border transition-all duration-600 ease-out transform ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                } ${
-                  isDark 
-                    ? 'bg-slate-900/50 border-purple-500/20' 
-                    : 'bg-white/70 border-purple-200/30'
-                }`}
+                } bg-white/70 border-purple-200/30 dark:bg-slate-900/50 dark:border-purple-500/20`}
               >
-                <h2 className={`text-3xl md:text-4xl font-bold mb-8 ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
+                <h2 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900 dark:text-white">
                   {concept.order}. {concept.title}
                 </h2>
                 
@@ -95,9 +81,7 @@ const Concepts101: React.FC = () => {
                     {concept.description.map((paragraph, index) => (
                       <p 
                         key={index}
-                        className={`text-lg leading-relaxed ${
-                          isDark ? 'text-gray-300' : 'text-gray-700'
-                        }`}
+                        className="text-lg leading-relaxed text-gray-700 dark:text-gray-300"
                       >
                         {paragraph}
                       </p>
@@ -106,16 +90,8 @@ const Concepts101: React.FC = () => {
                   
                   {/* Concept Demo */}
                   <div className="concept-demo">
-                    <div className={`rounded-xl overflow-hidden border ${
-                      isDark 
-                        ? 'border-purple-500/20 bg-slate-800/30' 
-                        : 'border-purple-200/30 bg-gray-50/50'
-                    }`}>
-                      <div className={`px-4 py-3 border-b text-sm font-medium ${
-                        isDark 
-                          ? 'border-purple-500/20 text-purple-300 bg-slate-800/50' 
-                          : 'border-purple-200/30 text-purple-700 bg-purple-50/50'
-                      }`}>
+                    <div className="rounded-xl overflow-hidden border border-purple-200/30 bg-gray-50/50 dark:border-purple-500/20 dark:bg-slate-800/30">
+                      <div className="px-4 py-3 border-b text-sm font-medium border-purple-200/30 text-purple-700 bg-purple-50/50 dark:border-purple-500/20 dark:text-purple-300 dark:bg-slate-800/50">
                         {concept.useImage ? 'Visual Example' : 'Interactive Demo'}
                       </div>
                       <div className="p-4">
@@ -123,13 +99,13 @@ const Concepts101: React.FC = () => {
                           <div className="w-full">
                             {imageErrors.has(concept.id) ? (
                               <div className="text-center p-8">
-                                <div className={`text-4xl mb-4 ${isDark ? 'text-purple-400' : 'text-purple-600'}`}>
+                                <div className="text-4xl mb-4 text-purple-600 dark:text-purple-400">
                                   📊
                                 </div>
-                                <h4 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
                                   {concept.title} Visualization
                                 </h4>
-                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
                                   Interactive diagram showing {concept.title.toLowerCase()} structure and relationships
                                 </p>
                               </div>
@@ -139,11 +115,7 @@ const Concepts101: React.FC = () => {
                                 alt={concept.imageAlt || `${concept.title} visualization`}
                                 width={800}
                                 height={600}
-                                className={`w-full h-auto rounded-lg border transition-smooth transform hover:scale-105 ${
-                                  isDark 
-                                    ? 'border-gray-600/50 hover:border-gray-500/70' 
-                                    : 'border-gray-200/50 hover:border-gray-300/70'
-                                }`}
+                                className="w-full h-auto rounded-lg border transition-smooth transform hover:scale-105 border-gray-200/50 hover:border-gray-300/70 dark:border-gray-600/50 dark:hover:border-gray-500/70"
                                 onError={() => handleImageError(concept.id)}
                               />
                             )}
@@ -166,19 +138,11 @@ const Concepts101: React.FC = () => {
           }}
           className={`mt-20 text-center p-12 rounded-2xl border transition-all duration-600 ease-out transform ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          } ${
-            isDark 
-              ? 'bg-gradient-to-r from-purple-900/20 to-violet-900/20 border-purple-500/30' 
-              : 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200/50'
-          }`}>
-          <h2 className={`text-3xl font-bold mb-4 ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>
+          } bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200/50 dark:from-purple-900/20 dark:to-violet-900/20 dark:border-purple-500/30`}>
+          <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
             Ready to dive deeper?
           </h2>
-          <p className={`text-lg mb-8 ${
-            isDark ? 'text-gray-300' : 'text-gray-600'
-          }`}>
+          <p className="text-lg mb-8 text-gray-600 dark:text-gray-300">
             Now that you understand the core concepts, explore our hands-on courses 
             and learning paths to master Sentry in practice.
           </p>
@@ -195,11 +159,7 @@ const Concepts101: React.FC = () => {
               onClick={() => {
                 router.push('/?scrollTo=learning-paths');
               }}
-              className={`px-8 py-3 rounded-lg font-medium border transition-all duration-200 transform hover:scale-105 ${
-                isDark
-                  ? 'border-purple-400/50 text-purple-300 hover:bg-purple-500/10'
-                  : 'border-purple-300 text-purple-700 hover:bg-purple-50'
-              }`}
+              className="px-8 py-3 rounded-lg font-medium border transition-all duration-200 transform hover:scale-105 border-purple-300 text-purple-700 hover:bg-purple-50 dark:border-purple-400/50 dark:text-purple-300 dark:hover:bg-purple-500/10"
             >
               View Learning Paths
             </button>

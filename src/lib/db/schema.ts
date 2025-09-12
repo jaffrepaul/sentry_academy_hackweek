@@ -64,8 +64,12 @@ export const courses = pgTable('courses', {
   difficulty: text('difficulty'),
   duration: text('duration'),
   category: text('category'),
+  level: text('level'),
+  rating: integer('rating'), // Store as integer (e.g., 49 for 4.9) to avoid decimal issues
+  students: integer('students').default(0),
   imageUrl: text('image_url'),
   isPublished: boolean('is_published').default(false),
+  isPopular: boolean('is_popular').default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })

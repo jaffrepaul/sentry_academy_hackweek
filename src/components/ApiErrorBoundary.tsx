@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { AlertTriangle, RefreshCw, Wifi, WifiOff } from 'lucide-react'
-import { useTheme } from '@/contexts/ThemeContext'
+// Theme handled automatically by Tailwind dark: classes
 
 interface ApiErrorProps {
   error: Error
@@ -21,7 +21,7 @@ const ApiErrorBoundary: React.FC<ApiErrorProps> = ({
   onRetry, 
   className = '' 
 }) => {
-  const { isDark } = useTheme()
+  // Theme handled automatically by Tailwind dark: classes
 
   const getErrorDetails = (error: Error) => {
     const message = error.message.toLowerCase()
@@ -76,21 +76,15 @@ const ApiErrorBoundary: React.FC<ApiErrorProps> = ({
   return (
     <div className={`flex items-center justify-center min-h-[200px] ${className}`}>
       <div className="text-center max-w-sm">
-        <div className={`w-12 h-12 mx-auto mb-4 ${
-          isDark ? 'text-red-400' : 'text-red-500'
-        }`}>
+        <div className="w-12 h-12 mx-auto mb-4 text-red-500 dark:text-red-400">
           <Icon className="w-full h-full" />
         </div>
         
-        <h3 className={`text-lg font-semibold mb-2 ${
-          isDark ? 'text-white' : 'text-gray-900'
-        }`}>
+        <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
           {errorDetails.title}
         </h3>
         
-        <p className={`text-sm mb-6 ${
-          isDark ? 'text-gray-400' : 'text-gray-600'
-        }`}>
+        <p className="text-sm mb-6 text-gray-600 dark:text-gray-400">
           {errorDetails.description}
         </p>
         
@@ -107,14 +101,10 @@ const ApiErrorBoundary: React.FC<ApiErrorProps> = ({
         {/* Error details for development */}
         {process.env.NODE_ENV === 'development' && (
           <details className="mt-4 text-left">
-            <summary className={`cursor-pointer text-xs ${
-              isDark ? 'text-gray-500' : 'text-gray-400'
-            } hover:text-gray-300`}>
+            <summary className="cursor-pointer text-xs text-gray-400 dark:text-gray-500 hover:text-gray-300">
               Debug Info
             </summary>
-            <pre className={`mt-2 p-2 rounded text-xs overflow-auto max-h-32 ${
-              isDark ? 'bg-slate-800 text-red-300' : 'bg-gray-100 text-red-600'
-            }`}>
+            <pre className="mt-2 p-2 rounded text-xs overflow-auto max-h-32 bg-gray-100 text-red-600 dark:bg-slate-800 dark:text-red-300">
               {error.message}
             </pre>
           </details>
