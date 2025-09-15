@@ -39,11 +39,11 @@ export default function NotFound() {
           </Link>
           
           <Link
-            href="/courses"
+            href="/#courses"
             className="inline-flex items-center px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors"
           >
             <BookOpen className="w-4 h-4 mr-2" />
-            Browse Courses
+            View Courses
           </Link>
         </div>
         

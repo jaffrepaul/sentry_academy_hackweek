@@ -16,7 +16,7 @@ export default withAuth(
           '/auth/signin',
           '/auth/error',
           '/api/auth',
-          '/courses',
+          '/courses', // Still allow individual course pages
           '/concepts',
           '/learning-paths',
         ]

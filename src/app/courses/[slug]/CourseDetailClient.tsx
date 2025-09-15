@@ -1,13 +1,12 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 // Theme handled automatically by Tailwind dark: classes
 import { getTextClasses } from '@/utils/styles'
 import { getMockCourses } from '@/lib/actions/course-actions'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Clock, Star, Users, Trophy, CheckCircle, Circle, Code, FileText, Lightbulb, Monitor, Github, ArrowRight } from 'lucide-react'
 import { Arcade } from '@/components/Arcade'
@@ -402,11 +401,23 @@ interface CourseDetailClientProps {
 
 export default function CourseDetailClient({ initialCourse }: CourseDetailClientProps) {
   // Theme handled automatically by Tailwind dark: classes
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [activeModule, setActiveModule] = useState(0)
   const course = initialCourse
   const modules = getCourseModules(course.slug)
   const contentConfig = getCourseContent(course.slug)
   const currentModule = modules[activeModule]
+  
+  // Determine where to navigate back to based on referrer or URL params
+  const getBackPath = () => {
+    const fromPath = searchParams.get('from')
+    if (fromPath === 'learning-path') {
+      return '/learning-paths'
+    }
+    // Default to homepage courses section
+    return '/#courses'
+  }
 
   const completedModules = modules.filter(m => m.isCompleted).length
   const progressPercent = Math.round((completedModules / modules.length) * 100)
@@ -437,7 +448,6 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
 
   const breadcrumbItems = [
     { name: 'Home', url: '/' },
-    { name: 'Courses', url: '/courses' },
     { name: course.title, url: `/courses/${course.slug}` }
   ]
 
@@ -489,12 +499,12 @@ export default function CourseDetailClient({ initialCourse }: CourseDetailClient
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
-          <Link 
-            href="/courses"
+          <button 
+            onClick={() => router.push(getBackPath())}
             className="p-2 rounded-lg transition-all duration-200 transform hover:scale-110 shadow-lg backdrop-blur-sm hover:shadow-xl bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 hover:text-gray-900 border border-purple-300/30 hover:border-purple-400/60 hover:shadow-purple-300/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 dark:text-gray-300 dark:hover:text-white dark:border-purple-500/30 dark:hover:shadow-purple-500/20"
           >
             <ArrowLeft className="w-5 h-5" />
-          </Link>
+          </button>
           <div>
             <h1 className={`text-3xl font-bold ${getTextClasses('primary')}`}>
               {course.title}

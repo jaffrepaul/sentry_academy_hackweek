@@ -25,7 +25,7 @@ export const metadata = generateSEO({
 // Server component that fetches data
 async function CoursesData() {
   // This will be cached automatically by Next.js
-  const courses = await getCourses({ limit: 9 })
+  const courses = await getCourses({ limit: 12 })
   return <HomeContent courses={courses} />
 }
 

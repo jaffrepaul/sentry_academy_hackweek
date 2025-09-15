@@ -198,7 +198,7 @@ export function generateWebsiteStructuredData() {
     },
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://sentry-academy.vercel.app/courses?q={search_term_string}',
+      target: 'https://sentry-academy.vercel.app/#courses',
       'query-input': 'required name=search_term_string'
     }
   }
