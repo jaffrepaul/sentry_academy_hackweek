@@ -1,8 +1,7 @@
 'use client'
 
-import { useMemo, useEffect, useState, Suspense } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
-// Theme handled automatically by Tailwind dark: classes
 import { getBackgroundStyle, handleHashNavigation } from '@/utils/styles'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
