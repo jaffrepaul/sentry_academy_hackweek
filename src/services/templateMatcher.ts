@@ -99,14 +99,14 @@ export function mapToExistingStructure(
   const courseDescription = generateCourseDescription(
     synthesizedContent,
     patterns,
-    usedTemplate.courseStructure.descriptionLength
+    usedTemplate.course_structure.description_length
   );
 
   // Generate modules
   const modules = generateModuleStructure(
     synthesizedContent,
     patterns,
-    usedTemplate.courseStructure.moduleCount
+    usedTemplate.course_structure.module_count
   );
 
   // Calculate duration
@@ -213,24 +213,24 @@ export function validateStructureCompliance(
 
   switch (targetStructure) {
     case 'course':
-      if (!generatedContent.title || generatedContent.title.length < 10) {
+      if (!generatedContent.title || (typeof generatedContent.title === 'string' && generatedContent.title.length < 10)) {
         issues.push('Course title too short');
         suggestions.push('Title should be at least 10 characters and descriptive');
       }
       
-      if (!generatedContent.description || generatedContent.description.length < 50) {
+      if (!generatedContent.description || (typeof generatedContent.description === 'string' && generatedContent.description.length < 50)) {
         issues.push('Course description too short');
         suggestions.push('Description should be at least 50 characters');
       }
 
-      if (!generatedContent.generatedModules || generatedContent.generatedModules.length < 3) {
+      if (!generatedContent.generatedModules || (Array.isArray(generatedContent.generatedModules) && generatedContent.generatedModules.length < 3)) {
         issues.push('Insufficient number of modules');
         suggestions.push('Course should have at least 3 modules for comprehensive coverage');
       }
       break;
 
     case 'module':
-      if (!generatedContent.keyTakeaways || generatedContent.keyTakeaways.length < 2) {
+      if (!generatedContent.keyTakeaways || (Array.isArray(generatedContent.keyTakeaways) && generatedContent.keyTakeaways.length < 2)) {
         issues.push('Insufficient key takeaways');
         suggestions.push('Each module should have at least 2-3 key takeaways');
       }
@@ -242,7 +242,7 @@ export function validateStructureCompliance(
       break;
 
     case 'learning_path':
-      if (!generatedContent.outcomes || generatedContent.outcomes.length < 2) {
+      if (!generatedContent.outcomes || (Array.isArray(generatedContent.outcomes) && generatedContent.outcomes.length < 2)) {
         issues.push('Insufficient learning outcomes');
         suggestions.push('Learning path step should have clear outcomes');
       }
@@ -358,23 +358,23 @@ function createDynamicTemplate(patterns: ContentPattern): ContentTemplate {
   const moduleCount = Math.min(Math.max(patterns.concepts.length, 3), 6);
   
   return {
-    courseStructure: {
-      titlePattern: "{concept} Mastery with Sentry",
-      descriptionLength: patterns.complexity === 'advanced' ? 200 : 150,
-      moduleCount,
-      estimatedDuration: patterns.complexity === 'advanced' ? "3 hrs" : "2 hrs"
+    course_structure: {
+      title_pattern: "{concept} Mastery with Sentry",
+      description_length: patterns.complexity === 'advanced' ? 200 : 150,
+      module_count: moduleCount,
+      estimated_duration: patterns.complexity === 'advanced' ? "3 hrs" : "2 hrs"
     },
-    moduleStructure: {
-      titlePattern: "{action} {concept}",
-      descriptionLength: 100,
-      includeKeyTakeaways: true,
-      includeScenario: patterns.complexity !== 'beginner',
-      includeCodeExample: patterns.technologies.length > 0
+    module_structure: {
+      title_pattern: "{action} {concept}",
+      description_length: 100,
+      include_key_takeaways: true,
+      include_scenario: patterns.complexity !== 'beginner',
+      include_code_example: patterns.technologies.length > 0
     },
-    rolePersonalization: {
-      explanationLength: patterns.complexity === 'advanced' ? 250 : 200,
-      includeUseCases: true,
-      includeNextSteps: true
+    role_personalization: {
+      explanation_length: patterns.complexity === 'advanced' ? 250 : 200,
+      include_use_cases: true,
+      include_next_steps: true
     }
   };
 }
@@ -514,7 +514,7 @@ function generateRelevanceExplanation(roleContext: {pain_points: string[]}, _pat
   return `This directly addresses ${painPoint} that you encounter in your role, providing practical solutions and best practices.`;
 }
 
-function generateNextStepNudge(role: EngineerRole, patterns: ContentPattern): string {
+function generateNextStepNudge(role: EngineerRole, _patterns: ContentPattern): string {
   const nextSteps = {
     'frontend': 'implement user experience monitoring',
     'backend': 'set up API performance tracking',
@@ -544,8 +544,11 @@ function generateRoleUseCases(roleContext: {focusAreas: string[]}, useCases: str
     .slice(0, 3);
 }
 
+export type {
+  ContentPattern
+};
+
 export {
-  ContentPattern,
   createDynamicTemplate,
   generateCourseTitle,
   generateCourseDescription,

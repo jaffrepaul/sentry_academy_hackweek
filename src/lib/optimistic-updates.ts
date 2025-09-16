@@ -42,11 +42,11 @@ export function useOptimisticProgress(initialProgress: UserProgress[]) {
     initialProgress,
     (state, action: OptimisticAction) => {
       if (action.type === 'UPDATE_PROGRESS') {
-        const existing = state.find(p => p.courseId === action.courseId)
+        const existing = state.find(p => p.course_id === action.courseId)
         
         if (existing) {
           return state.map(p => 
-            p.courseId === action.courseId
+            p.course_id === action.courseId
               ? { ...p, progress: action.progress, completed: action.completed }
               : p
           )
@@ -54,12 +54,12 @@ export function useOptimisticProgress(initialProgress: UserProgress[]) {
           // Create new progress entry
           const newProgress: UserProgress = {
             id: Date.now(), // Temporary ID
-            userId: 0, // Will be set by server
-            courseId: action.courseId,
+            user_id: '', // Will be set by server
+            course_id: action.courseId,
             progress: action.progress,
             completed: action.completed,
-            lastAccessedAt: new Date(),
-            createdAt: new Date()
+            last_accessed_at: new Date(),
+            created_at: new Date()
           }
           return [...state, newProgress]
         }
@@ -82,7 +82,7 @@ export function calculateOverallProgress(progressList: UserProgress[]): {
 
   const completedCourses = progressList.filter(p => p.completed).length
   const averageProgress = Math.round(
-    progressList.reduce((sum, p) => sum + p.progress, 0) / progressList.length
+    progressList.reduce((sum, p) => sum + (p.progress || 0), 0) / progressList.length
   )
 
   return {

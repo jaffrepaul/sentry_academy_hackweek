@@ -135,11 +135,11 @@ export type Environment = typeof env
 export function getDatabaseUrl(): string {
   switch (env.NODE_ENV) {
     case 'test':
-      return env.TEST_DATABASE_URL || env.DATABASE_URL
+      return env.TEST_DATABASE_URL || env.DATABASE_URL || ''
     case 'staging':
-      return env.STAGING_DATABASE_URL || env.DATABASE_URL
+      return env.STAGING_DATABASE_URL || env.DATABASE_URL || ''
     default:
-      return env.DATABASE_URL
+      return env.DATABASE_URL || ''
   }
 }
 
@@ -180,7 +180,7 @@ export function printEnvConfig() {
   
   console.log('🔧 Environment Configuration:')
   console.log(`   NODE_ENV: ${env.NODE_ENV}`)
-  console.log(`   DATABASE_URL: ${env.DATABASE_URL.split('@')[0]}@[REDACTED]`)
+  console.log(`   DATABASE_URL: ${env.DATABASE_URL ? env.DATABASE_URL.split('@')[0] + '@[REDACTED]' : 'NOT_SET'}`)
   console.log(`   Auto Migrate: ${env.AUTO_MIGRATE}`)
   console.log(`   Seed Database: ${env.SEED_DATABASE}`)
   console.log(`   AI Features: ${env.ENABLE_AI_FEATURES}`)

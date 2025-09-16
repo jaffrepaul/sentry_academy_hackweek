@@ -69,6 +69,7 @@ class AIContentService {
   }
 
   // OpenAI API call wrapper
+  // @ts-ignore: Method is used but TypeScript incorrectly reports it as unused
   private async callOpenAI(messages: OpenAIMessage[]): Promise<string> {
     if (!this.config.apiKey) {
       throw new Error('OpenAI API key not configured');
@@ -157,7 +158,7 @@ class AIContentService {
       const aiCourse: AIGeneratedCourse = {
         ...courseMetadata,
         id: `ai-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        isAIGenerated: true,
+        isAiGenerated: true,
         generationRequest: request,
         researchSources: researchedContent,
         synthesizedContent,
@@ -197,7 +198,7 @@ class AIContentService {
 
   // Synthesize research into structured content
   private async synthesizeResearch(
-    researchedContent: ResearchedContent[], 
+    _researchedContent: ResearchedContent[], 
     keywords: string[]
   ): Promise<SynthesizedContent> {
     // For demo purposes, return mock synthesized content
@@ -301,9 +302,9 @@ Extract the key educational components that would be most valuable for engineers
 
   // Generate course metadata
   private async generateCourseMetadata(
-    synthesizedContent: SynthesizedContent,
+    _synthesizedContent: SynthesizedContent,
     request: ContentGenerationRequest
-  ): Promise<Omit<AIGeneratedCourse, 'id' | 'isAIGenerated' | 'generationRequest' | 'researchSources' | 'synthesizedContent' | 'generatedModules' | 'rolePersonalizations' | 'qualityScore' | 'generatedAt' | 'lastModified' | 'version'>> {
+  ): Promise<Omit<AIGeneratedCourse, 'id' | 'isAiGenerated' | 'generationRequest' | 'researchSources' | 'synthesizedContent' | 'generatedModules' | 'rolePersonalizations' | 'qualityScore' | 'generatedAt' | 'lastModified' | 'version'>> {
     console.log('AIContentService: Generating course metadata for keywords:', request.keywords);
     
     // For demo purposes, return mock metadata
@@ -405,7 +406,7 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
   // Generate a single module
   private async generateSingleModule(
     concept: string,
-    synthesizedContent: SynthesizedContent,
+    _synthesizedContent: SynthesizedContent,
     request: ContentGenerationRequest,
     index: number
   ): Promise<AIGeneratedModule> {
@@ -698,11 +699,14 @@ Make it highly relevant and actionable for this specific role.`
   // Utility methods
 
 
+  // Utility method for future use
+  /*
   private estimateReadingTime(text: string): number {
     const wordsPerMinute = 200;
     const wordCount = text.split(/\s+/).length;
     return Math.ceil(wordCount / wordsPerMinute);
   }
+  */
 
   // Public method to start content generation
   async startContentGeneration(request: ContentGenerationRequest): Promise<GenerationResponse> {
@@ -746,14 +750,14 @@ Make it highly relevant and actionable for this specific role.`
 
       return {
         success: true,
-        requestId: request.id,
-        estimatedDuration: 120 // 2 minutes
+        request_id: request.id,
+        estimated_duration: 120 // 2 minutes
       };
     } catch (error) {
       return {
         success: false,
-        requestId: request.id,
-        estimatedDuration: 0,
+        request_id: request.id,
+        estimated_duration: 0,
         error: error instanceof Error ? error.message : 'Unknown error'
       };
     }

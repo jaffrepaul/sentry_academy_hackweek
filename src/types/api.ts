@@ -94,5 +94,4 @@ export interface ApproveContentRequest {
   action: 'approve'
 }
 
-export interface AIContentActionRequest extends ConvertToCourseRequest {}
-export interface AIContentActionRequest extends ApproveContentRequest {}
+export type AIContentActionRequest = ConvertToCourseRequest | ApproveContentRequest

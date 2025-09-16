@@ -76,7 +76,7 @@ export function validateCourseStructure(
                   !issues.some(issue => issue.severity === 'critical');
 
   return {
-    isValid,
+    is_valid: isValid,
     score: metrics.overallScore,
     issues,
     suggestions
@@ -174,7 +174,7 @@ function validateCourseMetadata(course: AIGeneratedCourse): ValidationIssue[] {
       severity: 'high',
       message: 'Course title is too short or missing',
       field: 'title',
-      suggestedFix: 'Provide a descriptive title of at least 10 characters'
+      suggested_fix: 'Provide a descriptive title of at least 10 characters'
     });
   }
 
@@ -184,7 +184,7 @@ function validateCourseMetadata(course: AIGeneratedCourse): ValidationIssue[] {
       severity: 'medium',
       message: 'Course title is too long',
       field: 'title',
-      suggestedFix: 'Keep title under 100 characters for better readability'
+      suggested_fix: 'Keep title under 100 characters for better readability'
     });
   }
 
@@ -195,7 +195,7 @@ function validateCourseMetadata(course: AIGeneratedCourse): ValidationIssue[] {
       severity: 'high',
       message: 'Course description is too short or missing',
       field: 'description',
-      suggestedFix: 'Provide a comprehensive description of at least 50 characters'
+      suggested_fix: 'Provide a comprehensive description of at least 50 characters'
     });
   }
 
@@ -206,7 +206,7 @@ function validateCourseMetadata(course: AIGeneratedCourse): ValidationIssue[] {
       severity: 'medium',
       message: 'Invalid or missing duration format',
       field: 'duration',
-      suggestedFix: 'Use format like "2 hrs" or "90 min"'
+      suggested_fix: 'Use format like "2 hrs" or "90 min"'
     });
   }
 
@@ -218,7 +218,7 @@ function validateCourseMetadata(course: AIGeneratedCourse): ValidationIssue[] {
       severity: 'medium',
       message: 'Invalid course level',
       field: 'level',
-      suggestedFix: 'Use one of: Beginner, Intermediate, Advanced'
+      suggested_fix: 'Use one of: Beginner, Intermediate, Advanced'
     });
   }
 
@@ -233,7 +233,7 @@ function validateModules(modules: AIGeneratedModule[]): ValidationIssue[] {
       type: 'content',
       severity: 'high',
       message: 'Insufficient number of modules',
-      suggestedFix: 'Add more modules for comprehensive coverage (minimum 3)'
+      suggested_fix: 'Add more modules for comprehensive coverage (minimum 3)'
     });
   }
 
@@ -242,7 +242,7 @@ function validateModules(modules: AIGeneratedModule[]): ValidationIssue[] {
       type: 'content',
       severity: 'medium',
       message: 'Too many modules may overwhelm learners',
-      suggestedFix: 'Consider combining related topics or splitting into multiple courses'
+      suggested_fix: 'Consider combining related topics or splitting into multiple courses'
     });
   }
 
@@ -254,7 +254,7 @@ function validateModules(modules: AIGeneratedModule[]): ValidationIssue[] {
         severity: 'medium',
         message: `Module ${index + 1} title is too short`,
         field: `modules[${index}].title`,
-        suggestedFix: 'Provide descriptive module titles'
+        suggested_fix: 'Provide descriptive module titles'
       });
     }
 
@@ -265,7 +265,7 @@ function validateModules(modules: AIGeneratedModule[]): ValidationIssue[] {
         severity: 'medium',
         message: `Module ${index + 1} has insufficient key takeaways`,
         field: `modules[${index}].keyTakeaways`,
-        suggestedFix: 'Include at least 2-3 key takeaways per module'
+        suggested_fix: 'Include at least 2-3 key takeaways per module'
       });
     }
 
@@ -276,7 +276,7 @@ function validateModules(modules: AIGeneratedModule[]): ValidationIssue[] {
         severity: 'medium',
         message: `Module ${index + 1} lacks adequate code examples`,
         field: `modules[${index}].codeExample`,
-        suggestedFix: 'Provide comprehensive, working code examples'
+        suggested_fix: 'Provide comprehensive, working code examples'
       });
     }
 
@@ -287,7 +287,7 @@ function validateModules(modules: AIGeneratedModule[]): ValidationIssue[] {
         severity: 'low',
         message: `Module ${index + 1} scenario is too brief`,
         field: `modules[${index}].scenario`,
-        suggestedFix: 'Provide detailed, realistic scenarios'
+        suggested_fix: 'Provide detailed, realistic scenarios'
       });
     }
 
@@ -298,7 +298,7 @@ function validateModules(modules: AIGeneratedModule[]): ValidationIssue[] {
         severity: 'high',
         message: `Module ${index + 1} has low confidence score`,
         field: `modules[${index}].confidence`,
-        suggestedFix: 'Review and improve content accuracy and completeness'
+        suggested_fix: 'Review and improve content accuracy and completeness'
       });
     }
   });
@@ -321,7 +321,7 @@ function validateRolePersonalizations(
       type: 'relevance',
       severity: 'high',
       message: `Missing personalizations for roles: ${missingRoles.join(', ')}`,
-      suggestedFix: 'Generate personalizations for all target roles'
+      suggested_fix: 'Generate personalizations for all target roles'
     });
   }
 
@@ -333,7 +333,7 @@ function validateRolePersonalizations(
         severity: 'medium',
         message: `Personalization for ${personalization.roleId} lacks detailed explanation`,
         field: `rolePersonalizations[${index}].explanation`,
-        suggestedFix: 'Provide comprehensive role-specific explanations'
+        suggested_fix: 'Provide comprehensive role-specific explanations'
       });
     }
 
@@ -343,7 +343,7 @@ function validateRolePersonalizations(
         severity: 'medium',
         message: `Personalization for ${personalization.roleId} lacks clear relevance explanation`,
         field: `rolePersonalizations[${index}].whyRelevant`,
-        suggestedFix: 'Explain specifically why this content matters for this role'
+        suggested_fix: 'Explain specifically why this content matters for this role'
       });
     }
 
@@ -353,7 +353,7 @@ function validateRolePersonalizations(
         severity: 'low',
         message: `No role-specific examples for ${personalization.roleId}`,
         field: `rolePersonalizations[${index}].roleSpecificExamples`,
-        suggestedFix: 'Add practical examples relevant to this role'
+        suggested_fix: 'Add practical examples relevant to this role'
       });
     }
   });
@@ -372,7 +372,7 @@ function validateContentQuality(course: AIGeneratedCourse): ValidationIssue[] {
       type: 'content',
       severity: 'medium',
       message: 'Insufficient main concepts covered',
-      suggestedFix: 'Include more core concepts for comprehensive coverage'
+      suggested_fix: 'Include more core concepts for comprehensive coverage'
     });
   }
 
@@ -381,7 +381,7 @@ function validateContentQuality(course: AIGeneratedCourse): ValidationIssue[] {
       type: 'content',
       severity: 'medium',
       message: 'Too few key takeaways',
-      suggestedFix: 'Include more actionable takeaways for learners'
+      suggested_fix: 'Include more actionable takeaways for learners'
     });
   }
 
@@ -390,7 +390,7 @@ function validateContentQuality(course: AIGeneratedCourse): ValidationIssue[] {
       type: 'content',
       severity: 'medium',
       message: 'Insufficient use cases provided',
-      suggestedFix: 'Add more real-world use cases and examples'
+      suggested_fix: 'Add more real-world use cases and examples'
     });
   }
 
@@ -399,7 +399,7 @@ function validateContentQuality(course: AIGeneratedCourse): ValidationIssue[] {
       type: 'content',
       severity: 'low',
       message: 'Limited best practices coverage',
-      suggestedFix: 'Include more industry best practices'
+      suggested_fix: 'Include more industry best practices'
     });
   }
 
@@ -425,7 +425,7 @@ function validateTechnicalContent(course: AIGeneratedCourse): ValidationIssue[] 
       type: 'technical',
       severity: 'critical',
       message: 'Content does not appear to be Sentry-specific',
-      suggestedFix: 'Ensure content focuses on Sentry tools and concepts'
+      suggested_fix: 'Ensure content focuses on Sentry tools and concepts'
     });
   }
 
@@ -437,7 +437,7 @@ function validateTechnicalContent(course: AIGeneratedCourse): ValidationIssue[] 
         severity: 'medium',
         message: `Module ${index + 1} contains placeholder code`,
         field: `modules[${index}].codeExample`,
-        suggestedFix: 'Replace placeholder code with working examples'
+        suggested_fix: 'Replace placeholder code with working examples'
       });
     }
 
@@ -447,7 +447,7 @@ function validateTechnicalContent(course: AIGeneratedCourse): ValidationIssue[] 
         severity: 'medium',
         message: `Module ${index + 1} code example lacks Sentry integration`,
         field: `modules[${index}].codeExample`,
-        suggestedFix: 'Include Sentry-specific code in examples'
+        suggested_fix: 'Include Sentry-specific code in examples'
       });
     }
   });
@@ -455,7 +455,7 @@ function validateTechnicalContent(course: AIGeneratedCourse): ValidationIssue[] 
   return issues;
 }
 
-function calculateQualityMetrics(course: AIGeneratedCourse, issues: ValidationIssue[]): QualityMetrics {
+function calculateQualityMetrics(_course: AIGeneratedCourse, issues: ValidationIssue[]): QualityMetrics {
   const criticalIssues = issues.filter(i => i.severity === 'critical').length;
   const highIssues = issues.filter(i => i.severity === 'high').length;
   const mediumIssues = issues.filter(i => i.severity === 'medium').length;
@@ -485,7 +485,7 @@ function calculateQualityMetrics(course: AIGeneratedCourse, issues: ValidationIs
 
 function generateImprovementSuggestions(
   course: AIGeneratedCourse,
-  issues: ValidationIssue[],
+  _issues: ValidationIssue[],
   metrics: QualityMetrics
 ): string[] {
   const suggestions: string[] = [];
@@ -633,12 +633,8 @@ function validateDifficultyForRole(
   return issues;
 }
 
-// Export all validation functions
-export {
-  validateCourseStructure,
-  checkContentQuality,
-  ensureRoleRelevance,
-  calculateQualityMetrics,
+// Export types only
+export type {
   QualityMetrics,
   ValidationContext
 };

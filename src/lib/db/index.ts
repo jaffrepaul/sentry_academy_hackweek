@@ -1,9 +1,9 @@
 import { drizzle } from 'drizzle-orm/neon-http'
-import { neon, neonConfig } from '@neondatabase/serverless'
+import { neon } from '@neondatabase/serverless'
 import * as schema from './schema'
 
-// Configure connection pooling for production
-neonConfig.fetchConnectionCache = true
+// Note: fetchConnectionCache is now always enabled by default
+// neonConfig.fetchConnectionCache = true
 
 // Validate database URL
 const DATABASE_URL = process.env.DATABASE_URL

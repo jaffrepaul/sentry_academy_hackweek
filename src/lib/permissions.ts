@@ -88,7 +88,7 @@ export function hasAllPermissions(userRole: string | undefined, permissions: Per
 // Server-side permission checking
 export async function checkPermission(permission: Permission): Promise<boolean> {
   const session = await getAuthSession()
-  return hasPermission(session?.user?.role, permission)
+  return hasPermission(session?.user?.role || undefined, permission)
 }
 
 // Client-side permission hooks (for use in components)
@@ -96,9 +96,9 @@ export function usePermissions() {
   // This should be imported and used in components that need permission checking
   // Implementation would be provided by a separate hook file to avoid circular imports
   return {
-    hasPermission: (permission: Permission) => false, // Placeholder - implement in usePermissions hook
-    hasAnyPermission: (permissions: Permission[]) => false, // Placeholder
-    hasAllPermissions: (permissions: Permission[]) => false, // Placeholder
+    hasPermission: (_permission: Permission) => false, // Placeholder - implement in usePermissions hook
+    hasAnyPermission: (_permissions: Permission[]) => false, // Placeholder
+    hasAllPermissions: (_permissions: Permission[]) => false, // Placeholder
   }
 }
 

@@ -286,9 +286,9 @@ export class DataValidator {
     try {
       // Check for orphaned course modules
       const orphanedModules = await db
-        .select({ id: schema.courseModules.id, courseId: schema.courseModules.courseId })
-        .from(schema.courseModules)
-        .leftJoin(schema.courses, eq(schema.courseModules.courseId, schema.courses.id))
+        .select({ id: schema.course_modules.id, courseId: schema.course_modules.course_id })
+        .from(schema.course_modules)
+        .leftJoin(schema.courses, eq(schema.course_modules.course_id, schema.courses.id))
         .where(isNull(schema.courses.id))
 
       if (orphanedModules.length > 0) {
@@ -297,9 +297,9 @@ export class DataValidator {
 
       // Check for orphaned user progress
       const orphanedProgress = await db
-        .select({ id: schema.userProgress.id })
-        .from(schema.userProgress)
-        .leftJoin(schema.users, eq(schema.userProgress.userId, schema.users.id))
+        .select({ id: schema.user_progress.id })
+        .from(schema.user_progress)
+        .leftJoin(schema.users, eq(schema.user_progress.user_id, schema.users.id))
         .where(isNull(schema.users.id))
 
       if (orphanedProgress.length > 0) {
@@ -315,7 +315,7 @@ export class DataValidator {
     } catch (error) {
       return {
         isValid: false,
-        errors: [`Relational integrity validation failed: ${error.message}`],
+        errors: [`Relational integrity validation failed: ${error instanceof Error ? error.message : String(error)}`],
         warnings: [],
         stats: {}
       }
@@ -407,7 +407,7 @@ export class DataValidator {
 
       return actions
     } catch (error) {
-      actions.push(`Cleanup failed: ${error.message}`)
+      actions.push(`Cleanup failed: ${error instanceof Error ? error.message : String(error)}`)
       return actions
     }
   }

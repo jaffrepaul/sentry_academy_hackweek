@@ -4,7 +4,7 @@
  */
 
 import { db } from './db'
-import { courses, courseModules, learningPaths, users } from './db/schema'
+import { courses, course_modules, learning_paths, users } from './db/schema'
 
 export async function seedDatabase() {
   console.log('🌱 Starting database seeding...')
@@ -14,16 +14,19 @@ export async function seedDatabase() {
     console.log('📝 Creating sample users...')
     const sampleUsers = await db.insert(users).values([
       {
+        id: 'admin-1',
         email: 'admin@sentry.io',
         name: 'Sentry Admin',
         role: 'admin',
       },
       {
+        id: 'instructor-1',
         email: 'instructor@sentry.io',
         name: 'Course Instructor',
         role: 'instructor',
       },
       {
+        id: 'student-1',
         email: 'student@example.com',
         name: 'Sample Student',
         role: 'student',
@@ -43,8 +46,8 @@ export async function seedDatabase() {
         difficulty: 'Beginner',
         duration: '10 min',
         category: 'Foundation',
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
+        is_published: true,
       },
       {
         slug: 'sentry-logging',
@@ -54,8 +57,8 @@ export async function seedDatabase() {
         difficulty: 'Intermediate',
         duration: '1.2 hrs',
         category: 'Monitoring',
-        imageUrl: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=500',
+        is_published: true,
       },
       {
         slug: 'performance-monitoring',
@@ -65,8 +68,8 @@ export async function seedDatabase() {
         difficulty: 'Advanced',
         duration: '2.1 hrs',
         category: 'Performance',
-        imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
+        is_published: true,
       },
       {
         slug: 'nodejs-integration',
@@ -76,8 +79,8 @@ export async function seedDatabase() {
         difficulty: 'Intermediate',
         duration: '1.8 hrs',
         category: 'Backend',
-        imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500',
+        is_published: true,
       },
       {
         slug: 'custom-dashboards',
@@ -87,8 +90,8 @@ export async function seedDatabase() {
         difficulty: 'Advanced',
         duration: '2.5 hrs',
         category: 'Advanced',
-        imageUrl: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500',
+        is_published: true,
       },
       {
         slug: 'team-workflows',
@@ -98,8 +101,8 @@ export async function seedDatabase() {
         difficulty: 'Expert',
         duration: '3.2 hrs',
         category: 'Enterprise',
-        imageUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500',
+        is_published: true,
       },
       {
         slug: 'distributed-tracing',
@@ -109,8 +112,8 @@ export async function seedDatabase() {
         difficulty: 'Advanced',
         duration: '2.8 hrs',
         category: 'Performance',
-        imageUrl: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=500',
+        is_published: true,
       },
       {
         slug: 'release-health',
@@ -120,8 +123,8 @@ export async function seedDatabase() {
         difficulty: 'Intermediate',
         duration: '2.0 hrs',
         category: 'DevOps',
-        imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
+        is_published: true,
       },
       {
         slug: 'user-feedback',
@@ -131,8 +134,8 @@ export async function seedDatabase() {
         difficulty: 'Intermediate',
         duration: '1.5 hrs',
         category: 'UX',
-        imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500',
+        is_published: true,
       },
       {
         slug: 'seer-mcp',
@@ -142,8 +145,8 @@ export async function seedDatabase() {
         difficulty: 'Advanced',
         duration: '3.5 hrs',
         category: 'AI/ML',
-        imageUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=500',
+        is_published: true,
       },
       {
         slug: 'stakeholder-dashboards',
@@ -153,8 +156,8 @@ export async function seedDatabase() {
         difficulty: 'Beginner',
         duration: '2.0 hrs',
         category: 'Management',
-        imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
+        is_published: true,
       },
       {
         slug: 'metrics-insights',
@@ -164,8 +167,8 @@ export async function seedDatabase() {
         difficulty: 'Beginner',
         duration: '1.5 hrs',
         category: 'Management',
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
-        isPublished: true,
+        image_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
+        is_published: true,
       }
     ]).returning()
 
@@ -176,14 +179,14 @@ export async function seedDatabase() {
     const moduleData = [
       // Sentry Fundamentals modules
       {
-        courseId: sampleCourses[0].id,
+        course_id: sampleCourses[0]?.id ?? 1,
         title: 'Introduction to Error Monitoring',
         content: '<h2>Welcome to Sentry</h2><p>Learn the basics of error monitoring...</p>',
         order: 1,
         duration: '5 min'
       },
       {
-        courseId: sampleCourses[0].id,
+        course_id: sampleCourses[0]?.id ?? 1,
         title: 'Setting Up Your First Project',
         content: '<h2>Project Setup</h2><p>Follow along as we create your first Sentry project...</p>',
         order: 2,
@@ -191,21 +194,21 @@ export async function seedDatabase() {
       },
       // Performance Monitoring modules
       {
-        courseId: sampleCourses[2].id,
+        course_id: sampleCourses[2]?.id ?? 3,
         title: 'Performance Monitoring Basics',
         content: '<h2>Understanding Performance</h2><p>Learn about key performance metrics...</p>',
         order: 1,
         duration: '30 min'
       },
       {
-        courseId: sampleCourses[2].id,
+        course_id: sampleCourses[2]?.id ?? 3,
         title: 'Core Web Vitals',
         content: '<h2>Core Web Vitals</h2><p>Deep dive into LCP, FID, and CLS...</p>',
         order: 2,
         duration: '45 min'
       },
       {
-        courseId: sampleCourses[2].id,
+        course_id: sampleCourses[2]?.id ?? 3,
         title: 'Advanced Performance Optimization',
         content: '<h2>Optimization Techniques</h2><p>Learn advanced performance optimization strategies...</p>',
         order: 3,
@@ -213,7 +216,7 @@ export async function seedDatabase() {
       }
     ]
 
-    const createdModules = await db.insert(courseModules).values(moduleData).returning()
+    const createdModules = await db.insert(course_modules).values(moduleData).returning()
     console.log(`✅ Created ${createdModules.length} course modules`)
 
     // Create learning paths
@@ -224,32 +227,32 @@ export async function seedDatabase() {
         title: 'Beginner\'s Journey',
         description: 'Start your Sentry learning journey with fundamental concepts and basic implementations.',
         role: 'beginner',
-        courses: [sampleCourses[0].id, sampleCourses[10].id, sampleCourses[11].id] // Fundamentals, Stakeholder Dashboards, Metrics Insights
+        courses: [sampleCourses[0]?.id ?? 1, sampleCourses[10]?.id ?? 11, sampleCourses[11]?.id ?? 12] // Fundamentals, Stakeholder Dashboards, Metrics Insights
       },
       {
         slug: 'developer-path',
         title: 'Developer Mastery',
         description: 'Comprehensive path for developers to master error monitoring, performance tracking, and integrations.',
         role: 'developer',
-        courses: [sampleCourses[0].id, sampleCourses[1].id, sampleCourses[2].id, sampleCourses[3].id, sampleCourses[8].id] // Fundamentals, Logging, Performance, Node.js, User Feedback
+        courses: [sampleCourses[0]?.id ?? 1, sampleCourses[1]?.id ?? 2, sampleCourses[2]?.id ?? 3, sampleCourses[3]?.id ?? 4, sampleCourses[8]?.id ?? 9] // Fundamentals, Logging, Performance, Node.js, User Feedback
       },
       {
         slug: 'devops-path',
         title: 'DevOps Excellence',
         description: 'Advanced monitoring strategies for DevOps engineers and infrastructure teams.',
         role: 'devops',
-        courses: [sampleCourses[5].id, sampleCourses[6].id, sampleCourses[7].id, sampleCourses[4].id] // Team Workflows, Distributed Tracing, Release Health, Custom Dashboards
+        courses: [sampleCourses[5]?.id ?? 6, sampleCourses[6]?.id ?? 7, sampleCourses[7]?.id ?? 8, sampleCourses[4]?.id ?? 5] // Team Workflows, Distributed Tracing, Release Health, Custom Dashboards
       },
       {
         slug: 'advanced-path',
         title: 'Advanced Practitioner',
         description: 'Expert-level courses for senior developers and technical leads.',
         role: 'advanced',
-        courses: [sampleCourses[2].id, sampleCourses[4].id, sampleCourses[5].id, sampleCourses[6].id, sampleCourses[9].id] // Performance, Custom Dashboards, Team Workflows, Distributed Tracing, AI/ML
+        courses: [sampleCourses[2]?.id ?? 3, sampleCourses[4]?.id ?? 5, sampleCourses[5]?.id ?? 6, sampleCourses[6]?.id ?? 7, sampleCourses[9]?.id ?? 10] // Performance, Custom Dashboards, Team Workflows, Distributed Tracing, AI/ML
       }
     ]
 
-    const createdPaths = await db.insert(learningPaths).values(learningPathData).returning()
+    const createdPaths = await db.insert(learning_paths).values(learningPathData).returning()
     console.log(`✅ Created ${createdPaths.length} learning paths`)
 
     console.log('🎉 Database seeding completed successfully!')
