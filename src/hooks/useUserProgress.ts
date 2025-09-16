@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useOptimistic, useTransition } from 'react'
-import { UserProgress, EngineerRole, SentryFeature } from '@/types/roles'
+import { UserProgress, SentryFeature } from '@/types/roles'
 import { useSession } from 'next-auth/react'
 import { 
   getUserProgress, 
@@ -79,12 +79,12 @@ export function useUserProgress() {
     startTransition(async () => {
       try {
         await updateUserProgressAction({
-          currentStep: updates.currentStep,
-          completedSteps: updates.completedSteps,
-          completedModules: updates.completedModules,
-          completedFeatures: updates.completedFeatures as SentryFeature[],
-          onboardingCompleted: updates.onboardingCompleted,
-          preferredContentType: updates.preferredContentType,
+          currentStep: updates.currentStep || 0,
+          completedSteps: updates.completedSteps || [],
+          completedModules: updates.completedModules || [],
+          completedFeatures: updates.completedFeatures as SentryFeature[] || [],
+          onboardingCompleted: updates.onboardingCompleted || false,
+          preferredContentType: updates.preferredContentType || 'mixed',
         })
         // Refetch to ensure consistency
         const freshProgress = await getUserProgress()

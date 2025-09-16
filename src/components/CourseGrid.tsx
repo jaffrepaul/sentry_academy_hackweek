@@ -5,25 +5,16 @@ import { useRouter } from 'next/navigation'
 import { Clock, Trophy, ChevronRight, Star } from 'lucide-react'
 // Theme handled automatically by Tailwind dark: classes
 import { getCardClasses, getTextClasses, getButtonClasses } from '@/utils/styles'
+import { formatRating } from '@/utils/ratingUtils'
+import { Course } from '@/data/courses'
 
-interface Course {
-  id: number
-  slug: string
-  title: string
-  description: string | null
-  duration: string | null
-  level?: string
-  rating?: number
-  students?: number
-  category: string | null
-  isPopular?: boolean
-  difficulty?: string | null
+interface CourseCardProps extends Omit<Course, 'slug'> {
+  slug: string;
+  difficulty?: string;
 }
 
-interface CourseCardProps extends Course {}
-
 const CourseCard: React.FC<CourseCardProps> = memo(({ 
-  id,
+  id: _id,
   slug,
   title, 
   description, 
@@ -63,7 +54,9 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
           </span>
           <div className="flex items-center space-x-1">
             <Star className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className="text-sm text-gray-600 dark:text-gray-300">{rating || '4.5'}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-300">
+              {rating ? formatRating(rating, true) : '4.5'}
+            </span>
           </div>
         </div>
 
@@ -105,11 +98,11 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
 CourseCard.displayName = 'CourseCard'
 
 interface CourseGridProps {
-  courses: Course[]
+  courses: (Course & { slug: string })[]
   showFilters?: boolean
 }
 
-const CourseGrid: React.FC<CourseGridProps> = memo(({ courses, showFilters = false }) => {
+const CourseGrid: React.FC<CourseGridProps> = memo(({ courses, showFilters: _showFilters = false }) => {
   // Theme handled automatically by Tailwind dark: classes
 
   const titleClasses = useMemo(() => getTextClasses('primary'), [])

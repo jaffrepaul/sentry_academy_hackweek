@@ -4,7 +4,7 @@ import {
 } from '@/lib/actions/user-actions'
 import { getCurrentUser } from '@/lib/actions/auth-actions'
 import { db } from '@/lib/db'
-import { userProgress, courses } from '@/lib/db/schema'
+import { user_progress, courses } from '@/lib/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
 
 // GET /api/user-progress - Get user progress
@@ -46,22 +46,22 @@ export async function GET(request: NextRequest) {
 
       const [progress] = await db
         .select({
-          id: userProgress.id,
-          userId: userProgress.userId,
-          courseId: userProgress.courseId,
-          completed: userProgress.completed,
-          progress: userProgress.progress,
-          lastAccessedAt: userProgress.lastAccessedAt,
-          createdAt: userProgress.createdAt,
+          id: user_progress.id,
+          user_id: user_progress.user_id,
+          course_id: user_progress.course_id,
+          completed: user_progress.completed,
+          progress: user_progress.progress,
+          last_accessed_at: user_progress.last_accessed_at,
+          created_at: user_progress.created_at,
           courseTitle: courses.title,
           courseSlug: courses.slug
         })
-        .from(userProgress)
-        .innerJoin(courses, eq(userProgress.courseId, courses.id))
+        .from(user_progress)
+        .innerJoin(courses, eq(user_progress.course_id, courses.id))
         .where(
           and(
-            eq(userProgress.userId, targetUserId),
-            eq(userProgress.courseId, courseIdNum)
+            eq(user_progress.user_id, targetUserId),
+            eq(user_progress.course_id, courseIdNum)
           )
         )
         .limit(1)
@@ -74,22 +74,22 @@ export async function GET(request: NextRequest) {
       // Get all progress for user
       const progressList = await db
         .select({
-          id: userProgress.id,
-          userId: userProgress.userId,
-          courseId: userProgress.courseId,
-          completed: userProgress.completed,
-          progress: userProgress.progress,
-          lastAccessedAt: userProgress.lastAccessedAt,
-          createdAt: userProgress.createdAt,
+          id: user_progress.id,
+          user_id: user_progress.user_id,
+          course_id: user_progress.course_id,
+          completed: user_progress.completed,
+          progress: user_progress.progress,
+          last_accessed_at: user_progress.last_accessed_at,
+          created_at: user_progress.created_at,
           courseTitle: courses.title,
           courseSlug: courses.slug,
           courseDuration: courses.duration,
           courseCategory: courses.category
         })
-        .from(userProgress)
-        .innerJoin(courses, eq(userProgress.courseId, courses.id))
-        .where(eq(userProgress.userId, targetUserId))
-        .orderBy(desc(userProgress.lastAccessedAt))
+        .from(user_progress)
+        .innerJoin(courses, eq(user_progress.course_id, courses.id))
+        .where(eq(user_progress.user_id, targetUserId))
+        .orderBy(desc(user_progress.last_accessed_at))
 
       return NextResponse.json({
         success: true,

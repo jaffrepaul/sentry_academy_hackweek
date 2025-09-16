@@ -2,7 +2,7 @@
 
 import { cache } from 'react'
 import { db } from '@/lib/db'
-import { courses, learningPaths, courseModules } from '@/lib/db/schema'
+import { courses, learning_paths, course_modules } from '@/lib/db/schema'
 import { eq, like, and, desc } from 'drizzle-orm'
 import { CourseFilters } from '@/types/api'
 
@@ -14,13 +14,13 @@ export const getCourses = cache(async (filters: CourseFilters & { limit?: number
       .from(courses)
       .where(
         and(
-          eq(courses.isPublished, true),
+          eq(courses.is_published, true),
           filters.category ? eq(courses.category, filters.category) : undefined,
           filters.difficulty ? eq(courses.difficulty, filters.difficulty) : undefined,
           filters.search ? like(courses.title, `%${filters.search}%`) : undefined
         )
       )
-      .orderBy(desc(courses.createdAt))
+      .orderBy(desc(courses.created_at))
     
     if (filters.limit) {
       query.limit(filters.limit)
@@ -47,7 +47,7 @@ export const getCourseBySlug = cache(async (slug: string) => {
     const course = await db
       .select()
       .from(courses)
-      .where(and(eq(courses.slug, slug), eq(courses.isPublished, true)))
+      .where(and(eq(courses.slug, slug), eq(courses.is_published, true)))
       .limit(1)
     
     const dbCourse = course[0] || null
@@ -70,9 +70,9 @@ export const getCourseModules = cache(async (courseId: number) => {
   try {
     return await db
       .select()
-      .from(courseModules)
-      .where(eq(courseModules.courseId, courseId))
-      .orderBy(courseModules.order)
+      .from(course_modules)
+      .where(eq(course_modules.course_id, courseId))
+      .orderBy(course_modules.order)
   } catch (error) {
     console.error('Error fetching course modules:', error)
     throw new Error(`Failed to fetch modules for course: ${courseId}`)
@@ -84,8 +84,8 @@ export const getLearningPaths = cache(async () => {
   try {
     return await db
       .select()
-      .from(learningPaths)
-      .orderBy(learningPaths.title)
+      .from(learning_paths)
+      .orderBy(learning_paths.title)
   } catch (error) {
     console.error('Error fetching learning paths:', error)
     throw new Error('Failed to fetch learning paths')
@@ -107,11 +107,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Beginner',
       rating: 4.9,
       students: 12500,
-      isPopular: true,
-      imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: true,
+      image_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 2,
@@ -125,11 +125,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Intermediate',
       rating: 4.8,
       students: 8900,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 3,
@@ -143,11 +143,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Advanced',
       rating: 4.7,
       students: 6400,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 4,
@@ -161,11 +161,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Intermediate',
       rating: 4.8,
       students: 7200,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 5,
@@ -179,11 +179,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Advanced',
       rating: 4.6,
       students: 4100,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 6,
@@ -197,11 +197,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Expert',
       rating: 4.9,
       students: 3800,
-      isPopular: true,
-      imageUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: true,
+      image_url: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 7,
@@ -215,11 +215,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Advanced',
       rating: 4.7,
       students: 3200,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 8,
@@ -233,11 +233,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Intermediate',
       rating: 4.8,
       students: 4500,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 9,
@@ -251,11 +251,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Intermediate',
       rating: 4.6,
       students: 2800,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 10,
@@ -269,11 +269,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Advanced',
       rating: 4.9,
       students: 1200,
-      isPopular: true,
-      imageUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: true,
+      image_url: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 11,
@@ -287,11 +287,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Beginner',
       rating: 4.8,
       students: 3400,
-      isPopular: true,
-      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: true,
+      image_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 12,
@@ -305,11 +305,11 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
       level: 'Beginner',
       rating: 4.9,
       students: 2800,
-      isPopular: false,
-      imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      is_popular: false,
+      image_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
+      is_published: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     }
   ]
   

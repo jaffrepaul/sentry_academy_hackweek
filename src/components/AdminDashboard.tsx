@@ -30,7 +30,7 @@ interface DashboardStats {
   averageQualityScore: number;
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose: _onClose }) => {
   // Theme handled automatically by Tailwind dark: classes
   const [currentView, setCurrentView] = useState<DashboardView>('overview');
   const [stats, setStats] = useState<DashboardStats | null>(null);

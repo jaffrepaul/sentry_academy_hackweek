@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/actions/auth-actions'
 import { db } from '@/lib/db'
-import { userProgress, users, courses } from '@/lib/db/schema'
+import { user_progress, users, courses } from '@/lib/db/schema'
 import { eq, and, desc, count } from 'drizzle-orm'
 
 // GET /api/user-progress/[userId] - Get specific user's progress (admin only or own progress)
@@ -51,32 +51,32 @@ export async function GET(
     // Get detailed progress with course information
     const progressList = await db
       .select({
-        id: userProgress.id,
-        courseId: userProgress.courseId,
-        completed: userProgress.completed,
-        progress: userProgress.progress,
-        lastAccessedAt: userProgress.lastAccessedAt,
-        createdAt: userProgress.createdAt,
+        id: user_progress.id,
+        courseId: user_progress.course_id,
+        completed: user_progress.completed,
+        progress: user_progress.progress,
+        lastAccessedAt: user_progress.last_accessed_at,
+        createdAt: user_progress.created_at,
         courseTitle: courses.title,
         courseSlug: courses.slug,
         courseDuration: courses.duration,
         courseCategory: courses.category,
         courseDifficulty: courses.difficulty,
-        courseImageUrl: courses.imageUrl
+        courseImageUrl: courses.image_url
       })
-      .from(userProgress)
-      .innerJoin(courses, eq(userProgress.courseId, courses.id))
-      .where(eq(userProgress.userId, targetUserId))
-      .orderBy(desc(userProgress.lastAccessedAt))
+      .from(user_progress)
+      .innerJoin(courses, eq(user_progress.course_id, courses.id))
+      .where(eq(user_progress.user_id, targetUserId))
+      .orderBy(desc(user_progress.last_accessed_at))
 
     // Get progress statistics
     const [stats] = await db
       .select({
         totalCourses: count(),
-        completedCourses: count(userProgress.completed),
+        completedCourses: count(user_progress.completed),
       })
-      .from(userProgress)
-      .where(eq(userProgress.userId, targetUserId))
+      .from(user_progress)
+      .where(eq(user_progress.user_id, targetUserId))
 
     // Calculate average progress
     const avgProgress = progressList.length > 0 
@@ -139,11 +139,11 @@ export async function DELETE(
       }
 
       await db
-        .delete(userProgress)
+        .delete(user_progress)
         .where(
           and(
-            eq(userProgress.userId, targetUserId),
-            eq(userProgress.courseId, courseIdNum)
+            eq(user_progress.user_id, targetUserId),
+            eq(user_progress.course_id, courseIdNum)
           )
         )
 
@@ -154,8 +154,8 @@ export async function DELETE(
     } else {
       // Reset all progress for user
       await db
-        .delete(userProgress)
-        .where(eq(userProgress.userId, targetUserId))
+        .delete(user_progress)
+        .where(eq(user_progress.user_id, targetUserId))
 
       return NextResponse.json({
         success: true,

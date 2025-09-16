@@ -57,8 +57,8 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
           role,
           currentStep: 0,
           completedSteps: completedStepIds,
-          completedModules,
-          completedFeatures,
+          completedModules: completedModules,
+          completedFeatures: completedFeatures,
           onboardingCompleted: selectedFeatures.length > 0,
           hasSeenOnboarding: true
         })
@@ -71,8 +71,8 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
         role,
         currentStep: 0,
         completedSteps: completedStepIds,
-        completedModules,
-        completedFeatures,
+        completedModules: completedModules,
+        completedFeatures: completedFeatures,
         onboardingCompleted: selectedFeatures.length > 0,
         hasSeenOnboarding: true
       })

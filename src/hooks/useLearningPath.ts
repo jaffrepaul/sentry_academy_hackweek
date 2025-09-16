@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { EngineerRole, LearningPath, LearningPathStep, NextContentRecommendation, SentryFeature } from '@/types/roles'
+import { EngineerRole, LearningPath, NextContentRecommendation, SentryFeature } from '@/types/roles'
 import { getLearningPathForRole } from '@/data/roles'
 
 /**
@@ -10,7 +10,7 @@ import { getLearningPathForRole } from '@/data/roles'
 export function useLearningPath(
   role: EngineerRole | null, 
   completedSteps: string[], 
-  completedFeatures: SentryFeature[]
+  _completedFeatures: SentryFeature[]
 ) {
   const [currentLearningPath, setCurrentLearningPath] = useState<LearningPath | null>(null)
 
@@ -31,7 +31,7 @@ export function useLearningPath(
             
             return {
               ...step,
-              isCompleted,
+              isCompleted: isCompleted,
               isUnlocked: isCompleted || isFirstIncompleteStep || step.priority === 1
             }
           })
@@ -66,6 +66,8 @@ export function useLearningPath(
 
     // Get the primary module for this step
     const primaryModule = nextStep.modules[0]
+    
+    if (!primaryModule) return null
     
     return {
       moduleId: primaryModule,

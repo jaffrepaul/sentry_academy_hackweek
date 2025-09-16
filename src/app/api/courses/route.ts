@@ -21,13 +21,13 @@ export async function GET(request: NextRequest) {
       .from(courses)
       .where(
         and(
-          published ? eq(courses.isPublished, true) : undefined,
+          published ? eq(courses.is_published, true) : undefined,
           category ? eq(courses.category, category) : undefined,
           difficulty ? eq(courses.difficulty, difficulty) : undefined,
           search ? like(courses.title, `%${search}%`) : undefined
         )
       )
-      .orderBy(desc(courses.createdAt))
+      .orderBy(desc(courses.created_at))
       .$dynamic()
 
     // Apply limit and offset if provided
@@ -111,10 +111,10 @@ export async function POST(request: NextRequest) {
       difficulty: difficulty || null,
       duration: duration || null,
       category: category || null,
-      imageUrl: imageUrl || null,
-      isPublished,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      image_url: imageUrl || null,
+      is_published: isPublished,
+      created_at: new Date(),
+      updated_at: new Date()
     }).returning()
 
     revalidatePath('/courses')

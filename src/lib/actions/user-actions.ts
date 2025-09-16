@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { users, userProgress } from '@/lib/db/schema'
+import { users, user_progress } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
 
 export async function getUserById(id: string) {
@@ -23,8 +23,8 @@ export async function getUserProgress(userId: string) {
   try {
     return await db
       .select()
-      .from(userProgress)
-      .where(eq(userProgress.userId, userId))
+      .from(user_progress)
+      .where(eq(user_progress.user_id, userId))
   } catch (error) {
     console.error('Error fetching user progress:', error)
     return []
@@ -40,31 +40,31 @@ export async function updateUserProgress(
   try {
     const existing = await db
       .select()
-      .from(userProgress)
+      .from(user_progress)
       .where(
         and(
-          eq(userProgress.userId, userId),
-          eq(userProgress.courseId, courseId)
+          eq(user_progress.user_id, userId),
+          eq(user_progress.course_id, courseId)
         )
       )
       .limit(1)
     
-    if (existing.length > 0) {
+    if (existing.length > 0 && existing[0]) {
       await db
-        .update(userProgress)
+        .update(user_progress)
         .set({
           progress,
           completed,
-          lastAccessedAt: new Date(),
+          last_accessed_at: new Date(),
         })
-        .where(eq(userProgress.id, existing[0].id))
+        .where(eq(user_progress.id, existing[0].id))
     } else {
-      await db.insert(userProgress).values({
-        userId,
-        courseId,
+      await db.insert(user_progress).values({
+        user_id: userId,
+        course_id: courseId,
         progress,
         completed,
-        lastAccessedAt: new Date(),
+        last_accessed_at: new Date(),
       })
     }
     

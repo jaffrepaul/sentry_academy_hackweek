@@ -176,7 +176,7 @@ const PersonaPathDisplay: React.FC = () => {
         <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-purple-100/80 text-purple-700 dark:bg-slate-800/60 dark:text-purple-300">
           <Clock className="w-4 h-4" />
           <span className="text-sm font-medium">
-            Total: {currentLearningPath.total_estimated_time}
+            Total: {currentLearningPath.totalEstimatedTime}
           </span>
         </div>
       </div>
@@ -264,7 +264,7 @@ const PersonaPathDisplay: React.FC = () => {
                       <span className={`${
                         'text-gray-600 dark:text-gray-400'
                       }`}>
-                        {step.estimated_time}
+                        {step.estimatedTime}
                       </span>
                     </div>
                   </div>
@@ -372,10 +372,11 @@ const PersonaPathDisplay: React.FC = () => {
 
       {/* Reset Confirmation Modal */}
       {showResetConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div 
-            className="max-w-md w-full rounded-2xl p-6 border bg-white/95 border-gray-300/50 dark:bg-slate-900/95 dark:border-slate-600/50"
-          >
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div 
+              className="max-w-md w-full rounded-2xl p-6 border bg-white/95 border-gray-300/50 dark:bg-slate-900/95 dark:border-slate-600/50 transform transition-all"
+            >
             <div className="text-center">
               <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 mx-auto ${
                 'bg-orange-100/80 dark:bg-orange-900/30'
@@ -414,6 +415,7 @@ const PersonaPathDisplay: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       )}
     </div>

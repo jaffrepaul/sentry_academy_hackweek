@@ -11,9 +11,9 @@ export function usePermissions() {
   const userRole = session?.user?.role
 
   return {
-    hasPermission: (permission: Permission) => hasPermission(userRole, permission),
-    hasAnyPermission: (permissions: Permission[]) => hasAnyPermission(userRole, permissions),
-    hasAllPermissions: (permissions: Permission[]) => hasAllPermissions(userRole, permissions),
+    hasPermission: (permission: Permission) => hasPermission(userRole || undefined, permission),
+    hasAnyPermission: (permissions: Permission[]) => hasAnyPermission(userRole || undefined, permissions),
+    hasAllPermissions: (permissions: Permission[]) => hasAllPermissions(userRole || undefined, permissions),
     userRole,
     isAuthenticated: !!session
   }

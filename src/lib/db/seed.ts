@@ -77,10 +77,10 @@ async function seedAdditionalData() {
       email: 'admin@sentry-academy.dev',
       name: 'Academy Admin',
       role: 'admin',
-      engineerRole: 'fullstack',
-      onboardingCompleted: true,
-      hasSeenOnboarding: true,
-      preferredContentType: 'mixed'
+      engineer_role: 'fullstack',
+      onboarding_completed: true,
+      has_seen_onboarding: true,
+      preferred_content_type: 'mixed'
     }).onConflictDoNothing()
     
     // Create sample student users for different roles
@@ -90,41 +90,41 @@ async function seedAdditionalData() {
         email: 'frontend@example.com',
         name: 'Frontend Developer',
         role: 'student',
-        engineerRole: 'frontend'
+        engineer_role: 'frontend'
       },
       {
         id: 'backend-user-001', 
         email: 'backend@example.com',
         name: 'Backend Engineer',
         role: 'student',
-        engineerRole: 'backend'
+        engineer_role: 'backend'
       },
       {
         id: 'sre-user-001',
         email: 'sre@example.com', 
         name: 'SRE Engineer',
         role: 'student',
-        engineerRole: 'sre'
+        engineer_role: 'sre'
       },
       {
         id: 'pm-user-001',
         email: 'pm@example.com',
         name: 'Product Manager', 
         role: 'student',
-        engineerRole: 'pm-manager'
+        engineer_role: 'pm-manager'
       }
     ]
 
     for (const user of sampleUsers) {
       await db.insert(schema.users).values({
         ...user,
-        onboardingCompleted: false,
-        hasSeenOnboarding: false,
-        preferredContentType: 'mixed',
-        currentStep: 0,
-        completedSteps: [],
-        completedModules: [],
-        completedFeatures: []
+        onboarding_completed: false,
+        has_seen_onboarding: false,
+        preferred_content_type: 'mixed',
+        current_step: 0,
+        completed_steps: [],
+        completed_modules: [],
+        completed_features: []
       }).onConflictDoNothing()
     }
     
@@ -143,9 +143,9 @@ async function verifySeedData() {
   
   try {
     const coursesCount = await db.select().from(schema.courses)
-    const learningPathsCount = await db.select().from(schema.learningPaths) 
+    const learningPathsCount = await db.select().from(schema.learning_paths) 
     const usersCount = await db.select().from(schema.users)
-    const modulesCount = await db.select().from(schema.courseModules)
+    const modulesCount = await db.select().from(schema.course_modules)
     
     console.log(`✅ Verification complete:`)
     console.log(`   - Courses: ${coursesCount.length}`)

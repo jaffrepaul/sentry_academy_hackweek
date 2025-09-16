@@ -11,10 +11,10 @@ import * as schema from './schema'
 import { getDatabaseConfig, validateDatabaseConfig } from './config'
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
+// import { fileURLToPath } from 'url' // Unused for now
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+// const __filename = fileURLToPath(import.meta.url) // Unused for now
+// const __dirname = path.dirname(__filename) // Unused for now
 
 interface MigrationOptions {
   force?: boolean
@@ -31,8 +31,9 @@ class MigrationManager {
   private sql: ReturnType<typeof neon>
   private config: ReturnType<typeof getDatabaseConfig>
 
-  constructor(environment?: string) {
-    process.env.NODE_ENV = environment || process.env.NODE_ENV || 'development'
+  constructor(_environment?: string) {
+    // Don't modify NODE_ENV as it's readonly in production builds
+    // Instead, pass the environment to the config function if needed
     this.config = getDatabaseConfig()
     validateDatabaseConfig(this.config)
     
@@ -127,12 +128,12 @@ class MigrationManager {
         LIMIT 1
       `
       
-      if (result.length === 0) {
+      if ((result as any[]).length === 0) {
         console.log('ℹ️  No migrations to rollback')
         return
       }
 
-      const lastMigration = result[0]
+      const lastMigration = (result as any[])[0]
       console.log(`🔄 Rolling back: ${lastMigration.hash}`)
       
       // Remove from migrations table
@@ -163,18 +164,18 @@ class MigrationManager {
         ORDER BY created_at ASC
       `
       
-      if (appliedMigrations.length === 0) {
+      if ((appliedMigrations as any[]).length === 0) {
         console.log('ℹ️  No migrations have been applied')
         return
       }
 
-      console.log(`✅ Applied migrations: ${appliedMigrations.length}`)
-      appliedMigrations.forEach((migration, index) => {
+      console.log(`✅ Applied migrations: ${(appliedMigrations as any[]).length}`);
+      (appliedMigrations as any[]).forEach((migration, index) => {
         console.log(`   ${index + 1}. ${migration.hash} (${migration.created_at})`)
       })
       
     } catch (error) {
-      if (error.message?.includes('relation "__drizzle_migrations" does not exist')) {
+      if ((error as Error).message?.includes('relation "__drizzle_migrations" does not exist')) {
         console.log('ℹ️  Migration table not found - database not initialized')
       } else {
         console.error('❌ Status check failed:', error)
@@ -209,7 +210,7 @@ class MigrationManager {
       
       const missingTables = tableChecks.filter(check => !check.exists)
       
-      if (missingTables.length > 0) {
+      if ((missingTables as any[]).length > 0) {
         console.error('❌ Missing tables:')
         missingTables.forEach(({ table }) => console.error(`   - ${table}`))
         return false
@@ -236,7 +237,7 @@ async function main() {
     force: args.includes('--force'),
     dryRun: args.includes('--dry-run'),
     backup: args.includes('--backup'),
-    environment: args.find(arg => arg.startsWith('--env='))?.split('=')[1]
+    environment: args.find(arg => arg.startsWith('--env='))?.split('=')[1] || 'development'
   }
 
   const manager = new MigrationManager(options.environment)

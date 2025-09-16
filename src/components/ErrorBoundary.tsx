@@ -38,11 +38,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   private handleRetry = () => {
-    this.setState({ hasError: false, error: undefined, errorInfo: undefined })
-  }
-
-  private handleGoHome = () => {
-    window.location.href = '/'
+    this.setState({ hasError: false })
   }
 
   render() {
@@ -51,7 +47,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         return this.props.fallback(this.state.error, this.handleRetry)
       }
 
-      return <DefaultErrorFallback error={this.state.error} onRetry={this.handleRetry} />
+      return <DefaultErrorFallback error={this.state.error || new Error('Unknown error occurred')} onRetry={this.handleRetry} />
     }
 
     return this.props.children

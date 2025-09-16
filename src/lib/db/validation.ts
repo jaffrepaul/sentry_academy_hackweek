@@ -4,7 +4,7 @@
 
 import { db } from './index'
 import * as schema from './schema'
-import { eq, sql, count, isNull, like } from 'drizzle-orm'
+import { eq, sql, count, isNull } from 'drizzle-orm'
 
 export interface ValidationResult {
   isValid: boolean
@@ -69,7 +69,7 @@ export class DataValidator {
     } catch (error) {
       return {
         isValid: false,
-        errors: [`Validation failed: ${error.message}`],
+        errors: [`Validation failed: ${(error as Error).message}`],
         warnings: [],
         stats: {}
       }
@@ -101,8 +101,8 @@ export class DataValidator {
         .from(schema.users)
         .where(isNull(schema.users.name))
 
-      if (usersWithoutNames.count > 0) {
-        warnings.push(`${usersWithoutNames.count} users missing names`)
+      if (usersWithoutNames && usersWithoutNames.count > 0) {
+        warnings.push(`${usersWithoutNames?.count} users missing names`)
       }
 
       // Check for invalid email formats
@@ -127,7 +127,7 @@ export class DataValidator {
         errors,
         warnings,
         stats: {
-          total: totalUsers.count,
+          total: totalUsers?.count || 0,
           byRole: usersByRole.reduce((acc, { role, count }) => {
             acc[role || 'unknown'] = count
             return acc
@@ -137,7 +137,7 @@ export class DataValidator {
     } catch (error) {
       return {
         isValid: false,
-        errors: [`User validation failed: ${error.message}`],
+        errors: [`User validation failed: ${(error as Error).message}`],
         warnings: [],
         stats: {}
       }
@@ -169,18 +169,18 @@ export class DataValidator {
         .from(schema.courses)
         .where(isNull(schema.courses.description))
 
-      if (coursesWithoutDescriptions.count > 0) {
-        warnings.push(`${coursesWithoutDescriptions.count} courses missing descriptions`)
+      if (coursesWithoutDescriptions && coursesWithoutDescriptions.count > 0) {
+        warnings.push(`${coursesWithoutDescriptions?.count} courses missing descriptions`)
       }
 
       // Check for unpublished courses
       const [unpublishedCourses] = await db
         .select({ count: count() })
         .from(schema.courses)
-        .where(eq(schema.courses.isPublished, false))
+        .where(eq(schema.courses.is_published, false))
 
-      if (unpublishedCourses.count > 0) {
-        warnings.push(`${unpublishedCourses.count} courses are unpublished`)
+      if (unpublishedCourses && unpublishedCourses.count > 0) {
+        warnings.push(`${unpublishedCourses?.count} courses are unpublished`)
       }
 
       // Get course stats
@@ -195,7 +195,7 @@ export class DataValidator {
         errors,
         warnings,
         stats: {
-          total: totalCourses.count,
+          total: totalCourses?.count || 0,
           byCategory: coursesByCategory.reduce((acc, { category, count }) => {
             acc[category || 'uncategorized'] = count
             return acc
@@ -205,7 +205,7 @@ export class DataValidator {
     } catch (error) {
       return {
         isValid: false,
-        errors: [`Course validation failed: ${error.message}`],
+        errors: [`Course validation failed: ${(error as Error).message}`],
         warnings: [],
         stats: {}
       }
@@ -222,9 +222,9 @@ export class DataValidator {
     try {
       // Check for duplicate slugs
       const duplicateSlugs = await db
-        .select({ slug: schema.learningPaths.slug, count: sql<number>`count(*)` })
-        .from(schema.learningPaths)
-        .groupBy(schema.learningPaths.slug)
+        .select({ slug: schema.learning_paths.slug, count: sql<number>`count(*)` })
+        .from(schema.learning_paths)
+        .groupBy(schema.learning_paths.slug)
         .having(sql`count(*) > 1`)
 
       if (duplicateSlugs.length > 0) {
@@ -232,7 +232,7 @@ export class DataValidator {
       }
 
       // Check for paths with invalid course references
-      const paths = await db.select().from(schema.learningPaths)
+      const paths = await db.select().from(schema.learning_paths)
       const allCourses = await db.select({ id: schema.courses.id }).from(schema.courses)
       const validCourseIds = new Set(allCourses.map(c => c.id))
 
@@ -248,18 +248,18 @@ export class DataValidator {
       }
 
       // Get learning path stats
-      const [totalPaths] = await db.select({ count: count() }).from(schema.learningPaths)
+      const [totalPaths] = await db.select({ count: count() }).from(schema.learning_paths)
       const pathsByRole = await db
-        .select({ role: schema.learningPaths.role, count: count() })
-        .from(schema.learningPaths)
-        .groupBy(schema.learningPaths.role)
+        .select({ role: schema.learning_paths.role, count: count() })
+        .from(schema.learning_paths)
+        .groupBy(schema.learning_paths.role)
 
       return {
         isValid: errors.length === 0,
         errors,
         warnings,
         stats: {
-          total: totalPaths.count,
+          total: totalPaths?.count || 0,
           byRole: pathsByRole.reduce((acc, { role, count }) => {
             acc[role || 'unknown'] = count
             return acc
@@ -269,7 +269,7 @@ export class DataValidator {
     } catch (error) {
       return {
         isValid: false,
-        errors: [`Learning path validation failed: ${error.message}`],
+        errors: [`Learning path validation failed: ${(error as Error).message}`],
         warnings: [],
         stats: {}
       }

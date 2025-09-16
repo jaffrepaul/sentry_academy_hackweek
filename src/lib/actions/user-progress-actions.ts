@@ -25,16 +25,30 @@ export async function getUserProgress() {
     }
 
     const userData = user[0]
+    if (!userData) {
+      return {
+        role: null,
+        currentStep: 0,
+        completedSteps: [],
+        completedModules: [],
+        completedFeatures: [],
+        onboardingCompleted: false,
+        lastActiveDate: new Date(),
+        preferredContentType: 'mixed' as const,
+        hasSeenOnboarding: false
+      }
+    }
+    
     return {
-      role: userData.engineerRole as EngineerRole | null,
-      currentStep: userData.currentStep || 0,
-      completedSteps: (userData.completedSteps as string[]) || [],
-      completedModules: (userData.completedModules as string[]) || [],
-      completedFeatures: (userData.completedFeatures as SentryFeature[]) || [],
-      onboardingCompleted: userData.onboardingCompleted || false,
-      preferredContentType: userData.preferredContentType as 'hands-on' | 'conceptual' | 'mixed' || 'mixed',
-      hasSeenOnboarding: userData.hasSeenOnboarding || false,
-      lastActiveDate: userData.updatedAt || new Date(),
+      role: userData.engineer_role as EngineerRole | null,
+      currentStep: userData.current_step || 0,
+      completedSteps: (userData.completed_steps as string[]) || [],
+      completedModules: (userData.completed_modules as string[]) || [],
+      completedFeatures: (userData.completed_features as SentryFeature[]) || [],
+      onboardingCompleted: userData.onboarding_completed || false,
+      preferredContentType: (userData.preferred_content_type as 'hands-on' | 'conceptual' | 'mixed') || 'mixed',
+      hasSeenOnboarding: userData.has_seen_onboarding || false,
+      lastActiveDate: userData.updated_at || new Date(),
     }
   } catch (error) {
     console.error('Error fetching user progress:', error)
@@ -52,12 +66,12 @@ export async function updateUserRole(role: EngineerRole, selectedFeatures: strin
     await db
       .update(users)
       .set({
-        engineerRole: role,
-        completedFeatures: selectedFeatures as SentryFeature[],
-        onboardingCompleted: selectedFeatures.length > 0,
-        hasSeenOnboarding: true,
-        currentStep: 0,
-        updatedAt: new Date(),
+        engineer_role: role,
+        completed_features: selectedFeatures as SentryFeature[],
+        onboarding_completed: selectedFeatures.length > 0,
+        has_seen_onboarding: true,
+        current_step: 0,
+        updated_at: new Date(),
       })
       .where(eq(users.id, session.user.id))
 
@@ -87,7 +101,7 @@ export async function updateUserProgress(updates: {
       .update(users)
       .set({
         ...updates,
-        updatedAt: new Date(),
+        updated_at: new Date(),
       })
       .where(eq(users.id, session.user.id))
 
@@ -117,8 +131,8 @@ export async function completeModule(moduleId: string) {
     await db
       .update(users)
       .set({
-        completedModules: updatedCompletedModules,
-        updatedAt: new Date(),
+        completed_modules: updatedCompletedModules,
+        updated_at: new Date(),
       })
       .where(eq(users.id, session.user.id))
 
@@ -140,15 +154,15 @@ export async function resetProgress() {
     await db
       .update(users)
       .set({
-        engineerRole: null,
-        currentStep: 0,
-        completedSteps: [],
-        completedModules: [],
-        completedFeatures: [],
-        onboardingCompleted: false,
-        preferredContentType: 'mixed',
-        hasSeenOnboarding: false,
-        updatedAt: new Date(),
+        engineer_role: null,
+        current_step: 0,
+        completed_steps: [],
+        completed_modules: [],
+        completed_features: [],
+        onboarding_completed: false,
+        preferred_content_type: 'mixed',
+        has_seen_onboarding: false,
+        updated_at: new Date(),
       })
       .where(eq(users.id, session.user.id))
 

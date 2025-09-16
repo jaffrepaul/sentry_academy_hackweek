@@ -61,14 +61,23 @@ export async function createUser(userData: CreateUserData): Promise<{
       }
     }
 
-    // Create new user
+    // Create new user - generate ID
+    const userId = crypto.randomUUID()
     const [newUser] = await db.insert(users).values({
+      id: userId,
       email: userData.email,
       name: userData.name || null,
       role: userData.role || 'student',
-      createdAt: new Date(),
-      updatedAt: new Date()
+      created_at: new Date(),
+      updated_at: new Date()
     }).returning()
+
+    if (!newUser) {
+      return {
+        success: false,
+        error: 'Failed to create user'
+      }
+    }
 
     revalidatePath('/admin')
     
@@ -87,7 +96,7 @@ export async function createUser(userData: CreateUserData): Promise<{
 
 // Update user profile
 export async function updateUserProfile(
-  userId: number, 
+  userId: string, 
   updates: UpdateUserData
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -122,7 +131,7 @@ export async function updateUserProfile(
     await db.update(users)
       .set({
         ...updates,
-        updatedAt: new Date()
+        updated_at: new Date()
       })
       .where(eq(users.id, userId))
 
@@ -141,7 +150,7 @@ export async function updateUserProfile(
 
 // Change user role (admin only)
 export async function changeUserRole(
-  userId: number, 
+  userId: string, 
   newRole: 'student' | 'instructor' | 'admin'
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -153,7 +162,7 @@ export async function changeUserRole(
     await db.update(users)
       .set({
         role: newRole,
-        updatedAt: new Date()
+        updated_at: new Date()
       })
       .where(eq(users.id, userId))
 
@@ -170,7 +179,7 @@ export async function changeUserRole(
 }
 
 // Delete user account (admin only or self-delete)
-export async function deleteUser(userId: number): Promise<{ success: boolean; error?: string }> {
+export async function deleteUser(userId: string): Promise<{ success: boolean; error?: string }> {
   try {
     const currentUser = await getCurrentUser()
     if (!currentUser) {
@@ -217,13 +226,13 @@ export async function getAllUsers(limit: number = 50, offset: number = 0) {
         email: users.email,
         name: users.name,
         role: users.role,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt
+        created_at: users.created_at,
+        updated_at: users.updated_at
       })
       .from(users)
       .limit(limit)
       .offset(offset)
-      .orderBy(users.createdAt)
+      .orderBy(users.created_at)
   } catch (error) {
     console.error('Error fetching users:', error)
     return []
@@ -241,7 +250,7 @@ export async function checkUserPermission(
     switch (action) {
       case 'create_course':
       case 'edit_course':
-        return ['instructor', 'admin'].includes(currentUser.role)
+        return ['instructor', 'admin'].includes(currentUser.role || '')
       
       case 'delete_course':
       case 'manage_users':
@@ -258,7 +267,7 @@ export async function checkUserPermission(
 }
 
 // Get user role for a specific user
-export async function getUserRole(userId?: number): Promise<string | null> {
+export async function getUserRole(userId?: string): Promise<string | null> {
   try {
     let user
     
@@ -298,7 +307,7 @@ export async function updateLastLogin(email: string): Promise<void> {
   try {
     await db.update(users)
       .set({
-        updatedAt: new Date()
+        updated_at: new Date()
       })
       .where(eq(users.email, email))
   } catch (error) {

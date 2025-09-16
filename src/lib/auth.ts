@@ -6,7 +6,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import GitHubProvider from 'next-auth/providers/github'
 import { db } from './db'
-import { users, accounts, sessions, verificationTokens } from './db/schema'
+import { users, accounts, sessions, verification_tokens } from './db/schema'
 // import bcrypt from 'bcryptjs' // TODO: Install bcryptjs for password hashing
 import { eq } from 'drizzle-orm'
 
@@ -39,10 +39,10 @@ declare module 'next-auth/jwt' {
 
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
+    usersTable: users as any, // Schema field naming mismatch with NextAuth
+    accountsTable: accounts as any,
+    sessionsTable: sessions as any,
+    verificationTokensTable: verification_tokens as any,
   }),
   
   providers: [
@@ -64,11 +64,10 @@ export const authOptions: NextAuthOptions = {
             .where(eq(users.email, credentials.email))
             .limit(1)
 
-          if (!user.length) {
+          const foundUser = user[0]
+          if (!foundUser) {
             return null
           }
-
-          const foundUser = user[0]
           
           // For now, we'll skip password verification since we don't have a password field
           // In a real app, you'd verify the password here
@@ -121,7 +120,7 @@ export const authOptions: NextAuthOptions = {
             .where(eq(users.id, token.sub))
             .limit(1)
           
-          if (dbUser.length > 0) {
+          if (dbUser.length > 0 && dbUser[0]) {
             token.role = dbUser[0].role || 'student'
           }
         } catch (error) {
@@ -139,7 +138,7 @@ export const authOptions: NextAuthOptions = {
       return session
     },
 
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       // For OAuth providers, set default role if not exists
       if (account?.provider !== 'credentials' && user.email) {
         try {

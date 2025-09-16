@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { getCourses } from '@/lib/actions/course-actions'
-import HomeContent from '@/components/home-content'
+import HomeContent from '@/components/HomeContent'
 import CourseGridSkeleton from '@/components/CourseGridSkeleton'
 
 /**

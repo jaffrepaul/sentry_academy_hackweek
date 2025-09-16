@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { aiGeneratedContent, courses, courseModules } from '@/lib/db/schema'
+import { ai_generated_content, courses, course_modules } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
@@ -24,24 +24,31 @@ export interface AIContentResponse {
 export async function generateAIContent(request: AIContentRequest): Promise<AIContentResponse> {
   try {
     // Insert the request into the database
-    const [newContent] = await db.insert(aiGeneratedContent).values({
+    const [newContent] = await db.insert(ai_generated_content).values({
       type: request.type,
       prompt: request.prompt,
       status: 'pending',
       content: null
     }).returning()
 
+    if (!newContent) {
+      return {
+        success: false,
+        error: 'Failed to create content record'
+      }
+    }
+
     // Mock AI content generation (replace with actual AI service integration)
     const mockContent = await generateMockContent(request)
     
     // Update the content with generated data
-    await db.update(aiGeneratedContent)
+    await db.update(ai_generated_content)
       .set({
         content: mockContent,
         status: 'generated',
-        updatedAt: new Date()
+        updated_at: new Date()
       })
-      .where(eq(aiGeneratedContent.id, newContent.id))
+      .where(eq(ai_generated_content.id, newContent.id))
 
     revalidatePath('/admin')
     
@@ -62,12 +69,12 @@ export async function generateAIContent(request: AIContentRequest): Promise<AICo
 // Approve generated content
 export async function approveAIContent(contentId: number): Promise<{ success: boolean; error?: string }> {
   try {
-    await db.update(aiGeneratedContent)
+    await db.update(ai_generated_content)
       .set({
         status: 'approved',
-        updatedAt: new Date()
+        updated_at: new Date()
       })
-      .where(eq(aiGeneratedContent.id, contentId))
+      .where(eq(ai_generated_content.id, contentId))
 
     revalidatePath('/admin')
     
@@ -86,8 +93,8 @@ export async function getAIGeneratedContent(limit: number = 10, offset: number =
   try {
     return await db
       .select()
-      .from(aiGeneratedContent)
-      .orderBy(desc(aiGeneratedContent.createdAt))
+      .from(ai_generated_content)
+      .orderBy(desc(ai_generated_content.created_at))
       .limit(limit)
       .offset(offset)
   } catch (error) {
@@ -110,8 +117,8 @@ export async function convertAIContentToCourse(contentId: number, additionalData
     // Get the AI content
     const [aiContent] = await db
       .select()
-      .from(aiGeneratedContent)
-      .where(eq(aiGeneratedContent.id, contentId))
+      .from(ai_generated_content)
+      .where(eq(ai_generated_content.id, contentId))
       .limit(1)
 
     if (!aiContent || aiContent.status !== 'approved') {
@@ -124,18 +131,18 @@ export async function convertAIContentToCourse(contentId: number, additionalData
       title: additionalData.title,
       description: additionalData.description || '',
       content: JSON.stringify(aiContent.content),
-      category: additionalData.category,
-      difficulty: additionalData.difficulty,
-      duration: additionalData.duration,
-      imageUrl: additionalData.imageUrl,
-      isPublished: false // Needs manual review before publishing
+      category: additionalData.category || null,
+      difficulty: additionalData.difficulty || null,
+      duration: additionalData.duration || null,
+      image_url: additionalData.imageUrl || null,
+      is_published: false // Needs manual review before publishing
     }).returning()
 
     // If content includes modules, create them
-    if (aiContent.content && aiContent.content.modules) {
+    if (newCourse && aiContent.content && typeof aiContent.content === 'object' && 'modules' in aiContent.content && Array.isArray(aiContent.content.modules)) {
       for (const [index, module] of aiContent.content.modules.entries()) {
-        await db.insert(courseModules).values({
-          courseId: newCourse.id,
+        await db.insert(course_modules).values({
+          course_id: newCourse.id,
           title: module.title || `Module ${index + 1}`,
           content: module.content || '',
           order: index,
@@ -145,6 +152,13 @@ export async function convertAIContentToCourse(contentId: number, additionalData
     }
 
     revalidatePath('/admin')
+    if (!newCourse) {
+      return { 
+        success: false,
+        error: 'Failed to create course'
+      }
+    }
+
     revalidatePath('/courses')
     
     return { 
@@ -264,14 +278,14 @@ function generateCourseTitle(prompt: string): string {
     `Professional ${prompt} Development`
   ]
   
-  return titleTemplates[Math.floor(Math.random() * titleTemplates.length)]
+  return titleTemplates[Math.floor(Math.random() * titleTemplates.length)] || 'Generated Course'
 }
 
 // Delete AI generated content
 export async function deleteAIContent(contentId: number): Promise<{ success: boolean; error?: string }> {
   try {
-    await db.delete(aiGeneratedContent)
-      .where(eq(aiGeneratedContent.id, contentId))
+    await db.delete(ai_generated_content)
+      .where(eq(ai_generated_content.id, contentId))
 
     revalidatePath('/admin')
     

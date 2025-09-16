@@ -102,8 +102,8 @@ export class BackupManager {
       return metadata
       
     } catch (error) {
-      console.error(`❌ Backup failed: ${error.message}`)
-      throw error
+      console.error(`❌ Backup failed: ${error instanceof Error ? error.message : String(error)}`)
+      throw error instanceof Error ? error : new Error(String(error))
     }
   }
 
@@ -137,8 +137,8 @@ export class BackupManager {
       console.log(`✅ Backup restored successfully: ${backupId}`)
       
     } catch (error) {
-      console.error(`❌ Restore failed: ${error.message}`)
-      throw error
+      console.error(`❌ Restore failed: ${error instanceof Error ? error.message : String(error)}`)
+      throw error instanceof Error ? error : new Error(String(error))
     }
   }
 
@@ -183,7 +183,7 @@ export class BackupManager {
       return backups
       
     } catch (error) {
-      console.error(`❌ Failed to list backups: ${error.message}`)
+      console.error(`❌ Failed to list backups: ${error instanceof Error ? error.message : String(error)}`)
       return []
     }
   }
@@ -228,7 +228,7 @@ export class BackupManager {
           console.log(`   Deleted: ${backup.id}`)
           
         } catch (error) {
-          console.warn(`   Failed to delete ${backup.id}: ${error.message}`)
+          console.warn(`   Failed to delete ${backup.id}: ${error instanceof Error ? error.message : String(error)}`)
         }
       }
       
@@ -236,7 +236,7 @@ export class BackupManager {
       return deletedCount
       
     } catch (error) {
-      console.error(`❌ Cleanup failed: ${error.message}`)
+      console.error(`❌ Cleanup failed: ${error instanceof Error ? error.message : String(error)}`)
       return 0
     }
   }
@@ -268,7 +268,7 @@ export class BackupManager {
       return true
       
     } catch (error) {
-      console.error(`❌ Backup verification failed: ${error.message}`)
+      console.error(`❌ Backup verification failed: ${error instanceof Error ? error.message : String(error)}`)
       return false
     }
   }
@@ -283,7 +283,7 @@ export class BackupManager {
       ORDER BY table_name
     `
     
-    return result.map(row => row.table_name)
+    return Array.isArray(result) ? result.map((row: any) => row.table_name) : []
   }
 
   private async generateBackupSQL(tables: string[]): Promise<string> {
@@ -308,19 +308,19 @@ export class BackupManager {
 
   private async exportTable(tableName: string): Promise<string> {
     // Get table structure
-    const [structure] = await this.sql`
+    const structure = (await this.sql`
       SELECT pg_get_ddl_object('table'::regclass, oid) as ddl
       FROM pg_class 
       WHERE relname = ${tableName}
-    `.catch(() => [{ ddl: `-- Unable to get DDL for ${tableName}` }])
+    `.catch(() => [{ ddl: `-- Unable to get DDL for ${tableName}` }]) as any[])[0] || { ddl: `-- Unable to get DDL for ${tableName}` }
     
     let sql = `-- Table: ${tableName}\n`
     sql += `${structure.ddl};\n\n`
     
     // Get table data
-    const data = await this.sql(`SELECT * FROM ${tableName}`)
+    const data = await this.sql(`SELECT * FROM ${tableName}`) as any[]
     
-    if (data.length > 0) {
+    if (Array.isArray(data) && data.length > 0) {
       sql += `-- Data for ${tableName}\n`
       
       // Get column names
@@ -370,8 +370,8 @@ export class BackupManager {
   }
 
   private async getDatabaseVersion(): Promise<string> {
-    const [result] = await this.sql`SELECT version() as version`
-    return result?.version || 'unknown'
+    const result = (await this.sql`SELECT version() as version`) as any[]
+    return result[0]?.version || 'unknown'
   }
 
   private formatBytes(bytes: number): string {
@@ -388,7 +388,9 @@ export class BackupManager {
  */
 export async function createQuickBackup(name?: string): Promise<BackupMetadata> {
   const manager = new BackupManager()
-  return await manager.createBackup({ name })
+  const options: { name?: string; compress?: boolean } = {}
+  if (name) options.name = name
+  return await manager.createBackup(options)
 }
 
 /**
@@ -404,7 +406,9 @@ export async function backupCLI() {
     switch (command) {
       case 'create':
         const name = args.find(arg => arg.startsWith('--name='))?.split('=')[1]
-        await manager.createBackup({ name })
+        const options: { name?: string; compress?: boolean } = {}
+        if (name) options.name = name
+        await manager.createBackup(options)
         break
         
       case 'list':
@@ -453,7 +457,7 @@ Examples:
         `)
     }
   } catch (error) {
-    console.error('💥 Backup command failed:', error.message)
+    console.error('💥 Backup command failed:', error instanceof Error ? error.message : String(error))
     process.exit(1)
   }
 }

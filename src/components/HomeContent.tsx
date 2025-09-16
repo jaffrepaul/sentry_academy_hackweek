@@ -8,6 +8,22 @@ import Hero from '@/components/Hero'
 import CourseGrid from '@/components/CourseGrid'
 import StatsSection from '@/components/StatsSection'
 import Footer from '@/components/Footer'
+import { Course as DBCourse } from '@/types/database'
+import { Course } from '@/data/courses'
+
+// Transform database course to frontend course
+const transformCourse = (dbCourse: DBCourse): Course & { slug: string } => ({
+  id: dbCourse.id.toString(),
+  slug: dbCourse.slug || dbCourse.id.toString(), // Fallback to id if slug is missing
+  title: dbCourse.title,
+  description: dbCourse.description || '',
+  duration: dbCourse.duration || '30 min',
+  level: dbCourse.level || dbCourse.difficulty || 'Beginner',
+  rating: dbCourse.rating || 45, // Default 4.5 stars
+  students: dbCourse.students || 0,
+  category: dbCourse.category || 'General',
+  isPopular: dbCourse.is_popular || false
+})
 
 // Dynamic imports for heavy components
 const LearningPaths = dynamic(() => import('@/components/LearningPaths'), {
@@ -29,26 +45,13 @@ const LearningPaths = dynamic(() => import('@/components/LearningPaths'), {
   ssr: true
 })
 
-interface Course {
-  id: number
-  slug: string
-  title: string
-  description: string
-  duration: string
-  level: string
-  rating: number
-  students: number
-  category: string
-  isPopular?: boolean
-  difficulty?: string
-}
-
 interface HomeContentProps {
-  courses: Course[]
+  courses: DBCourse[]
 }
 
 // Home page content component that handles client-side interactions
-const HomePageContent = ({ courses }: HomeContentProps) => {
+const HomePageContent = ({ courses: dbCourses }: HomeContentProps) => {
+  const courses = useMemo(() => dbCourses.map(transformCourse), [dbCourses])
   const [isVisible, setIsVisible] = useState(false)
   
   useEffect(() => {

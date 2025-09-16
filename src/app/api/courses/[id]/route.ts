@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { courses, courseModules } from '@/lib/db/schema'
+import { courses, course_modules } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { checkUserPermission } from '@/lib/actions/auth-actions'
 import { revalidatePath } from 'next/cache'
@@ -38,9 +38,9 @@ export async function GET(
     // Get course modules
     const modules = await db
       .select()
-      .from(courseModules)
-      .where(eq(courseModules.courseId, courseId))
-      .orderBy(courseModules.order)
+      .from(course_modules)
+      .where(eq(course_modules.course_id, courseId))
+      .orderBy(course_modules.order)
 
     return NextResponse.json({
       success: true,
@@ -119,9 +119,9 @@ export async function PUT(
         difficulty: difficulty ?? existingCourse.difficulty,
         duration: duration ?? existingCourse.duration,
         category: category ?? existingCourse.category,
-        imageUrl: imageUrl ?? existingCourse.imageUrl,
-        isPublished: isPublished ?? existingCourse.isPublished,
-        updatedAt: new Date()
+        image_url: imageUrl ?? existingCourse.image_url,
+        is_published: isPublished ?? existingCourse.is_published,
+        updated_at: new Date()
       })
       .where(eq(courses.id, courseId))
       .returning()
@@ -184,8 +184,8 @@ export async function DELETE(
 
     // Delete course modules first
     await db
-      .delete(courseModules)
-      .where(eq(courseModules.courseId, courseId))
+      .delete(course_modules)
+      .where(eq(course_modules.course_id, courseId))
 
     // Delete course
     await db

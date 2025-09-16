@@ -1,5 +1,5 @@
 // Style utility functions for consistent theming using Tailwind dark: classes
-import { backgroundOption4 } from './utils/backgroundOptions'; // or 3, 4, 5
+import { backgroundOption4 } from './backgroundOptions'; // or 3, 4, 5
 export const getBackgroundStyle = backgroundOption4;
 
 /**
