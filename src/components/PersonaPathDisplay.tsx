@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 // Theme handled automatically by Tailwind dark: classes
-import { useRole } from '../contexts/RoleContext';
+import { useRole } from '@/contexts/RoleContext';
 import { 
   CheckCircle, 
   Circle, 
@@ -26,7 +26,7 @@ import {
   Presentation,
   Users
 } from 'lucide-react';
-import { SentryFeature } from '../types/roles';
+import { SentryFeature } from '@/types/roles';
 
 // Map features to icons
 const featureIcons: Record<SentryFeature, React.ReactNode> = {

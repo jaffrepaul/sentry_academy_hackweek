@@ -43,3 +43,6 @@ export function Providers({ children }: ProvidersProps) {
     </ErrorBoundary>
   )
 }
+
+// Ensure default export as well for better compatibility
+export default Providers

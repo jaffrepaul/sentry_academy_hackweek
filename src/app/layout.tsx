@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Providers } from '@/components/Providers'
+import { Providers } from '@/components'
 import StructuredData from '@/components/StructuredData'
 import { generateSEO, generateOrganizationStructuredData, generateWebsiteStructuredData } from '@/lib/seo'
 import './globals.css'

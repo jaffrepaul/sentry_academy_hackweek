@@ -4,7 +4,7 @@ import React, { memo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Settings } from 'lucide-react'
 import NavigationLinks from './NavigationLinks'
-import ThemeToggle from '../ui/ThemeToggle'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 interface MobileMenuProps {
   isOpen: boolean

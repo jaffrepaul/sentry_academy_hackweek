@@ -1,10 +1,10 @@
 'use client'
 
 import React, { createContext, useContext, useCallback, ReactNode } from 'react'
-import { EngineerRole, UserProgress, LearningPath, LearningPathStep, NextContentRecommendation } from '../types/roles'
-import { useUserProgress } from '../hooks/useUserProgress'
-import { useLearningPath } from '../hooks/useLearningPath'
-import { mapFeaturesToProgress } from '../utils/roleProgressMapper'
+import { EngineerRole, UserProgress, LearningPath, LearningPathStep, NextContentRecommendation } from '@/types/roles'
+import { useUserProgress } from '@/hooks/useUserProgress'
+import { useLearningPath } from '@/hooks/useLearningPath'
+import { mapFeaturesToProgress } from '@/utils/roleProgressMapper'
 
 interface RoleContextType {
   userProgress: UserProgress
