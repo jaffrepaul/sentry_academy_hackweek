@@ -111,15 +111,17 @@ const PersonaPathDisplay: React.FC = () => {
         if (completedSteps.length > 0) {
           // Position the last completed step with margin above
           const lastCompletedStep = completedSteps[0];
-          const stepElement = document.getElementById(`step-${lastCompletedStep.id}`);
-          if (stepElement) {
-            const rect = stepElement.getBoundingClientRect();
-            const absoluteTop = rect.top + window.scrollY;
-            const offset = Math.max(0, absoluteTop - 100); // Position with 100px margin above, but not negative
-            window.scrollTo({
-              top: offset,
-              behavior: 'smooth'
-            });
+          if (lastCompletedStep) {
+            const stepElement = document.getElementById(`step-${lastCompletedStep.id}`);
+            if (stepElement) {
+              const rect = stepElement.getBoundingClientRect();
+              const absoluteTop = rect.top + window.scrollY;
+              const offset = Math.max(0, absoluteTop - 100); // Position with 100px margin above, but not negative
+              window.scrollTo({
+                top: offset,
+                behavior: 'smooth'
+              });
+            }
           }
         }
       }, 200); // Small delay to ensure all elements are rendered and visible
@@ -174,7 +176,7 @@ const PersonaPathDisplay: React.FC = () => {
         <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-purple-100/80 text-purple-700 dark:bg-slate-800/60 dark:text-purple-300">
           <Clock className="w-4 h-4" />
           <span className="text-sm font-medium">
-            Total: {currentLearningPath.totalEstimatedTime}
+            Total: {currentLearningPath.total_estimated_time}
           </span>
         </div>
       </div>
@@ -262,7 +264,7 @@ const PersonaPathDisplay: React.FC = () => {
                       <span className={`${
                         'text-gray-600 dark:text-gray-400'
                       }`}>
-                        {step.estimatedTime}
+                        {step.estimated_time}
                       </span>
                     </div>
                   </div>
@@ -290,9 +292,9 @@ const PersonaPathDisplay: React.FC = () => {
                   </div>
 
                   {/* Action Button */}
-                  {isCurrentNext && (
+                  {isCurrentNext && step.modules[0] && (
                     <button
-                      onClick={() => handleStartModule(step.modules[0])}
+                      onClick={() => handleStartModule(step.modules[0]!)}
                       className={`inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${featureColor} text-white hover:shadow-xl`}
                     >
                       <span>Start Learning</span>
@@ -306,14 +308,16 @@ const PersonaPathDisplay: React.FC = () => {
                         <CheckCircle className="w-4 h-4" />
                         <span className="text-sm font-medium">Completed</span>
                       </div>
-                      <button
-                        onClick={() => handleStartModule(step.modules[0])}
-                        className={`text-sm hover:underline transition-all duration-300 ${
-                          'text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                        }`}
-                      >
-                        Review course content →
-                      </button>
+                      {step.modules[0] && (
+                        <button
+                          onClick={() => handleStartModule(step.modules[0]!)}
+                          className={`text-sm hover:underline transition-all duration-300 ${
+                            'text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                          }`}
+                        >
+                          Review course content →
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
