@@ -60,7 +60,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
           </div>
         </div>
 
-        <h3 className={`text-xl font-bold mb-3 transition-smooth text-white group-hover:text-purple-400 group-hover:translate-x-1 ${getTextClasses('primary')}`}>
+        <h3 className={`text-xl font-bold mb-3 transition-smooth group-hover:text-purple-400 group-hover:translate-x-1 ${getTextClasses('primary')}`}>
           {title}
         </h3>
 

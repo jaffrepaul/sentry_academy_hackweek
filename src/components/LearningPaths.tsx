@@ -162,7 +162,7 @@ const UserInputForm: React.FC = () => {
                     value={feature.value}
                     checked={selectedFeatures.includes(feature.value)}
                     onChange={() => handleFeatureChange(feature.value)}
-                    className="w-4 h-4 text-purple-500 rounded focus:ring-purple-400 focus:ring-2 focus:ring-offset-0 accent-purple-500 bg-white border-2 border-purple-400/60 transition-colors duration-200 hover:border-purple-500/80 dark:bg-white dark:border-purple-500/50 dark:hover:border-purple-400/80"
+                    className="w-4 h-4 text-purple-500 rounded focus:ring-purple-400 focus:ring-2 focus:ring-offset-0 accent-purple-500 !bg-white !border-2 !border-purple-400 dark:!bg-white dark:!border-purple-500"
                   />
                   <span className="transition-all duration-300 text-gray-800 group-hover:text-purple-700 dark:text-gray-300 dark:group-hover:text-purple-300">
                     {feature.label}

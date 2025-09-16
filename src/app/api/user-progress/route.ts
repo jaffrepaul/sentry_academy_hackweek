@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { 
   updateUserProgress 
-} from '@/lib/actions/user-actions'
+} from '../../../lib/actions/user-actions'
 import { getCurrentUser } from '@/lib/actions/auth-actions'
 import { db } from '@/lib/db'
 import { user_progress, courses } from '@/lib/db/schema'

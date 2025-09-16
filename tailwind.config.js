@@ -6,6 +6,19 @@ module.exports = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './public/**/*.html',
   ],
+  safelist: [
+    'from-sky-400',
+    'to-blue-500',
+    'from-blue-400',
+    'to-indigo-500',
+    'from-emerald-400',
+    'to-cyan-400',
+    'from-purple-400',
+    'to-violet-500',
+    'from-orange-400',
+    'to-pink-400',
+    'bg-gradient-to-r'
+  ],
   darkMode: 'class',
   future: {
     hoverOnlyWhenSupported: true,

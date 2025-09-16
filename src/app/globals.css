@@ -72,6 +72,35 @@
   }
 }
 
+/* Force checkbox styles to override browser defaults */
+@layer components {
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white !important;
+    background-image: none !important;
+  }
+  
+  /* Ensure checkboxes work in dark mode */
+  .dark input[type="checkbox"] {
+    background-color: white !important;
+  }
+  
+  /* Style the checked state */
+  input[type="checkbox"]:checked {
+    background-color: white !important;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%23a855f7' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .dark input[type="checkbox"]:checked {
+    background-color: white !important;
+  }
+}
+
 /* Custom background system that exactly matches original theme */
 @layer base {
   :root {

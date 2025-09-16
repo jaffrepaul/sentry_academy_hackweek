@@ -23,7 +23,7 @@ const StatCard: React.FC<StatCardProps> = memo(({ icon: Icon, value, label, colo
     <div className="group cursor-pointer">
       <div className={`${cardClasses} p-6 text-center`}>
         <div className={`w-16 h-16 ${color} rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:rotate-6 transition-transform duration-300`}>
-          <Icon className="w-8 h-8 text-white" />
+          <Icon className="w-8 h-8 text-white drop-shadow-sm" />
         </div>
         <div className={`text-3xl md:text-4xl font-bold mb-2 transition-colors ${titleClasses} group-hover:text-purple-300`}>
           {value}
