@@ -9,9 +9,12 @@ import * as schema from './schema'
 const DATABASE_URL = process.env.DATABASE_URL
 if (!DATABASE_URL) {
   if (process.env.NODE_ENV === 'production') {
-    throw new Error('DATABASE_URL is required in production')
+    // In production, warn but don't throw during module loading to allow builds to pass
+    // The actual error will be thrown when the database is used
+    console.warn('⚠️  DATABASE_URL not configured - database operations will fail')
+  } else {
+    console.warn('⚠️  DATABASE_URL not found - using dummy connection for development')
   }
-  console.warn('⚠️  DATABASE_URL not found - using dummy connection for development')
 }
 
 // Create Neon connection with pooling
@@ -34,6 +37,14 @@ export * from './schema'
 // Connection health check utility
 export async function healthCheck(): Promise<{ status: string; timestamp: Date; database?: string }> {
   try {
+    // Check if we have a valid DATABASE_URL first
+    if (!DATABASE_URL || DATABASE_URL.includes('dummy')) {
+      return {
+        status: 'unhealthy',
+        timestamp: new Date()
+      }
+    }
+    
     const result = await sql`SELECT current_database() as db, now() as timestamp`
     return {
       status: 'healthy',

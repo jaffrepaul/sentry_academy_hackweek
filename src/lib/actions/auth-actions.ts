@@ -27,6 +27,19 @@ export async function getCurrentUser() {
       return null
     }
 
+    // Check if database is available
+    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('dummy')) {
+      console.warn('Database not available, returning session user data only')
+      return {
+        id: session.user.id || '',
+        email: session.user.email,
+        name: session.user.name,
+        role: session.user.role || 'student',
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    }
+
     const [user] = await db
       .select()
       .from(users)
@@ -244,6 +257,12 @@ export async function checkUserPermission(
   action: 'create_course' | 'edit_course' | 'delete_course' | 'manage_users' | 'view_analytics'
 ): Promise<boolean> {
   try {
+    // If database is not available, deny all permissions for safety
+    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('dummy')) {
+      console.warn('Database not available, denying permission check')
+      return false
+    }
+
     const currentUser = await getCurrentUser()
     if (!currentUser) return false
 

@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  approveAIContent, 
-  convertAIContentToCourse,
-  deleteAIContent
-} from '@/lib/actions/ai-actions'
-import { checkUserPermission } from '@/lib/actions/auth-actions'
+
+// Dynamic import to prevent build-time issues
+async function importActions() {
+  try {
+    const { 
+      approveAIContent, 
+      convertAIContentToCourse,
+      deleteAIContent
+    } = await import('@/lib/actions/ai-actions')
+    const { checkUserPermission } = await import('@/lib/actions/auth-actions')
+    
+    return { approveAIContent, convertAIContentToCourse, deleteAIContent, checkUserPermission }
+  } catch (error) {
+    console.error('Failed to import actions:', error)
+    return null
+  }
+}
 
 // PUT /api/ai-content/[id] - Approve AI content or convert to course
 export async function PUT(
@@ -12,6 +23,16 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const actions = await importActions()
+    if (!actions) {
+      return NextResponse.json(
+        { success: false, error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+
+    const { approveAIContent, convertAIContentToCourse, checkUserPermission } = actions
+
     const params = await context.params
     const contentId = parseInt(params.id)
     
@@ -93,6 +114,16 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const actions = await importActions()
+    if (!actions) {
+      return NextResponse.json(
+        { success: false, error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+
+    const { deleteAIContent, checkUserPermission } = actions
+
     const params = await context.params
     const contentId = parseInt(params.id)
     

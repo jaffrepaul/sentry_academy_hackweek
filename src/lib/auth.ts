@@ -38,12 +38,15 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: DrizzleAdapter(db, {
-    usersTable: users as any, // Schema field naming mismatch with NextAuth
-    accountsTable: accounts as any,
-    sessionsTable: sessions as any,
-    verificationTokensTable: verification_tokens as any,
-  }),
+  // Use database adapter if DATABASE_URL is available, otherwise fallback to JWT only
+  adapter: (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('dummy')) 
+    ? DrizzleAdapter(db, {
+        usersTable: users as any, // Schema field naming mismatch with NextAuth
+        accountsTable: accounts as any,
+        sessionsTable: sessions as any,
+        verificationTokensTable: verification_tokens as any,
+      })
+    : undefined as any, // Type assertion to bypass strict typing during build
   
   providers: [
     CredentialsProvider({
@@ -58,6 +61,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
+          // Skip database lookup if DATABASE_URL is not available
+          if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('dummy')) {
+            console.warn('Database not available during auth, skipping user lookup')
+            return null
+          }
+
           const user = await db
             .select()
             .from(users)

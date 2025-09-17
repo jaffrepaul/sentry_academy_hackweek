@@ -1,14 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  generateAIContent, 
-  getAIGeneratedContent,
-  type AIContentRequest
-} from '@/lib/actions/ai-actions'
-import { checkUserPermission } from '@/lib/actions/auth-actions'
+
+// Dynamic import to prevent build-time issues
+async function importActions() {
+  try {
+    const aiActions = await import('@/lib/actions/ai-actions')
+    const authActions = await import('@/lib/actions/auth-actions')
+    
+    return { 
+      generateAIContent: aiActions.generateAIContent,
+      getAIGeneratedContent: aiActions.getAIGeneratedContent,
+      checkUserPermission: authActions.checkUserPermission
+    }
+  } catch (error) {
+    console.error('Failed to import actions:', error)
+    return null
+  }
+}
 
 // POST /api/ai-content - Generate new AI content
 export async function POST(request: NextRequest) {
   try {
+    const actions = await importActions()
+    if (!actions) {
+      return NextResponse.json(
+        { success: false, error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+
+    const { generateAIContent, checkUserPermission } = actions
+
     // Check permissions - only instructors and admins can generate content
     const canCreate = await checkUserPermission('create_course')
     if (!canCreate) {
@@ -38,7 +59,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const contentRequest: AIContentRequest = {
+    const contentRequest: {
+      type: 'course' | 'module' | 'quiz' | 'exercise'
+      prompt: string
+      targetAudience?: string
+      difficulty?: string
+      duration?: string
+    } = {
       type,
       prompt,
       targetAudience,
@@ -72,6 +99,16 @@ export async function POST(request: NextRequest) {
 // GET /api/ai-content - Get AI generated content with pagination
 export async function GET(request: NextRequest) {
   try {
+    const actions = await importActions()
+    if (!actions) {
+      return NextResponse.json(
+        { success: false, error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+
+    const { getAIGeneratedContent, checkUserPermission } = actions
+
     // Check permissions - only instructors and admins can view generated content
     const canView = await checkUserPermission('create_course')
     if (!canView) {
