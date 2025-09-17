@@ -1,5 +1,5 @@
 // Component exports for better module resolution
-export { Providers } from './Providers'
+export { default as Providers } from './Providers'
 export { default as ErrorBoundary } from './ErrorBoundary'
 export { default as Header } from './Header'
 export { default as Footer } from './Footer'
@@ -13,4 +13,4 @@ export { default as StructuredData } from './StructuredData'
 export { default as PersonaPathDisplay } from './PersonaPathDisplay'
 export { default as Concepts101 } from './Concepts101'
 export { default as HomeContent } from './HomeContent'
-export { default as Arcade } from './Arcade'
+export { Arcade } from './Arcade'

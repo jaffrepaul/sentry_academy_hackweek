@@ -21,7 +21,7 @@ interface ProvidersProps {
  * - Proper provider nesting order
  * - Error logging and reporting
  */
-export function Providers({ children }: ProvidersProps) {
+export default function Providers({ children }: ProvidersProps) {
   const handleProviderError = (error: Error, errorInfo: React.ErrorInfo) => {
     console.error('Provider error:', error, errorInfo)
     
@@ -43,6 +43,3 @@ export function Providers({ children }: ProvidersProps) {
     </ErrorBoundary>
   )
 }
-
-// Ensure default export as well for better compatibility
-export default Providers
