@@ -43,3 +43,6 @@ src/data.backup/
 src/services.backup/
 src/contexts.backup/
 .vercel
+
+# Sentry Config File
+.env.sentry-build-plugin
