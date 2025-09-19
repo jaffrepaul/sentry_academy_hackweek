@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .transition-fade {
+    @apply transition-all duration-700 ease-out;
+  }
+  
+  .transition-smooth {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .transition-smooth-slow {
+    @apply transition-all duration-500 ease-out;
+  }
+}
+
+/* Force checkbox styles to override browser defaults */
+@layer components {
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white !important;
+    background-image: none !important;
+    position: relative;
+  }
+  
+  /* Ensure checkboxes work in dark mode */
+  .dark input[type="checkbox"] {
+    background-color: white !important;
+  }
+  
+  /* Style the checked state with a simple checkmark */
+  input[type="checkbox"]:checked {
+    background-color: #a855f7 !important;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .dark input[type="checkbox"]:checked {
+    background-color: #a855f7 !important;
+  }
+}
+
+/* Custom background system that exactly matches original theme */
+@layer base {
+  :root {
+    /* Light mode background variables (original theme) */
+    --bg-main: rgb(251 251 253); /* Almost white with purple hint */
+    --gradient-from: rgb(196 181 253 / 0.25); /* purple-300 subtle */
+    --gradient-to: rgb(251 207 232 / 0.25); /* pink-200 subtle */
+  }
+  
+  .dark {
+    /* Dark mode background variables (exactly matching original) */
+    --bg-main: rgb(15 15 20) !important; /* Very dark gray - original */
+    --gradient-from: rgb(88 28 135 / 0.15) !important; /* purple-800 subtle - original */
+    --gradient-to: rgb(30 58 138 / 0.15) !important; /* blue-800 subtle - original */
+    
+    /* Ensure proper dark mode behavior */
+    color-scheme: dark;
+    --background: 222.2 84% 4.9%; /* slate-950 equivalent for Tailwind classes */
+  }
+}

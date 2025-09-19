@@ -1,4 +1,4 @@
-import { RoleInfo, LearningPath, RolePersonalization, EngineerRole } from '../types/roles';
+import { RoleInfo, LearningPath, LearningPathStep, RolePersonalization, EngineerRole, PersonalizedContent, SentryFeature } from '../types/roles';
 
 export const roles: RoleInfo[] = [
   {
@@ -888,16 +888,16 @@ export const rolePersonalizations: RolePersonalization[] = [
   }
 ];
 
-export function getRoleById(roleId: EngineerRole): RoleInfo | undefined {
-  return roles.find(role => role.id === roleId);
+export function getRoleById(role_id: EngineerRole): RoleInfo | undefined {
+  return roles.find(role => role.id === role_id);
 }
 
-export function getLearningPathForRole(roleId: EngineerRole): LearningPath | undefined {
-  return learningPaths.find(path => path.roleId === roleId);
+export function getLearningPathForRole(role_id: EngineerRole): LearningPath | undefined {
+  return learningPaths.find(path => path.roleId === role_id);
 }
 
-export function getPersonalizationForRole(roleId: EngineerRole): RolePersonalization | undefined {
-  return rolePersonalizations.find(p => p.roleId === roleId);
+export function getPersonalizationForRole(role_id: EngineerRole): RolePersonalization | undefined {
+  return rolePersonalizations.find(p => p.roleId === role_id);
 }
 
 // AI Integration Functions
@@ -907,13 +907,13 @@ import { getApprovedAIGeneratedCourses } from './aiGeneratedCourses';
 /**
  * Get enhanced learning path that includes AI-generated content
  */
-export function getEnhancedLearningPathForRole(roleId: EngineerRole): LearningPath | undefined {
-  const basePath = getLearningPathForRole(roleId);
+export function getEnhancedLearningPathForRole(role_id: EngineerRole): LearningPath | undefined {
+  const basePath = getLearningPathForRole(role_id);
   if (!basePath) return undefined;
 
   // Get approved AI courses for this role
   const aiCourses = getApprovedAIGeneratedCourses()
-    .filter(course => course.generationRequest.targetRoles.includes(roleId));
+    .filter(course => course.generationRequest.targetRoles.includes(role_id));
 
   // Create AI-generated learning path steps
   const aiSteps: LearningPathStep[] = aiCourses.map((course, index) => {
@@ -944,11 +944,11 @@ export function getEnhancedLearningPathForRole(roleId: EngineerRole): LearningPa
  * Add AI-generated learning path step to existing role path
  */
 export function addAIGeneratedLearningPathStep(
-  roleId: EngineerRole, 
+  role_id: EngineerRole, 
   aiCourse: AIGeneratedCourse, 
   suggestedPosition?: number
 ): boolean {
-  const existingPath = getLearningPathForRole(roleId);
+  const existingPath = getLearningPathForRole(role_id);
   if (!existingPath) return false;
 
   const newStep: LearningPathStep = {
@@ -965,7 +965,7 @@ export function addAIGeneratedLearningPathStep(
   };
 
   // In a real implementation, this would update the database
-  console.log(`Added AI step "${newStep.title}" to ${roleId} learning path`);
+  console.log(`Added AI step "${newStep.title}" to ${role_id} learning path`);
   return true;
 }
 
@@ -974,9 +974,9 @@ export function addAIGeneratedLearningPathStep(
  */
 export function generatePersonalizationForAICourse(
   aiCourse: AIGeneratedCourse, 
-  roleId: EngineerRole
+  role_id: EngineerRole
 ): PersonalizedContent | undefined {
-  const rolePersonalization = aiCourse.rolePersonalizations.find(rp => rp.roleId === roleId);
+  const rolePersonalization = aiCourse.rolePersonalizations.find(rp => rp.roleId === role_id);
   if (!rolePersonalization) return undefined;
 
   return {
@@ -997,19 +997,20 @@ export function getAllEnhancedLearningPaths(): LearningPath[] {
 /**
  * Get role-specific recommendations including AI courses
  */
-export function getRoleRecommendations(roleId: EngineerRole): {
+export function getRoleRecommendations(role_id: EngineerRole): {
   nextCourses: string[];
   aiCourses: string[];
   reasoning: string[];
 } {
-  const basePath = getLearningPathForRole(roleId);
+  const basePath = getLearningPathForRole(role_id);
   const aiCourses = getApprovedAIGeneratedCourses()
-    .filter(course => course.generationRequest.targetRoles.includes(roleId));
+    .filter(course => course.generationRequest.targetRoles.includes(role_id));
 
   const nextCourses = basePath?.steps
     .filter(step => !step.isCompleted && step.isUnlocked)
     .slice(0, 3)
-    .map(step => step.modules[0]) || [];
+    .map(step => step.modules[0])
+    .filter((id): id is string => Boolean(id)) || [];
 
   const aiCourseIds = aiCourses
     .sort((a, b) => b.qualityScore - a.qualityScore) // Sort by quality
@@ -1017,7 +1018,7 @@ export function getRoleRecommendations(roleId: EngineerRole): {
     .map(course => course.id);
 
   const reasoning = [
-    `Recommended based on ${roleId} role requirements`,
+    `Recommended based on ${role_id} role requirements`,
     'AI courses provide cutting-edge content',
     'Courses are ordered by relevance and quality'
   ];
@@ -1072,7 +1073,7 @@ function determineFeatureFromKeywords(keywords: string[]): SentryFeature {
 function calculateTotalTime(steps: LearningPathStep[]): string {
   const totalMinutes = steps.reduce((total, step) => {
     const timeMatch = step.estimatedTime.match(/(\d+(?:\.\d+)?)\s*(min|hour|hr)/i);
-    if (timeMatch) {
+    if (timeMatch && timeMatch[1] && timeMatch[2]) {
       const value = parseFloat(timeMatch[1]);
       const unit = timeMatch[2].toLowerCase();
       return total + (unit.startsWith('hour') || unit === 'hr' ? value * 60 : value);

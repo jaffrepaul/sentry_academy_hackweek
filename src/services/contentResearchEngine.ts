@@ -47,6 +47,8 @@ class ContentResearchEngine {
     
     for (let i = 0; i < enabledSources.length; i++) {
       const sourceConfig = enabledSources[i];
+      if (!sourceConfig) continue;
+      
       const progressStep = 10 + (20 * (i + 1)) / enabledSources.length;
       
       updateGenerationProgress(requestId, {

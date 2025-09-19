@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { 
   AIGeneratedCourse
-} from '../types/aiGeneration';
-import { Course } from '../data/courses';
-import { EngineerRole } from '../types/roles';
-import { aiGeneratedCoursesStore } from '../data/aiGeneratedCourses';
+} from '@/types/aiGeneration';
+import { Course } from '@/data/courses';
+import { EngineerRole } from '@/types/roles';
+import { aiGeneratedCoursesStore } from '@/data/aiGeneratedCourses';
 
 interface GeneratedContentPreviewProps {
   course: AIGeneratedCourse;
@@ -15,7 +15,7 @@ interface GeneratedContentPreviewProps {
   onEdit?: (course: AIGeneratedCourse) => void;
 }
 
-type PreviewTab = 'overview' | 'modules' | 'personalizations' | 'comparison';
+type PreviewTab = 'overview' | 'modules' | 'personalizations' | 'validation' | 'comparison';
 
 export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = ({
   course,
@@ -29,6 +29,14 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
   const [selectedRole, setSelectedRole] = useState<EngineerRole>(course.rolePersonalizations[0]?.roleId || 'frontend');
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
+
+  // Mock validation result - in a real app this would come from the course validation
+  const validationResult = {
+    is_valid: course.qualityScore > 0.7,
+    score: course.qualityScore,
+    issues: [],
+    suggestions: []
+  };
 
 
 
@@ -100,7 +108,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
           { id: 'overview', label: 'Overview', icon: '📋' },
           { id: 'modules', label: 'Modules', icon: '📚' },
           { id: 'personalizations', label: 'Role Personalizations', icon: '👥' },
-
+          { id: 'validation', label: 'Validation', icon: '✅' },
           ...(comparisonCourse ? [{ id: 'comparison', label: 'Comparison', icon: '⚖️' }] : [])
         ].map(tab => (
           <button
@@ -214,7 +222,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
           <div>
             <h4 className="font-medium text-gray-700 mb-2">Key Concepts</h4>
             <ul className="space-y-1">
-              {course.synthesizedContent.mainConcepts.slice(0, 4).map((concept, index) => (
+              {course.synthesizedContent.mainConcepts.slice(0, 4).map((concept: string, index: number) => (
                 <li key={index} className="text-gray-600">• {concept}</li>
               ))}
             </ul>
@@ -222,7 +230,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
           <div>
             <h4 className="font-medium text-gray-700 mb-2">Best Practices</h4>
             <ul className="space-y-1">
-              {course.synthesizedContent.bestPractices.slice(0, 4).map((practice, index) => (
+              {course.synthesizedContent.bestPractices.slice(0, 4).map((practice: string, index: number) => (
                 <li key={index} className="text-gray-600">• {practice}</li>
               ))}
             </ul>
@@ -230,7 +238,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
           <div>
             <h4 className="font-medium text-gray-700 mb-2">Use Cases</h4>
             <ul className="space-y-1">
-              {course.synthesizedContent.useCases.slice(0, 4).map((useCase, index) => (
+              {course.synthesizedContent.useCases.slice(0, 4).map((useCase: string, index: number) => (
                 <li key={index} className="text-gray-600">• {useCase}</li>
               ))}
             </ul>
@@ -251,7 +259,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
         </span>
       </div>
 
-      {course.generatedModules.map((module, index) => (
+      {course.generatedModules.map((module: any, index: number) => (
         <div key={module.id} className="bg-white p-6 border rounded-lg">
           <div className="flex justify-between items-start mb-4">
             <div className="flex-1">
@@ -272,7 +280,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
           <div className="mb-4">
             <h5 className="font-medium text-gray-900 mb-2">Key Takeaways</h5>
             <ul className="space-y-1">
-              {module.keyTakeaways.map((takeaway, idx) => (
+              {module.key_takeaways.map((takeaway: string, idx: number) => (
                 <li key={idx} className="text-gray-700 text-sm">• {takeaway}</li>
               ))}
             </ul>
@@ -362,7 +370,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">💡 Role-Specific Examples</h4>
                   <ul className="space-y-1">
-                    {personalization.roleSpecificExamples.map((example, idx) => (
+                    {personalization.roleSpecificExamples.map((example: string, idx: number) => (
                       <li key={idx} className="text-gray-700 text-sm">• {example}</li>
                     ))}
                   </ul>
@@ -373,7 +381,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">🔧 Use Cases</h4>
                   <ul className="space-y-1">
-                    {personalization.roleSpecificUseCases.map((useCase, idx) => (
+                    {personalization.roleSpecificUseCases.map((useCase: string, idx: number) => (
                       <li key={idx} className="text-gray-700 text-sm">• {useCase}</li>
                     ))}
                   </ul>
@@ -394,9 +402,9 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Validation Results</h3>
               <div className={`px-4 py-2 rounded-lg font-medium ${
-                validationResult.isValid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                validationResult.is_valid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
               }`}>
-                {validationResult.isValid ? '✅ Valid' : '❌ Needs Improvement'}
+                {validationResult.is_valid ? '✅ Valid' : '❌ Needs Improvement'}
               </div>
             </div>
             
@@ -424,7 +432,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
             <div className="bg-white p-6 border rounded-lg">
               <h4 className="font-semibold text-gray-900 mb-4">Issues Found ({validationResult.issues.length})</h4>
               <div className="space-y-3">
-                {validationResult.issues.map((issue, index) => (
+                {validationResult.issues.map((issue: any, index: number) => (
                   <div key={index} className="border-l-4 border-orange-400 pl-4">
                     <div className="flex items-center space-x-2 mb-1">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${getSeverityColor(issue.severity)}`}>
@@ -450,7 +458,7 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
             <div className="bg-white p-6 border rounded-lg">
               <h4 className="font-semibold text-gray-900 mb-4">Improvement Suggestions</h4>
               <ul className="space-y-2">
-                {validationResult.suggestions.map((suggestion, index) => (
+                {validationResult.suggestions.map((suggestion: string, index: number) => (
                   <li key={index} className="flex items-start space-x-2">
                     <span className="text-blue-500 mt-1">💡</span>
                     <span className="text-gray-700">{suggestion}</span>
@@ -542,7 +550,8 @@ export const GeneratedContentPreview: React.FC<GeneratedContentPreviewProps> = (
         return renderModules();
       case 'personalizations':
         return renderPersonalizations();
-
+      case 'validation':
+        return renderValidation();
       case 'comparison':
         return renderComparison();
       default:

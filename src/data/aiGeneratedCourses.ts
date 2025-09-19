@@ -72,15 +72,15 @@ export const defaultResearchSources: ResearchSourceConfig[] = [
 
 // Default AI generation settings
 export const defaultAISettings: AIGenerationSettings = {
-  defaultSources: defaultResearchSources,
-  maxConcurrentGenerations: 3,
-  defaultQualityThreshold: 0.7,
-  autoApprovalThreshold: 0.85,
-  maxContentLength: 10000,
-  enableExperimentalFeatures: false,
-  rateLimits: {
-    requestsPerHour: 10,
-    requestsPerDay: 50
+  default_sources: defaultResearchSources,
+  max_concurrent_generations: 3,
+  default_quality_threshold: 0.7,
+  auto_approval_threshold: 0.85,
+  max_content_length: 10000,
+  enable_experimental_features: false,
+  rate_limits: {
+    requests_per_hour: 10,
+    requests_per_day: 50
   }
 };
 
@@ -133,7 +133,7 @@ class AIGeneratedCoursesStore {
     const updatedCourse = {
       ...course,
       ...updates,
-      lastModified: new Date(),
+      last_modified: new Date(),
       version: course.version + 1
     };
 
@@ -194,7 +194,7 @@ class AIGeneratedCoursesStore {
 
   getApprovalWorkflowByCourse(courseId: string): ApprovalWorkflow | undefined {
     return Array.from(this.approvalWorkflows.values())
-      .find(workflow => workflow.courseId === courseId);
+      .find(workflow => workflow.course_id === courseId);
   }
 
   getPendingApprovals(): ApprovalWorkflow[] {
@@ -291,7 +291,7 @@ class AIGeneratedCoursesStore {
         rating: aiCourse.rating,
         students: aiCourse.students,
         category: aiCourse.category,
-        isPopular: aiCourse.isPopular
+        isPopular: aiCourse.isPopular || false
       };
       mergedCourses.push(course);
     });
@@ -337,23 +337,23 @@ class AIGeneratedCoursesStore {
   }
 
   importData(data: Record<string, unknown>) {
-    if (data.courses) {
-      this.courses = new Map(data.courses);
+    if (data.courses && Array.isArray(data.courses)) {
+      this.courses = new Map(data.courses as [string, AIGeneratedCourse][]);
     }
-    if (data.generationRequests) {
-      this.generationRequests = new Map(data.generationRequests);
+    if (data.generationRequests && Array.isArray(data.generationRequests)) {
+      this.generationRequests = new Map(data.generationRequests as [string, ContentGenerationRequest][]);
     }
-    if (data.generationProgress) {
-      this.generationProgress = new Map(data.generationProgress);
+    if (data.generationProgress && Array.isArray(data.generationProgress)) {
+      this.generationProgress = new Map(data.generationProgress as [string, GenerationProgress][]);
     }
-    if (data.approvalWorkflows) {
-      this.approvalWorkflows = new Map(data.approvalWorkflows);
+    if (data.approvalWorkflows && Array.isArray(data.approvalWorkflows)) {
+      this.approvalWorkflows = new Map(data.approvalWorkflows as [string, ApprovalWorkflow][]);
     }
-    if (data.bulkOperations) {
-      this.bulkOperations = new Map(data.bulkOperations);
+    if (data.bulkOperations && Array.isArray(data.bulkOperations)) {
+      this.bulkOperations = new Map(data.bulkOperations as [string, BulkOperation][]);
     }
     if (data.settings) {
-      this.settings = data.settings;
+      this.settings = data.settings as AIGenerationSettings;
     }
   }
 

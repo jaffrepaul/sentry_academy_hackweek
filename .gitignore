@@ -23,3 +23,23 @@ dist-ssr
 *.sln
 *.sw?
 .env
+# Legacy Files - Backed Up During Next.js Migration
+*.backup
+src/main.tsx
+index.html
+vite.config.ts
+tsconfig.app.json
+tsconfig.node.json
+dist/
+.vite/
+
+# Next.js
+/.next/
+/out/
+
+# Backup files
+*.backup
+src/data.backup/
+src/services.backup/
+src/contexts.backup/
+.vercel

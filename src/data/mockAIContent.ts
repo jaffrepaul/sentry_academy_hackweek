@@ -3,7 +3,6 @@ import {
   ResearchedContent,
   ResearchSource
 } from '../types/aiGeneration';
-import { addAIGeneratedCourse, addGenerationRequest, updateGenerationProgress } from './aiGeneratedCourses';
 
 // Mock data for demonstration purposes
 export function generateMockAIContent() {
@@ -54,7 +53,7 @@ export function generateMockAIContent() {
     students: 0,
     category: 'Performance',
     isPopular: false,
-    isAIGenerated: true,
+    isAiGenerated: true,
     generationRequest: {
       id: 'req-profiling-demo-001',
       keywords: ['profiling', 'performance', 'optimization'],
@@ -276,12 +275,13 @@ export function generateMockAIContent() {
   // Advanced Profiling course removed - was showing in main UI
   // Keeping the course definition for reference but not adding to store
   // addAIGeneratedCourse(mockAICourse);
-  // addGenerationRequest(mockAICourse.generationRequest);
-  // updateGenerationProgress(mockAICourse.generationRequest.id, { ... });
+  // addGenerationRequest(mockAICourse.generation_request);
+  // updateGenerationProgress(mockAICourse.generation_request.id, { ... });
 
   // Note: Additional mock courses can be added here if needed for testing
 
   console.log('Mock AI content generated and added to store');
+  return mockAICourse;
 }
 
 // Auto-generate mock content when this module is imported

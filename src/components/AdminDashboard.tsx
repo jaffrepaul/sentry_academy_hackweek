@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { 
   AIGeneratedCourse, 
   GenerationStatus
-} from '../types/aiGeneration';
+} from '@/types/aiGeneration';
 import { 
   getGenerationStats, 
   aiGeneratedCoursesStore 
-} from '../data/aiGeneratedCourses';
-import { ContentGenerationForm } from './ContentGenerationForm';
-import { GeneratedContentPreview } from './GeneratedContentPreview';
-import { AIContentManager } from './AIContentManager';
+} from '@/data/aiGeneratedCourses';
+import { ContentGenerationForm } from '@/components/ContentGenerationForm';
+import { GeneratedContentPreview } from '@/components/GeneratedContentPreview';
+import { AIContentManager } from '@/components/AIContentManager';
+// Theme handled automatically by Tailwind dark: classes
+import { getBackgroundStyle, getCardClasses, getTextClasses, getButtonClasses } from '@/utils/styles';
+import Header from '@/components/Header';
 
 interface AdminDashboardProps {
   onClose?: () => void;
@@ -27,7 +30,8 @@ interface DashboardStats {
   averageQualityScore: number;
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose: _onClose }) => {
+  // Theme handled automatically by Tailwind dark: classes
   const [currentView, setCurrentView] = useState<DashboardView>('overview');
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentCourses, setRecentCourses] = useState<AIGeneratedCourse[]>([]);
@@ -84,12 +88,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   };
 
   const renderOverview = () => (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">AI Content Generation</h1>
-          <p className="text-gray-600 mt-1">Manage AI-generated course content and workflows</p>
+          <h1 className={`text-3xl font-bold ${getTextClasses('primary')}`}>AI Content Generation</h1>
+          <p className={`mt-1 ${getTextClasses('secondary')}`}>Manage AI-generated course content and workflows</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -99,8 +103,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               console.log('Refresh clicked');
               refreshData();
             }}
-            className="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
+            className={`px-4 py-2 text-sm rounded-lg font-medium ${getButtonClasses('secondary')}`}
           >
             🔄 Refresh
           </button>
@@ -111,8 +114,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               console.log('Generate clicked');
               setCurrentView('generate');
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
+            className={`px-4 py-2 rounded-lg font-medium ${getButtonClasses('primary')}`}
           >
             ✨ Generate New Content
           </button>
@@ -122,50 +124,50 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       {/* Stats Grid */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
+              <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-500/20">
                 <span className="text-2xl">📊</span>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Requests</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalRequests}</p>
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Total Requests</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>{stats.totalRequests}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 rounded-lg bg-green-100 dark:bg-green-500/20">
                 <span className="text-2xl">✅</span>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Approved Courses</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.approvedCourses}</p>
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Approved Courses</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>{stats.approvedCourses}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className="p-2 bg-orange-100 rounded-lg">
+              <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-500/20">
                 <span className="text-2xl">⏳</span>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Pending Review</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.pendingApprovals}</p>
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Pending Review</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>{stats.pendingApprovals}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className={`${getCardClasses()} p-6`}>
             <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
+              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-500/20">
                 <span className="text-2xl">⭐</span>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Avg Quality</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className={`text-sm font-medium ${getTextClasses('secondary')}`}>Avg Quality</p>
+                <p className={`text-2xl font-bold ${getTextClasses('primary')}`}>
                   {(stats.averageQualityScore * 100).toFixed(0)}%
                 </p>
               </div>
@@ -176,8 +178,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
       {/* Active Generations */}
       {activeGenerations.length > 0 && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Active Generations</h2>
+        <div className={`${getCardClasses(false)} p-6`}>
+          <h2 className={`text-lg font-semibold mb-4 ${getTextClasses('primary')}`}>Active Generations</h2>
           <div className="space-y-3">
             {activeGenerations.slice(0, 5).map(courseId => {
               const course = aiGeneratedCoursesStore.getCourse(courseId);
@@ -186,26 +188,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               if (!course || !progress) return null;
 
               return (
-                <div key={courseId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={courseId} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-slate-700/50 dark:bg-slate-800/30">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(progress.status)}`}>
                         {progress.status}
                       </span>
-                      <span className="font-medium text-gray-900">
+                      <span className={`font-medium ${getTextClasses('primary')}`}>
                         {course.generationRequest.keywords.join(', ')}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">{progress.currentStep}</p>
+                    <p className={`text-sm mt-1 ${getTextClasses('secondary')}`}>{progress.currentStep}</p>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-32 bg-gray-200 rounded-full h-2">
+                    <div className="w-32 rounded-full h-2 bg-gray-200 dark:bg-slate-700">
                       <div
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                        className="h-2 rounded-full transition-all duration-300 bg-blue-600 dark:bg-purple-500"
                         style={{ width: `${progress.progress}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm text-gray-600 w-12">{progress.progress}%</span>
+                    <span className={`text-sm w-12 ${getTextClasses('secondary')}`}>{progress.progress}%</span>
                   </div>
                 </div>
               );
@@ -215,9 +217,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       )}
 
       {/* Recent Courses */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
+      <div className={`${getCardClasses(false)} p-6`}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Courses</h2>
+          <h2 className={`text-lg font-semibold ${getTextClasses('primary')}`}>Recent Courses</h2>
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -225,8 +227,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               console.log('View All clicked');
               setCurrentView('manage');
             }}
-            className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-            style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
+            className="text-sm font-medium transition-colors text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
           >
             View All →
           </button>
@@ -235,7 +236,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         {recentCourses.length === 0 ? (
           <div className="text-center py-8">
             <span className="text-4xl mb-4 block">📚</span>
-            <p className="text-gray-600">No courses generated yet</p>
+            <p className={getTextClasses('secondary')}>No courses generated yet</p>
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -243,8 +244,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 console.log('Generate first course clicked');
                 setCurrentView('generate');
               }}
-              className="mt-2 text-blue-600 hover:text-blue-700 font-medium"
-              style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
+              className="mt-2 font-medium transition-colors text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
             >
               Generate your first course
             </button>
@@ -257,7 +257,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               return (
                 <div 
                   key={course.id} 
-                  className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                  className="flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors border border-gray-200 bg-gray-50/50 hover:bg-gray-100/50 dark:border-slate-700/50 dark:bg-slate-800/30 dark:hover:bg-slate-700/30"
                   onClick={(e) => {
                     e.preventDefault();
                     setSelectedCourse(course);
@@ -270,12 +270,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       }`}>
                         {progress?.status || 'unknown'}
                       </span>
-                      <span className="font-medium text-gray-900">{course.title}</span>
+                      <span className={`font-medium ${getTextClasses('primary')}`}>{course.title}</span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">{course.description}</p>
+                    <p className={`text-sm mt-1 ${getTextClasses('secondary')}`}>{course.description}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600">
+                    <p className={`text-sm ${getTextClasses('secondary')}`}>
                       Quality: {(course.qualityScore * 100).toFixed(0)}%
                     </p>
                     <p className="text-xs text-gray-400">
@@ -292,7 +292,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   );
 
   const renderNavigation = () => (
-    <nav className="bg-white border-b border-gray-200 mb-6" style={{ position: 'relative', zIndex: 3 }}>
+    <nav className="border-b mb-6 border-purple-300/30 bg-white/50 dark:border-purple-500/30 dark:bg-slate-950/50 backdrop-blur-sm">
       <div className="flex space-x-8">
         {[
           { id: 'overview', label: 'Overview', icon: '📊' },
@@ -310,10 +310,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             }}
             className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               currentView === tab.id
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-purple-500 text-purple-600 dark:border-purple-400 dark:text-purple-400'
+                : `border-transparent ${getTextClasses('secondary')} hover:${getTextClasses('primary')} hover:border-purple-300 dark:hover:border-purple-500/50`
             }`}
-            style={{ position: 'relative', zIndex: 4, pointerEvents: 'auto' }}
           >
             <span>{tab.icon}</span>
             <span>{tab.label}</span>
@@ -349,24 +348,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   };
 
   const renderSettings = () => (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">AI Generation Settings</h2>
+    <div className={`${getCardClasses(false)} p-6`}>
+      <h2 className={`text-lg font-semibold mb-4 ${getTextClasses('primary')}`}>AI Generation Settings</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className={`block text-sm font-medium mb-2 ${getTextClasses('primary')}`}>
             OpenAI API Key
           </label>
           <input
             type="password"
             placeholder="sk-..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border rounded-lg transition-colors border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500 dark:border-slate-600 dark:bg-slate-800/50 dark:text-white dark:placeholder-gray-400"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className={`text-xs mt-1 ${getTextClasses('secondary')}`}>
             Required for AI content generation. Your key is stored securely.
           </p>
         </div>
         
-        <div className="text-sm text-gray-600">
+        <div className={`text-sm ${getTextClasses('secondary')}`}>
           <p>Settings panel for future configuration options.</p>
           <p className="mt-2">Currently all course approvals require manual review.</p>
         </div>
@@ -375,41 +374,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50" style={{ position: 'relative', zIndex: 1 }}>
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b" style={{ position: 'relative', zIndex: 2 }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
-            </div>
-            {onClose && (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onClose();
-                }}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                style={{ position: 'relative', zIndex: 10 }}
-              >
-                ✕
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
+    <div 
+      className="min-h-screen"
+      style={getBackgroundStyle()}
+    >
+      <Header />
+      
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" style={{ position: 'relative', zIndex: 2 }}>
-        {renderNavigation()}
-        {renderContent()}
-      </div>
+      <main className="pt-24 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {renderNavigation()}
+          {renderContent()}
+        </div>
+      </main>
 
       {/* Course Preview Modal */}
       {selectedCourse && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{ zIndex: 10000 }}>
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
+          <div className="rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col bg-white dark:bg-slate-900">
             <GeneratedContentPreview
               course={selectedCourse}
               onClose={() => setSelectedCourse(null)}

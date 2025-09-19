@@ -1,74 +1,76 @@
-import React, { memo, useMemo } from 'react';
-import { ArrowRight, User, Code, Server, Settings, Layers, Bot, BarChart } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { useRole } from '../contexts/RoleContext';
-import { getTextClasses } from '../utils/styles';
-import PersonaPathDisplay from './PersonaPathDisplay';
-import { EngineerRole } from '../types/roles';
+'use client'
+
+import React, { memo, useMemo } from 'react'
+import { ArrowRight, User, Code, Server, Settings, BarChart, Layers, Bot } from 'lucide-react'
+// Theme handled automatically by Tailwind dark: classes
+import { useRole } from '@/contexts/RoleContext'
+import { getTextClasses } from '@/utils/styles'
+import PersonaPathDisplay from './PersonaPathDisplay'
+import { EngineerRole } from '@/types/roles'
 
 const UserInputForm: React.FC = () => {
-  const { isDark } = useTheme();
-  const [selectedRole, setSelectedRole] = React.useState('');
-  const [selectedFeatures, setSelectedFeatures] = React.useState<string[]>([]);
-  const [isHovered, setIsHovered] = React.useState(false);
+  // Theme handled automatically by Tailwind dark: classes
+  const [selectedRole, setSelectedRole] = React.useState('')
+  const [selectedFeatures, setSelectedFeatures] = React.useState<string[]>([])
+  const [isHovered, setIsHovered] = React.useState(false)
 
   const handleFeatureChange = (feature: string) => {
     setSelectedFeatures(prev => 
       prev.includes(feature) 
         ? prev.filter(f => f !== feature)
         : [...prev, feature]
-    );
-  };
+    )
+  }
 
-  const { setUserRole } = useRole();
+  const { setUserRole } = useRole()
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (selectedRole) {
-      setUserRole(selectedRole as EngineerRole, selectedFeatures);
-      console.log('Selected role:', selectedRole);
-      console.log('Selected features:', selectedFeatures);
+      setUserRole(selectedRole as EngineerRole, selectedFeatures)
+      console.log('Selected role:', selectedRole)
+      console.log('Selected features:', selectedFeatures)
     }
-  };
+  }
 
   const roleOptions = [
     {
       value: 'frontend',
-      label: 'Frontend Web Developer',
-      icon: <Code className="w-6 h-6" />,
+      label: 'Front-end Web Developer',
+      icon: <Code className="w-5 h-5" />,
       description: 'Monitor client-side issues and user experience'
     },
     {
       value: 'backend',
       label: 'Backend Engineer',
-      icon: <Server className="w-6 h-6" />,
+      icon: <Server className="w-5 h-5" />,
       description: 'Deep visibility into backend performance'
     },
     {
       value: 'fullstack',
       label: 'Full-stack Engineer',
-      icon: <Layers className="w-6 h-6" />,
+      icon: <Layers className="w-5 h-5" />,
       description: 'End-to-end observability pipeline and tooling'
     },
     {
       value: 'sre',
       label: 'SRE/DevOps',
-      icon: <Settings className="w-6 h-6" />,
+      icon: <Settings className="w-5 h-5" />,
       description: 'High reliability and proactive alerting'
     },
     {
       value: 'ai-ml',
       label: 'AI/ML-Aware Developer',
-      icon: <Bot className="w-6 h-6" />,
+      icon: <Bot className="w-5 h-5" />,
       description: 'Debug AI pipelines with observability'
     },
     {
       value: 'pm-manager',
       label: 'Product/Engineering Manager',
-      icon: <BarChart className="w-6 h-6" />,
+      icon: <BarChart className="w-5 h-5" />,
       description: 'Turn data into actionable insights'
     }
-  ];
+  ]
 
   const sentryFeatures = [
     { value: 'error-tracking', label: 'Error Tracking' },
@@ -83,21 +85,21 @@ const UserInputForm: React.FC = () => {
     { value: 'seer-mcp', label: 'Seer / MCP' },
     { value: 'custom-metrics', label: 'Custom Metrics' },
     { value: 'metrics-insights', label: 'AI Agent Monitoring' }
-  ];
+  ]
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <div className="inline-flex items-center space-x-3">
-          <User className={`w-8 h-8 ${isDark ? 'text-purple-400' : 'text-purple-700'}`} />
-          <span className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>I am a...</span>
+          <User className="w-8 h-8 text-purple-700 dark:text-purple-400" />
+          <span className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">I am a...</span>
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {roleOptions.map((option) => (
-            <div key={option.value} className="group cursor-pointer">
+            <div key={option.value} className="group cursor-pointer relative transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1">
               <input
                 type="radio"
                 id={option.value}
@@ -109,18 +111,14 @@ const UserInputForm: React.FC = () => {
               />
               <label
                 htmlFor={option.value}
-                className={`block backdrop-blur-sm border rounded-2xl p-6 transition-smooth transform hover:scale-105 hover:shadow-xl cursor-pointer ${
+                className={`block backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer ${
                   selectedRole === option.value
-                    ? isDark 
-                      ? 'border-purple-400/80 bg-slate-900/80 shadow-lg shadow-purple-500/25'
-                      : 'border-purple-500/80 bg-white/85 shadow-lg shadow-purple-400/25'  // Improved border and shadow contrast
-                    : isDark
-                      ? 'border-purple-500/30 bg-slate-900/40 hover:border-purple-400/60 hover:bg-slate-900/60 hover:shadow-purple-500/20'
-                      : 'border-purple-400/40 bg-white/75 hover:border-purple-500/60 hover:bg-white/85 hover:shadow-purple-400/20'  // Improved border and background opacity
+                    ? 'border-purple-500/80 bg-white/85 shadow-lg shadow-purple-400/25 dark:border-purple-400/80 dark:bg-slate-900/80 dark:shadow-purple-500/25'
+                    : 'border-purple-400/40 bg-white/75 hover:border-purple-500/60 hover:bg-white/85 hover:shadow-purple-400/20 dark:border-purple-500/30 dark:bg-slate-900/40 dark:hover:border-purple-400/60 dark:hover:bg-slate-900/60 dark:hover:shadow-purple-500/20'
                 }`}
               >
                 <div className="text-center">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-smooth ${
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-all duration-300 ${
                     selectedRole === option.value
                       ? 'bg-gradient-to-r from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30'
                       : 'bg-gradient-to-r from-purple-400/20 to-violet-500/20 group-hover:from-purple-400/30 group-hover:to-violet-500/30'
@@ -131,16 +129,18 @@ const UserInputForm: React.FC = () => {
                       {option.icon}
                     </div>
                   </div>
-                  <h3 className={`text-lg font-bold mb-2 transition-smooth ${
+                  <h3 className={`text-lg font-bold mb-2 transition-all duration-300 ${
                     selectedRole === option.value 
-                      ? isDark ? 'text-purple-300' : 'text-purple-700'  // Improved from purple-600 to purple-700
-                      : isDark 
-                        ? 'text-white group-hover:text-purple-300' 
-                        : 'text-gray-900 group-hover:text-purple-700'   // Improved from purple-600 to purple-700
+                      ? 'text-purple-700 dark:text-purple-300'
+                      : 'text-gray-900 group-hover:text-purple-800 dark:text-white dark:group-hover:text-purple-200'
                   }`}>
                     {option.label}
                   </h3>
-                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
+                  <p className={`text-sm transition-all duration-300 ${
+                    selectedRole === option.value 
+                      ? 'text-gray-600 dark:text-gray-300'
+                      : 'text-gray-700 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300'
+                  }`}>
                     {option.description}
                   </p>
                 </div>
@@ -150,35 +150,21 @@ const UserInputForm: React.FC = () => {
         </div>
 
         <div className="mb-12">
-          <h3 className={`text-xl font-bold mb-6 text-center ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>
+          <h3 className="text-xl font-bold mb-6 text-center text-gray-900 dark:text-white">
             I currently use these Sentry features...
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {sentryFeatures.map((feature) => (
               <div key={feature.value} className="group">
-                <label className={`flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-smooth cursor-pointer hover:scale-[1.02] ${
-                  isDark 
-                    ? 'bg-slate-900/40 border-purple-500/30 hover:border-purple-400/60 hover:bg-slate-900/60'
-                    : 'bg-white/75 border-purple-400/40 hover:border-purple-500/60 hover:bg-white/85'  // Improved opacity and border contrast
-                }`}>
+                <label className="flex items-center space-x-3 backdrop-blur-sm border rounded-xl p-4 transition-all duration-300 cursor-pointer hover:scale-[1.02] bg-white/75 border-purple-400/40 hover:border-purple-500/60 hover:bg-white/85 dark:bg-slate-900/40 dark:border-purple-500/30 dark:hover:border-purple-400/60 dark:hover:bg-slate-900/60">
                   <input
                     type="checkbox"
                     value={feature.value}
                     checked={selectedFeatures.includes(feature.value)}
                     onChange={() => handleFeatureChange(feature.value)}
-                    className={`w-4 h-4 text-purple-500 rounded focus:ring-purple-400 focus:ring-2 focus:ring-offset-0 accent-purple-500 ${
-                      isDark 
-                        ? 'bg-slate-900/60 border-purple-500/50' 
-                        : 'bg-white border-purple-400/60'  // Improved border contrast from purple-300/50 to purple-400/60
-                    }`}
+                    className="w-4 h-4 rounded border-2 border-purple-400 focus:ring-purple-400 focus:ring-2 focus:ring-offset-0 dark:border-purple-500"
                   />
-                  <span className={`transition-smooth ${
-                    isDark 
-                      ? 'text-gray-300 group-hover:text-purple-300' 
-                      : 'text-gray-800 group-hover:text-purple-700'  // Improved from gray-700 to gray-800 and purple-600 to purple-700
-                  }`}>
+                  <span className="transition-all duration-300 text-gray-800 group-hover:text-purple-700 dark:text-gray-300 dark:group-hover:text-purple-300">
                     {feature.label}
                   </span>
                 </label>
@@ -193,60 +179,46 @@ const UserInputForm: React.FC = () => {
             disabled={!selectedRole}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="group bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-xl font-medium hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg hover:shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:from-purple-500 disabled:hover:to-violet-600 inline-flex items-center space-x-2"
+            className="group bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-xl font-medium hover:from-purple-600 hover:to-violet-700 transition-all duration-300 ease-out transform hover:scale-105 shadow-lg hover:shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:from-purple-500 disabled:hover:to-violet-600 inline-flex items-center space-x-2"
           >
             <span>Get My Personalized Path</span>
-            <ArrowRight className={`w-5 h-5 transition-smooth ${isHovered && selectedRole ? 'translate-x-2' : ''}`} />
+            <ArrowRight className={`w-5 h-5 transition-all duration-300 ease-out ${isHovered && selectedRole ? 'translate-x-2' : ''}`} />
           </button>
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
+
 
 const LearningPaths: React.FC = memo(() => {
-  const { isDark } = useTheme();
-  const { userProgress } = useRole();
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
-  const [showLearningPath, setShowLearningPath] = React.useState(false);
+  // Theme handled automatically by Tailwind dark: classes
+  const { userProgress } = useRole()
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
+  const titleClasses = useMemo(() => getTextClasses('primary'), [])
+  const subtitleClasses = useMemo(() => getTextClasses('secondary'), [])
 
-  // Handle smooth transition when persona is selected
+  // Jump directly to learning path when persona is selected (no animation)
   React.useEffect(() => {
-    if (userProgress.role && !showLearningPath) {
-      // Show learning path immediately
-      setShowLearningPath(true);
-      // Start with transitioning state, then fade in quickly
-      setIsTransitioning(true);
-      
-      // Quick fade-in
+    if (userProgress.role) {
+      // Use setTimeout with 0 to ensure DOM is updated first, then jump immediately
       setTimeout(() => {
-        setIsTransitioning(false);
-      }, 50);
+        const pathsSection = document.getElementById('paths')
+        if (pathsSection) {
+          pathsSection.scrollIntoView({ 
+            behavior: 'auto', // Instant, no animation
+            block: 'start' 
+          })
+        }
+      }, 0)
     }
-    
-    // Reset states when no role is selected (e.g., after reset)
-    if (!userProgress.role) {
-      setIsTransitioning(false);
-      setShowLearningPath(false);
-    }
-  }, [userProgress.role, showLearningPath]);
+  }, [userProgress.role])
 
   return (
     <section id="paths" className="py-20 lg:py-32 relative">
-      <div className={`absolute inset-0 ${
-        isDark 
-          ? 'bg-gradient-to-b from-transparent via-purple-900/10 to-transparent' 
-          : 'bg-gradient-to-b from-transparent via-purple-200/20 to-transparent'
-      }`}></div>
-      <div className={`absolute top-1/2 left-0 w-72 h-72 rounded-full blur-3xl ${
-        isDark ? 'bg-purple-500/10' : 'bg-purple-300/20'
-      }`}></div>
-      <div className={`absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl ${
-        isDark ? 'bg-violet-500/10' : 'bg-pink-300/20'
-      }`}></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-200/20 to-transparent dark:via-purple-900/10"></div>
+      <div className="absolute top-1/2 left-0 w-72 h-72 rounded-full blur-3xl bg-purple-300/20 dark:bg-purple-500/10"></div>
+      <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl bg-pink-300/20 dark:bg-violet-500/10"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -264,28 +236,11 @@ const LearningPaths: React.FC = memo(() => {
           </p>
         </div>
 
-        {/* UserInputForm with fade-out animation */}
-        {!userProgress.role && (
-          <div className={`transition-all duration-300 ease-out ${
-            isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
-          }`}>
-            <UserInputForm />
-          </div>
-        )}
-        
-        {/* PersonaPathDisplay with fade-in animation */}
-        {userProgress.role && showLearningPath && (
-          <div className={`transition-all duration-300 ease-out ${
-            isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
-          }`}>
-            <PersonaPathDisplay />
-          </div>
-        )}
+        {userProgress.role ? <PersonaPathDisplay /> : <UserInputForm />}
       </div>
     </section>
-  );
-});
+  )
+})
 
-LearningPaths.displayName = 'LearningPaths';
-
-export default LearningPaths;
+LearningPaths.displayName = 'LearningPaths'
+export default LearningPaths

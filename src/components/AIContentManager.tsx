@@ -3,9 +3,9 @@ import {
   AIGeneratedCourse, 
   GenerationStatus,
   BulkOperation
-} from '../types/aiGeneration';
-import { EngineerRole } from '../types/roles';
-import { aiGeneratedCoursesStore, getGenerationProgress } from '../data/aiGeneratedCourses';
+} from '@/types/aiGeneration';
+import { EngineerRole } from '@/types/roles';
+import { aiGeneratedCoursesStore, getGenerationProgress } from '@/data/aiGeneratedCourses';
 
 interface AIContentManagerProps {
   onCourseSelect: (course: AIGeneratedCourse) => void;
@@ -172,11 +172,11 @@ export const AIContentManager: React.FC<AIContentManagerProps> = ({
       const bulkOp: BulkOperation = {
         id: `bulk-${Date.now()}`,
         type: action,
-        courseIds: selectedIds,
+        course_ids: selectedIds,
         status: 'processing',
         progress: 0,
         results: [],
-        createdAt: new Date()
+        created_at: new Date()
       };
 
       aiGeneratedCoursesStore.addBulkOperation(bulkOp);
@@ -184,6 +184,7 @@ export const AIContentManager: React.FC<AIContentManagerProps> = ({
       // Process each course
       for (let i = 0; i < selectedIds.length; i++) {
         const courseId = selectedIds[i];
+        if (!courseId) continue;
         const course = aiGeneratedCoursesStore.getCourse(courseId);
         
         if (course) {
@@ -211,10 +212,10 @@ export const AIContentManager: React.FC<AIContentManagerProps> = ({
                 break;
             }
 
-            bulkOp.results.push({ courseId, success: true });
+            bulkOp.results.push({ course_id: courseId, success: true });
           } catch (error) {
             bulkOp.results.push({ 
-              courseId, 
+              course_id: courseId, 
               success: false, 
               error: error instanceof Error ? error.message : 'Unknown error' 
             });
@@ -229,7 +230,7 @@ export const AIContentManager: React.FC<AIContentManagerProps> = ({
       // Complete operation
       aiGeneratedCoursesStore.updateBulkOperation(bulkOp.id, {
         status: 'completed',
-        completedAt: new Date()
+        completed_at: new Date()
       });
 
       // Refresh data

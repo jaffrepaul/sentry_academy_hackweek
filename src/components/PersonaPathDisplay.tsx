@@ -1,7 +1,9 @@
+'use client'
+
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '../contexts/ThemeContext';
-import { useRole } from '../contexts/RoleContext';
+import { useRouter } from 'next/navigation';
+// Theme handled automatically by Tailwind dark: classes
+import { useRole } from '@/contexts/RoleContext';
 import { 
   CheckCircle, 
   Circle, 
@@ -24,7 +26,7 @@ import {
   Presentation,
   Users
 } from 'lucide-react';
-import { SentryFeature } from '../types/roles';
+import { SentryFeature } from '@/types/roles';
 
 // Map features to icons
 const featureIcons: Record<SentryFeature, React.ReactNode> = {
@@ -61,10 +63,9 @@ const featureColors: Record<SentryFeature, string> = {
 };
 
 const PersonaPathDisplay: React.FC = () => {
-  const { isDark } = useTheme();
+  // Theme handled automatically by Tailwind dark: classes;
   const { currentLearningPath, userProgress, resetProgress } = useRole();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const [showResetConfirm, setShowResetConfirm] = React.useState(false);
   const [isVisible, setIsVisible] = React.useState(false);
 
@@ -97,59 +98,43 @@ const PersonaPathDisplay: React.FC = () => {
     };
   }, [showResetConfirm]);
 
-  // Handle scroll positioning when returning from course detail
+  // Handle scroll positioning when component mounts or updates
   React.useEffect(() => {
-    if (currentLearningPath && userProgress.role) {
-      // Check if we're returning from a course detail page
-      const returnFromCourse = location.state?.returnFromCourse;
-      const scrollToSection = location.state?.scrollToSection;
-      const isReturningFromCourse = returnFromCourse && scrollToSection === 'learning-path';
-      
-      // Only scroll when returning from a course, not on initial persona selection
-      if (isReturningFromCourse && isVisible) {
-        // Wait for elements to be visible, then position at last completed course
-        setTimeout(() => {
-          const completedSteps = currentLearningPath.steps
-            .filter(step => step.isCompleted)
-            .sort((a, b) => b.priority - a.priority); // Sort by priority descending to get last completed
+    if (currentLearningPath && userProgress.role && isVisible) {
+      // Check if we should scroll to a specific position based on progress
+      // This will help users see their current position in the learning path
+      setTimeout(() => {
+        const completedSteps = currentLearningPath.steps
+          .filter(step => step.isCompleted)
+          .sort((a, b) => b.priority - a.priority); // Sort by priority descending to get last completed
 
-          if (completedSteps.length > 0) {
-            // Position the last completed step with margin above
-            const lastCompletedStep = completedSteps[0];
+        if (completedSteps.length > 0) {
+          // Position the last completed step with margin above
+          const lastCompletedStep = completedSteps[0];
+          if (lastCompletedStep) {
             const stepElement = document.getElementById(`step-${lastCompletedStep.id}`);
             if (stepElement) {
               const rect = stepElement.getBoundingClientRect();
               const absoluteTop = rect.top + window.scrollY;
-              const offset = absoluteTop - 100; // Position with 100px margin above
-              window.scrollTo({
-                top: offset,
-                behavior: 'smooth'
-              });
-            }
-          } else {
-            // No completed steps - position at the learning path title
-            const titleElement = document.getElementById('learning-path-title');
-            if (titleElement) {
-              const rect = titleElement.getBoundingClientRect();
-              const absoluteTop = rect.top + window.scrollY;
-              const offset = absoluteTop - 100; // Position with 100px margin above
+              const offset = Math.max(0, absoluteTop - 100); // Position with 100px margin above, but not negative
               window.scrollTo({
                 top: offset,
                 behavior: 'smooth'
               });
             }
           }
-        }, 100); // Small delay to ensure all elements are rendered and visible
-      }
+        }
+      }, 200); // Small delay to ensure all elements are rendered and visible
     }
-  }, [currentLearningPath, userProgress.role, location.state, isVisible]);
+  }, [currentLearningPath, userProgress.role, isVisible]);
 
   if (!currentLearningPath || !userProgress.role) {
     return null;
   }
 
   const handleStartModule = (moduleId: string) => {
-    navigate(`/course/${moduleId}`, { state: { from: 'learning-path' } });
+    // Navigate to the course detail page using the module slug, indicating we came from learning path
+    router.push(`/courses/${moduleId}?from=learning-path`);
   };
 
   const handleResetPath = () => {
@@ -168,9 +153,7 @@ const PersonaPathDisplay: React.FC = () => {
           <div className="flex-1">
             <h2 
               id="learning-path-title"
-              className={`text-3xl md:text-4xl font-bold mb-4 lg:leading-tight lg:h-24 lg:flex lg:items-center lg:justify-center ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}
+              className="text-3xl md:text-4xl font-bold mb-4 lg:leading-tight lg:h-24 lg:flex lg:items-center lg:justify-center text-gray-900 dark:text-white"
             >
               {currentLearningPath.title}
             </h2>
@@ -178,11 +161,7 @@ const PersonaPathDisplay: React.FC = () => {
           <div className="flex-1 flex justify-end">
             <button
               onClick={() => setShowResetConfirm(true)}
-              className={`inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 ${
-                isDark
-                  ? 'bg-slate-700/60 text-gray-300 hover:bg-slate-600/80 border border-slate-600/50'
-                  : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50'
-              }`}
+              className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50 dark:bg-slate-700/60 dark:text-gray-300 dark:hover:bg-slate-600/80 dark:border-slate-600/50"
               title="Reset learning path"
             >
               <Settings className="w-4 h-4" />
@@ -191,16 +170,10 @@ const PersonaPathDisplay: React.FC = () => {
           </div>
         </div>
         
-        <p className={`text-lg mb-6 lg:leading-relaxed lg:h-14 lg:flex lg:items-center lg:justify-center lg:max-w-2xl lg:mx-auto ${
-          isDark ? 'text-gray-300' : 'text-gray-600'
-        }`}>
+        <p className="text-lg mb-6 lg:leading-relaxed lg:h-14 lg:flex lg:items-center lg:justify-center lg:max-w-2xl lg:mx-auto text-gray-600 dark:text-gray-300">
           {currentLearningPath.description}
         </p>
-        <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full ${
-          isDark 
-            ? 'bg-slate-800/60 text-purple-300' 
-            : 'bg-purple-100/80 text-purple-700'
-        }`}>
+        <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-purple-100/80 text-purple-700 dark:bg-slate-800/60 dark:text-purple-300">
           <Clock className="w-4 h-4" />
           <span className="text-sm font-medium">
             Total: {currentLearningPath.totalEstimatedTime}
@@ -230,16 +203,10 @@ const PersonaPathDisplay: React.FC = () => {
                 isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
               } ${
                 isCompleted
-                  ? isDark
-                    ? 'bg-emerald-900/20 border-emerald-500/40'
-                    : 'bg-emerald-50/80 border-emerald-300/60'
+                  ? 'bg-emerald-50/80 border-emerald-300/60 dark:bg-emerald-900/20 dark:border-emerald-500/40'
                   : isCurrentNext
-                  ? isDark
-                    ? 'bg-purple-900/20 border-purple-500/40 shadow-lg shadow-purple-500/20'
-                    : 'bg-purple-50/80 border-purple-300/60 shadow-lg shadow-purple-400/20'
-                  : isDark
-                  ? 'bg-slate-900/40 border-slate-600/30'
-                  : 'bg-gray-50/80 border-gray-300/40'
+                  ? 'bg-purple-50/80 border-purple-300/60 shadow-lg shadow-purple-400/20 dark:bg-purple-900/20 dark:border-purple-500/40 dark:shadow-purple-500/20'
+                  : 'bg-gray-50/80 border-gray-300/40 dark:bg-slate-900/40 dark:border-slate-600/30'
               }`}
             >
               <div className="flex items-start space-x-4">
@@ -250,9 +217,7 @@ const PersonaPathDisplay: React.FC = () => {
                       ? 'bg-emerald-500 text-white'
                       : isCurrentNext
                       ? `bg-gradient-to-r ${featureColor} text-white`
-                      : isDark
-                      ? 'bg-slate-700/60 text-gray-400'
-                      : 'bg-gray-200/80 text-gray-500'
+                      : 'bg-gray-200/80 text-gray-500 dark:bg-slate-700/60 dark:text-gray-400'
                   }`}>
                     {isCompleted ? (
                       <CheckCircle className="w-6 h-6" />
@@ -273,24 +238,22 @@ const PersonaPathDisplay: React.FC = () => {
                           ? 'bg-emerald-100/80 text-emerald-700'
                           : isCurrentNext
                           ? `bg-gradient-to-r ${featureColor} bg-opacity-10 text-current`
-                          : isDark
-                          ? 'bg-slate-700/40 text-gray-400'
-                          : 'bg-gray-100/80 text-gray-500'
+                          : 'bg-gray-100/80 text-gray-500 dark:bg-slate-700/40 dark:text-gray-400'
                       }`}>
                         {featureIcon}
                       </div>
                       <div>
                         <h3 className={`text-lg font-bold ${
                           isCompleted
-                            ? isDark ? 'text-emerald-300' : 'text-emerald-700'
+                            ? 'text-emerald-700 dark:text-emerald-300'
                             : isCurrentNext
-                            ? isDark ? 'text-purple-300' : 'text-purple-700'
-                            : isDark ? 'text-gray-400' : 'text-gray-500'
+                            ? 'text-purple-700 dark:text-purple-300'
+                            : 'text-gray-500 dark:text-gray-400'
                         }`}>
                           {step.title}
                         </h3>
                         <p className={`text-sm ${
-                          isDark ? 'text-gray-400' : 'text-gray-600'
+                          'text-gray-600 dark:text-gray-400'
                         }`}>
                           {step.description}
                         </p>
@@ -299,7 +262,7 @@ const PersonaPathDisplay: React.FC = () => {
                     <div className="flex items-center space-x-2 text-sm">
                       <Clock className="w-4 h-4" />
                       <span className={`${
-                        isDark ? 'text-gray-400' : 'text-gray-600'
+                        'text-gray-600 dark:text-gray-400'
                       }`}>
                         {step.estimatedTime}
                       </span>
@@ -309,7 +272,7 @@ const PersonaPathDisplay: React.FC = () => {
                   {/* Outcomes */}
                   <div className="mb-4">
                     <h4 className={`text-sm font-medium mb-2 ${
-                      isDark ? 'text-gray-300' : 'text-gray-700'
+                      'text-gray-700 dark:text-gray-300'
                     }`}>
                       What you'll learn:
                     </h4>
@@ -318,7 +281,7 @@ const PersonaPathDisplay: React.FC = () => {
                         <li
                           key={outcomeIndex}
                           className={`text-sm flex items-start space-x-2 ${
-                            isDark ? 'text-gray-400' : 'text-gray-600'
+                            'text-gray-600 dark:text-gray-400'
                           }`}
                         >
                           <Circle className="w-3 h-3 mt-1 flex-shrink-0" />
@@ -329,10 +292,10 @@ const PersonaPathDisplay: React.FC = () => {
                   </div>
 
                   {/* Action Button */}
-                  {isCurrentNext && (
+                  {isCurrentNext && step.modules[0] && (
                     <button
-                      onClick={() => handleStartModule(step.modules[0])}
-                      className={`inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-smooth transform hover:scale-105 shadow-lg bg-gradient-to-r ${featureColor} text-white hover:shadow-xl`}
+                      onClick={() => handleStartModule(step.modules[0]!)}
+                      className={`inline-flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${featureColor} text-white hover:shadow-xl`}
                     >
                       <span>Start Learning</span>
                       <ArrowRight className="w-4 h-4" />
@@ -341,22 +304,20 @@ const PersonaPathDisplay: React.FC = () => {
 
                   {isCompleted && (
                     <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                      <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-lg ${
-                        isDark
-                          ? 'bg-emerald-900/30 text-emerald-300'
-                          : 'bg-emerald-100/80 text-emerald-700'
-                      }`}>
+                      <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-emerald-100/80 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                         <CheckCircle className="w-4 h-4" />
                         <span className="text-sm font-medium">Completed</span>
                       </div>
-                      <button
-                        onClick={() => handleStartModule(step.modules[0])}
-                        className={`text-sm hover:underline transition-smooth ${
-                          isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'
-                        }`}
-                      >
-                        Review course content →
-                      </button>
+                      {step.modules[0] && (
+                        <button
+                          onClick={() => handleStartModule(step.modules[0]!)}
+                          className={`text-sm hover:underline transition-all duration-300 ${
+                            'text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                          }`}
+                        >
+                          Review course content →
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -373,27 +334,23 @@ const PersonaPathDisplay: React.FC = () => {
         }}
         className={`mt-12 p-6 rounded-2xl backdrop-blur-sm border transition-all duration-600 ease-out ${
           isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
-        } ${
-        isDark
-          ? 'bg-slate-900/40 border-slate-600/30'
-          : 'bg-white/60 border-gray-300/40'
-      }`}>
+        } bg-white/60 border-gray-300/40 dark:bg-slate-900/40 dark:border-slate-600/30`}>
         <div className="flex items-center justify-between">
           <div>
             <h3 className={`text-lg font-bold mb-2 ${
-              isDark ? 'text-white' : 'text-gray-900'
+              'text-gray-900 dark:text-white'
             }`}>
               Progress Overview
             </h3>
             <p className={`text-sm mb-3 ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
+              'text-gray-600 dark:text-gray-400'
             }`}>
               {currentLearningPath.steps.filter(s => s.isCompleted).length} of {currentLearningPath.steps.length} features completed
             </p>
             <button
               onClick={() => setShowResetConfirm(true)}
               className={`text-sm inline-flex items-center space-x-1 hover:underline transition-colors duration-200 ${
-                isDark ? 'text-orange-300 hover:text-orange-200' : 'text-orange-600 hover:text-orange-700'
+                'text-orange-600 hover:text-orange-700 dark:text-orange-300 dark:hover:text-orange-200'
               }`}
             >
               <RotateCcw className="w-3 h-3" />
@@ -402,7 +359,7 @@ const PersonaPathDisplay: React.FC = () => {
           </div>
           <div className="flex items-center space-x-4">
             <div className={`text-right ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
+              'text-gray-700 dark:text-gray-300'
             }`}>
               <div className="text-2xl font-bold">
                 {Math.round((currentLearningPath.steps.filter(s => s.isCompleted).length / currentLearningPath.steps.length) * 100)}%
@@ -415,32 +372,27 @@ const PersonaPathDisplay: React.FC = () => {
 
       {/* Reset Confirmation Modal */}
       {showResetConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div 
-            className={`max-w-md w-full rounded-2xl p-6 border ${
-              isDark
-                ? 'bg-slate-900/95 border-slate-600/50'
-                : 'bg-white/95 border-gray-300/50'
-            }`}
-          >
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div 
+              className="max-w-md w-full rounded-2xl p-6 border bg-white/95 border-gray-300/50 dark:bg-slate-900/95 dark:border-slate-600/50 transform transition-all"
+            >
             <div className="text-center">
               <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 mx-auto ${
-                isDark ? 'bg-orange-900/30' : 'bg-orange-100/80'
+                'bg-orange-100/80 dark:bg-orange-900/30'
               }`}>
                 <RotateCcw className={`w-8 h-8 ${
-                  isDark ? 'text-orange-300' : 'text-orange-600'
+                  'text-orange-600 dark:text-orange-300'
                 }`} />
               </div>
               
               <h3 className={`text-xl font-bold mb-4 ${
-                isDark ? 'text-white' : 'text-gray-900'
+                'text-gray-900 dark:text-white'
               }`}>
                 Reset Learning Path?
               </h3>
               
-              <p className={`text-sm mb-6 leading-relaxed ${
-                isDark ? 'text-gray-300' : 'text-gray-600'
-              }`}>
+              <p className="text-sm mb-6 leading-relaxed text-gray-600 dark:text-gray-300">
                 This will reset your progress and return you to the persona selection. 
                 You'll be able to choose a different role or restart your current path from the beginning.
               </p>
@@ -456,17 +408,14 @@ const PersonaPathDisplay: React.FC = () => {
                 
                 <button
                   onClick={() => setShowResetConfirm(false)}
-                  className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 inline-flex items-center space-x-2 ${
-                    isDark
-                      ? 'bg-slate-700/60 text-gray-300 hover:bg-slate-600/80 border border-slate-600/50'
-                      : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50'
-                  }`}
+                  className="px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 inline-flex items-center space-x-2 bg-gray-100/80 text-gray-700 hover:bg-gray-200/90 border border-gray-300/50 dark:bg-slate-700/60 dark:text-gray-300 dark:hover:bg-slate-600/80 dark:border-slate-600/50"
                 >
                   <span>Cancel</span>
                 </button>
               </div>
             </div>
           </div>
+        </div>
         </div>
       )}
     </div>
