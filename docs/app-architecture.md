@@ -20,20 +20,20 @@ Sentry Academy is a modern learning platform built with Next.js 15 App Router th
 ```
 sentry_academy/
 ├── src/
-│   ├── app/                    # Next.js App Router pages
-│   ├── components/             # React components
+│   ├── app/                   # Next.js App Router pages
+│   ├── components/            # React components
 │   ├── contexts/              # React contexts
 │   ├── data/                  # Static data & mock content
 │   ├── hooks/                 # Custom React hooks
 │   ├── lib/                   # Core libraries & utilities
-│   │   ├── actions/          # Server Actions
-│   │   ├── db/               # Database schema & migrations
-│   │   └── auth.ts           # Authentication setup
-│   ├── services/             # Business logic services
-│   ├── types/                # TypeScript definitions
-│   └── utils/                # Utility functions
-├── public/                   # Static assets
-└── docs/                     # Documentation
+│   │   ├── actions/           # Server Actions
+│   │   ├── db/                # Database schema & migrations
+│   │   └── auth.ts            # Authentication setup
+│   ├── services/              # Business logic SERVICES
+│   ├── types/                 # TypeScript definitions
+│   └── utils/                 # Utility functions
+├── public/                    # Static assets
+└── docs/                      # Documentation
 ```
 
 ## User Journey & Data Flow
@@ -45,6 +45,7 @@ sentry_academy/
 **Technical Flow**:
 
 1. **Server-Side Rendering** (`src/app/page.tsx`):
+
    ```typescript
    // Server component that fetches data
    async function CoursesData() {
@@ -96,6 +97,7 @@ sentry_academy/
 **Technical Flow**:
 
 1. **Client-Side Navigation** (`src/components/CourseGrid.tsx`):
+
    ```typescript
    const handleCardClick = useCallback(() => {
      router.push(`/courses/${slug}`)
@@ -119,11 +121,15 @@ sentry_academy/
 **Technical Flow**:
 
 1. **Context Management** (`src/contexts/RoleContext.tsx`):
+
    ```typescript
-   const setUserRole = useCallback(async (role: EngineerRole, selectedFeatures: string[]) => {
-     const result = await updateUserRole(role, selectedFeatures)
-     // Optimistic updates + server persistence
-   }, [updateProgress])
+   const setUserRole = useCallback(
+     async (role: EngineerRole, selectedFeatures: string[]) => {
+       const result = await updateUserRole(role, selectedFeatures)
+       // Optimistic updates + server persistence
+     },
+     [updateProgress]
+   )
    ```
 
 2. **Server Action Processing** (`src/lib/actions/user-progress-actions.ts`):
@@ -134,7 +140,7 @@ sentry_academy/
 
 3. **Database Updates**:
    ```sql
-   UPDATE users SET 
+   UPDATE users SET
      engineer_role = $1,
      completed_features = $2,
      onboarding_completed = $3
@@ -148,6 +154,7 @@ sentry_academy/
 The database uses a role-based learning system with the following key tables:
 
 #### Users Table
+
 ```typescript
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
@@ -165,6 +172,7 @@ export const users = pgTable('users', {
 ```
 
 #### Courses Table
+
 ```typescript
 export const courses = pgTable('courses', {
   id: serial('id').primaryKey(),
@@ -226,7 +234,7 @@ export const getCourses = cache(async (filters: CourseFilters) => {
       .select()
       .from(courses)
       .where(and(...filterConditions))
-    
+
     // Fallback to mock data if needed
     return dbCourses.length > 0 ? dbCourses : await getMockCourses(filters)
   } catch (error) {
@@ -282,6 +290,7 @@ const LearningPaths = dynamic(() => import('@/components/LearningPaths'), {
    - CSRF protection built-in
 
 2. **Role-Based Access Control**:
+
    ```typescript
    // Permission checking in server actions
    const canCreate = await checkUserPermission('create_course')
@@ -400,7 +409,7 @@ export function mapFeaturesToProgress(role: EngineerRole, features: string[]) {
   return {
     completedModules: features.map(f => `${role}-${f}-intro`),
     completedFeatures: features,
-    completedStepIds: calculateStepProgression(role, features)
+    completedStepIds: calculateStepProgression(role, features),
   }
 }
 ```
