@@ -1,10 +1,11 @@
 export interface Course {
   id: string;
+  slug?: string; // Optional for backward compatibility
   title: string;
   description: string;
   duration: string;
   level: string;
-  rating: number;
+  rating: number; // Will be stored as integer in DB (e.g., 49 for 4.9)
   students: number;
   category: string;
   isPopular?: boolean;
@@ -12,7 +13,7 @@ export interface Course {
 
 // Extended interface for courses that includes AI-generated content
 export interface EnhancedCourse extends Course {
-  isAIGenerated?: boolean;
+  isAiGenerated?: boolean;
   qualityScore?: number;
   generatedAt?: Date;
 }
@@ -20,103 +21,113 @@ export interface EnhancedCourse extends Course {
 export const courses: Course[] = [
   {
     id: "sentry-fundamentals",
+    slug: "sentry-fundamentals",
     title: "Sentry Fundamentals",
     description: "See Sentry in action through a comprehensive 10-minute demo. Learn how to efficiently identify and resolve errors and performance issues using Sentry's platform.",
     duration: "10 min",
     level: "Beginner",
-    rating: 4.9,
+    rating: 49, // Stored as integer (4.9 * 10)
     students: 12500,
     category: "Foundation",
     isPopular: true
   },
   {
     id: "react-error-boundaries",
+    slug: "sentry-logging",
     title: "Sentry Logging ",
     description: "Master structured logging with Sentry. Learn to send, view, and query logs from your applications for better debugging and monitoring.",
     duration: "1.2 hrs",
     level: "Intermediate",
-    rating: 4.8,
+    rating: 48, // Stored as integer (4.8 * 10)
     students: 8900,
     category: "Monitoring"
   },
   {
     id: "performance-monitoring",
+    slug: "performance-monitoring",
     title: "Performance Monitoring",
     description: "Deep dive into performance tracking, Core Web Vitals, and optimizing your application's speed and user experience.",
     duration: "2.1 hrs",
     level: "Advanced",
-    rating: 4.7,
+    rating: 47, // Stored as integer (4.7 * 10)
     students: 6400,
     category: "Performance"
   },
   {
     id: "nodejs-integration",
+    slug: "nodejs-integration",
     title: "Node.js Integration",
     description: "Complete backend monitoring setup, express middleware integration, and tracking server-side errors effectively.",
     duration: "1.8 hrs",
     level: "Intermediate",
-    rating: 4.8,
+    rating: 48, // Stored as integer (4.8 * 10)
     students: 7200,
     category: "Backend"
   },
   {
     id: "custom-dashboards",
+    slug: "custom-dashboards",
     title: "Custom Dashboards",
     description: "Create powerful custom dashboards, set up alerts, and build monitoring workflows that fit your team's needs.",
     duration: "2.5 hrs",
     level: "Advanced",
-    rating: 4.6,
+    rating: 46, // Stored as integer (4.6 * 10)
     students: 4100,
     category: "Advanced"
   },
   {
     id: "team-workflows",
+    slug: "team-workflows",
     title: "Team Workflows",
     description: "Establish team protocols, manage releases, and implement CI/CD integration for seamless development workflows.",
     duration: "3.2 hrs",
     level: "Expert",
-    rating: 4.9,
+    rating: 49, // Stored as integer (4.9 * 10)
     students: 3800,
     category: "Enterprise",
     isPopular: true
   },
   {
     id: "distributed-tracing",
+    slug: "distributed-tracing",
     title: "Distributed Tracing",
     description: "Master distributed tracing across microservices, trace request flows, and identify performance bottlenecks in complex systems.",
     duration: "2.8 hrs",
     level: "Advanced",
-    rating: 4.7,
+    rating: 47, // Stored as integer (4.7 * 10)
     students: 3200,
     category: "Performance"
   },
   {
     id: "release-health",
+    slug: "release-health",
     title: "Release Health & Deployment Monitoring",
     description: "Track release stability, monitor deployment health, and set up automated rollback triggers for safer deployments.",
     duration: "2.0 hrs",
     level: "Intermediate",
-    rating: 4.8,
+    rating: 48, // Stored as integer (4.8 * 10)
     students: 4500,
     category: "DevOps"
   },
   {
     id: "user-feedback",
+    slug: "user-feedback",
     title: "User Feedback Integration",
     description: "Implement user feedback systems, link feedback to errors, and create feedback-driven debugging workflows.",
     duration: "1.5 hrs",
     level: "Intermediate",
-    rating: 4.6,
+    rating: 46, // Stored as integer (4.6 * 10)
     students: 2800,
     category: "UX"
   },
   {
     id: "seer-mcp",
+    slug: "seer-mcp",
     title: "Seer & MCP for AI/ML",
     description: "Leverage Sentry's AI-powered debugging with Seer and implement Model Context Protocol (MCP) for ML observability.",
     duration: "3.5 hrs",
     level: "Advanced",
-    rating: 4.9,
+    rating: 49, // Stored as integer (4.9 * 10)
     students: 1200,
     category: "AI/ML",
     isPopular: true
@@ -124,22 +135,24 @@ export const courses: Course[] = [
 
   {
     id: "stakeholder-dashboards",
+    slug: "stakeholder-dashboards",
     title: "Building Effective Dashboards for Stakeholders",
     description: "Learn to create compelling dashboards that translate technical metrics into business insights for PMs, executives, and cross-functional teams.",
     duration: "2.0 hrs",
     level: "Beginner",
-    rating: 4.8,
+    rating: 48, // Stored as integer (4.8 * 10)
     students: 3400,
     category: "Management",
     isPopular: true
   },
   {
     id: "metrics-insights",
+    slug: "metrics-insights",
     title: "Metrics-Driven Product Insights",
     description: "Master the art of interpreting Sentry data to make informed product decisions, prioritize engineering work, and communicate impact to stakeholders.",
     duration: "1.5 hrs",
     level: "Beginner",
-    rating: 4.9,
+    rating: 49, // Stored as integer (4.9 * 10)
     students: 2800,
     category: "Management"
   }
@@ -226,6 +239,7 @@ export const courseModules: CourseModule[] = sentryFundamentalsModules;
 // AI Integration Functions
 import { AIGeneratedCourse } from '../types/aiGeneration';
 import { getApprovedAIGeneratedCourses } from './aiGeneratedCourses';
+import { dbRatingToDisplay } from '../utils/ratingUtils';
 
 /**
  * Get all courses including both manual and approved AI-generated courses
@@ -233,7 +247,7 @@ import { getApprovedAIGeneratedCourses } from './aiGeneratedCourses';
 export function getAllCourses(): EnhancedCourse[] {
   const manualCourses: EnhancedCourse[] = courses.map(course => ({
     ...course,
-    isAIGenerated: false
+    isAiGenerated: false
   }));
 
   const aiCourses: EnhancedCourse[] = getApprovedAIGeneratedCourses().map(aiCourse => ({
@@ -245,8 +259,8 @@ export function getAllCourses(): EnhancedCourse[] {
     rating: aiCourse.rating,
     students: aiCourse.students,
     category: aiCourse.category,
-    isPopular: aiCourse.isPopular,
-    isAIGenerated: true,
+    isPopular: aiCourse.isPopular || false,
+    isAiGenerated: true,
     qualityScore: aiCourse.qualityScore,
     generatedAt: aiCourse.generatedAt
   }));
@@ -323,14 +337,14 @@ export function getRecentCourses(limit: number = 10): EnhancedCourse[] {
  */
 export function getCourseStatistics() {
   const allCourses = getAllCourses();
-  const aiCourses = allCourses.filter(course => course.isAIGenerated);
-  const manualCourses = allCourses.filter(course => !course.isAIGenerated);
+  const aiCourses = allCourses.filter(course => course.isAiGenerated);
+  const manualCourses = allCourses.filter(course => !course.isAiGenerated);
 
   return {
     total: allCourses.length,
     manual: manualCourses.length,
     aiGenerated: aiCourses.length,
-    averageRating: allCourses.reduce((sum, course) => sum + course.rating, 0) / allCourses.length,
+    average_rating: dbRatingToDisplay(allCourses.reduce((sum, course) => sum + course.rating, 0) / allCourses.length),
     totalStudents: allCourses.reduce((sum, course) => sum + course.students, 0),
     categories: [...new Set(allCourses.map(course => course.category))],
     levels: [...new Set(allCourses.map(course => course.level))],

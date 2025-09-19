@@ -80,7 +80,7 @@ export interface SynthesizedContent {
 
 // AI-generated course content
 export interface AIGeneratedCourse extends Course {
-  isAIGenerated: true;
+  isAiGenerated: true;
   generationRequest: ContentGenerationRequest;
   researchSources: ResearchedContent[];
   synthesizedContent: SynthesizedContent;
@@ -122,7 +122,7 @@ export interface AIGeneratedPersonalization {
 
 // Learning path integration
 export interface AIGeneratedLearningPathStep extends LearningPathStep {
-  isAIGenerated: true;
+  isAiGenerated: true;
   originalCourseId: string;
   confidence: number;
   suggestedPlacement: number; // Suggested position in learning path
@@ -131,29 +131,29 @@ export interface AIGeneratedLearningPathStep extends LearningPathStep {
 
 // Template structure for content generation
 export interface ContentTemplate {
-  courseStructure: {
-    titlePattern: string;
-    descriptionLength: number;
-    moduleCount: number;
-    estimatedDuration: string;
+  course_structure: {
+    title_pattern: string;
+    description_length: number;
+    module_count: number;
+    estimated_duration: string;
   };
-  moduleStructure: {
-    titlePattern: string;
-    descriptionLength: number;
-    includeKeyTakeaways: boolean;
-    includeScenario: boolean;
-    includeCodeExample: boolean;
+  module_structure: {
+    title_pattern: string;
+    description_length: number;
+    include_key_takeaways: boolean;
+    include_scenario: boolean;
+    include_code_example: boolean;
   };
-  rolePersonalization: {
-    explanationLength: number;
-    includeUseCases: boolean;
-    includeNextSteps: boolean;
+  role_personalization: {
+    explanation_length: number;
+    include_use_cases: boolean;
+    include_next_steps: boolean;
   };
 }
 
 // Content validation results
 export interface ValidationResult {
-  isValid: boolean;
+  is_valid: boolean;
   score: number; // 0-1
   issues: ValidationIssue[];
   suggestions: string[];
@@ -164,19 +164,19 @@ export interface ValidationIssue {
   severity: 'low' | 'medium' | 'high' | 'critical';
   message: string;
   field?: string;
-  suggestedFix?: string;
+  suggested_fix?: string;
 }
 
 // Content approval workflow
 export interface ApprovalWorkflow {
   id: string;
-  courseId: string;
+  course_id: string;
   status: 'pending' | 'in-review' | 'approved' | 'rejected';
-  assignedReviewer?: string;
-  reviewComments: ReviewComment[];
-  approvalCriteria: ApprovalCriterion[];
-  createdAt: Date;
-  reviewedAt?: Date;
+  assigned_reviewer?: string;
+  review_comments: ReviewComment[];
+  approval_criteria: ApprovalCriterion[];
+  created_at: Date;
+  reviewed_at?: Date;
 }
 
 export interface ReviewComment {
@@ -184,9 +184,9 @@ export interface ReviewComment {
   reviewer: string;
   content: string;
   type: 'general' | 'technical' | 'editorial' | 'suggestion';
-  moduleId?: string; // If comment is specific to a module
+  module_id?: string; // If comment is specific to a module
   resolved: boolean;
-  createdAt: Date;
+  created_at: Date;
 }
 
 export interface ApprovalCriterion {
@@ -201,16 +201,16 @@ export interface ApprovalCriterion {
 export interface BulkOperation {
   id: string;
   type: 'approve' | 'reject' | 'publish' | 'archive' | 'delete';
-  courseIds: string[];
+  course_ids: string[];
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number; // 0-100
   results: BulkOperationResult[];
-  createdAt: Date;
-  completedAt?: Date;
+  created_at: Date;
+  completed_at?: Date;
 }
 
 export interface BulkOperationResult {
-  courseId: string;
+  course_id: string;
   success: boolean;
   error?: string;
 }
@@ -218,36 +218,36 @@ export interface BulkOperationResult {
 // API response types
 export interface GenerationResponse {
   success: boolean;
-  requestId: string;
-  estimatedDuration: number; // in seconds
+  request_id: string;
+  estimated_duration: number; // in seconds
   error?: string;
 }
 
 export interface ContentPreviewData {
   course: AIGeneratedCourse;
-  comparisonCourse?: Course; // Similar existing course for comparison
-  validationResult: ValidationResult;
-  suggestedLearningPathPlacement: {
-    roleId: EngineerRole;
-    suggestedPosition: number;
+  comparison_course?: Course; // Similar existing course for comparison
+  validation_result: ValidationResult;
+  suggested_learning_path_placement: {
+    role_id: EngineerRole;
+    suggested_position: number;
     reasoning: string;
   }[];
 }
 
 // Settings and configuration
 export interface AIGenerationSettings {
-  defaultSources: ResearchSourceConfig[];
-  maxConcurrentGenerations: number;
-  defaultQualityThreshold: number; // 0-1
-  autoApprovalThreshold: number; // 0-1
-  maxContentLength: number;
-  enableExperimentalFeatures: boolean;
-  openaiApiKey?: string;
-  rateLimits: {
-    requestsPerHour: number;
-    requestsPerDay: number;
+  default_sources: ResearchSourceConfig[];
+  max_concurrent_generations: number;
+  default_quality_threshold: number; // 0-1
+  auto_approval_threshold: number; // 0-1
+  max_content_length: number;
+  enable_experimental_features: boolean;
+  openai_api_key?: string;
+  rate_limits: {
+    requests_per_hour: number;
+    requests_per_day: number;
   };
 }
 
 // Export utility type for backwards compatibility
-export type AIGeneratedCourseData = Omit<AIGeneratedCourse, 'isAIGenerated'>;
+export type AIGeneratedCourseData = Omit<AIGeneratedCourse, 'is_ai_generated'>;

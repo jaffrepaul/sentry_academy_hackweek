@@ -3,16 +3,16 @@ import {
   ContentGenerationRequest, 
   ResearchSourceConfig, 
   ResearchSource
-} from '../types/aiGeneration';
-import { EngineerRole } from '../types/roles';
+} from '@/types/aiGeneration';
+import { EngineerRole } from '@/types/roles';
 import { 
   defaultResearchSources, 
   addGenerationRequest,
   getGenerationProgress,
   updateGenerationProgress
-} from '../data/aiGeneratedCourses';
-import { aiContentService } from '../services/aiContentService';
-import { contentResearchEngine } from '../services/contentResearchEngine';
+} from '@/data/aiGeneratedCourses';
+import { aiContentService } from '@/services/aiContentService';
+import { contentResearchEngine } from '@/services/contentResearchEngine';
 
 interface ContentGenerationFormProps {
   onGenerationStarted: () => void;
@@ -529,10 +529,16 @@ export const ContentGenerationForm: React.FC<ContentGenerationFormProps> = ({
                           value={sourceConfig.priority}
                           onChange={(e) => handleSourcePriorityChange(sourceConfig.source, parseInt(e.target.value))}
                           disabled={!sourceConfig.enabled}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm"
+                          className={`px-2 py-1 border rounded text-sm min-w-[50px] ${
+                            !sourceConfig.enabled 
+                              ? 'border-gray-200 bg-gray-50 text-gray-400' 
+                              : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                          }`}
                         >
-                          {Array.from({ length: formData.selectedSources.length }, (_, i) => i + 1).map(priority => (
-                            <option key={priority} value={priority}>{priority}</option>
+                          {Array.from({ length: defaultResearchSources.length }, (_, i) => i + 1).map(priority => (
+                            <option key={priority} value={priority}>
+                              {priority}
+                            </option>
                           ))}
                         </select>
                       </div>

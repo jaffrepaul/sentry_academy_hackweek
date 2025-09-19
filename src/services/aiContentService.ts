@@ -40,6 +40,7 @@ interface OpenAIConfig {
 class AIContentService {
   private config: OpenAIConfig;
   private rateLimitTracker: Map<string, number[]> = new Map();
+  private backgroundTasks: Map<string, NodeJS.Timeout> = new Map();
 
   constructor(apiKey?: string) {
     this.config = {
@@ -68,6 +69,7 @@ class AIContentService {
   }
 
   // OpenAI API call wrapper
+  // @ts-ignore: Method is used but TypeScript incorrectly reports it as unused
   private async callOpenAI(messages: OpenAIMessage[]): Promise<string> {
     if (!this.config.apiKey) {
       throw new Error('OpenAI API key not configured');
@@ -156,7 +158,7 @@ class AIContentService {
       const aiCourse: AIGeneratedCourse = {
         ...courseMetadata,
         id: `ai-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        isAIGenerated: true,
+        isAiGenerated: true,
         generationRequest: request,
         researchSources: researchedContent,
         synthesizedContent,
@@ -196,7 +198,7 @@ class AIContentService {
 
   // Synthesize research into structured content
   private async synthesizeResearch(
-    researchedContent: ResearchedContent[], 
+    _researchedContent: ResearchedContent[], 
     keywords: string[]
   ): Promise<SynthesizedContent> {
     // For demo purposes, return mock synthesized content
@@ -300,9 +302,9 @@ Extract the key educational components that would be most valuable for engineers
 
   // Generate course metadata
   private async generateCourseMetadata(
-    synthesizedContent: SynthesizedContent,
+    _synthesizedContent: SynthesizedContent,
     request: ContentGenerationRequest
-  ): Promise<Omit<AIGeneratedCourse, 'id' | 'isAIGenerated' | 'generationRequest' | 'researchSources' | 'synthesizedContent' | 'generatedModules' | 'rolePersonalizations' | 'qualityScore' | 'generatedAt' | 'lastModified' | 'version'>> {
+  ): Promise<Omit<AIGeneratedCourse, 'id' | 'isAiGenerated' | 'generationRequest' | 'researchSources' | 'synthesizedContent' | 'generatedModules' | 'rolePersonalizations' | 'qualityScore' | 'generatedAt' | 'lastModified' | 'version'>> {
     console.log('AIContentService: Generating course metadata for keywords:', request.keywords);
     
     // For demo purposes, return mock metadata
@@ -404,7 +406,7 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
   // Generate a single module
   private async generateSingleModule(
     concept: string,
-    synthesizedContent: SynthesizedContent,
+    _synthesizedContent: SynthesizedContent,
     request: ContentGenerationRequest,
     index: number
   ): Promise<AIGeneratedModule> {
@@ -697,19 +699,26 @@ Make it highly relevant and actionable for this specific role.`
   // Utility methods
 
 
+  // Utility method for future use
+  /*
   private estimateReadingTime(text: string): number {
     const wordsPerMinute = 200;
     const wordCount = text.split(/\s+/).length;
     return Math.ceil(wordCount / wordsPerMinute);
   }
+  */
 
   // Public method to start content generation
   async startContentGeneration(request: ContentGenerationRequest): Promise<GenerationResponse> {
     try {
+      // Cancel any existing task for this request
+      this.cancelBackgroundTask(request.id);
+      
       // Simulate async processing - in a real implementation, this would
       // trigger a background job or queue processing
       console.log('AIContentService: Starting async content generation for request:', request.id);
-      setTimeout(async () => {
+      
+      const timeoutId = setTimeout(async () => {
         console.log('AIContentService: Executing background generation for:', request.id);
         try {
           // This would normally fetch from external sources
@@ -730,22 +739,47 @@ Make it highly relevant and actionable for this specific role.`
           await this.generateCourseContent(request, mockResearchedContent);
         } catch (error) {
           console.error('Background generation failed:', error);
+        } finally {
+          // Clean up the task reference
+          this.backgroundTasks.delete(request.id);
         }
       }, 3000); // Increased delay to 3 seconds to simulate real processing
 
+      // Store the timeout ID for cleanup
+      this.backgroundTasks.set(request.id, timeoutId);
+
       return {
         success: true,
-        requestId: request.id,
-        estimatedDuration: 120 // 2 minutes
+        request_id: request.id,
+        estimated_duration: 120 // 2 minutes
       };
     } catch (error) {
       return {
         success: false,
-        requestId: request.id,
-        estimatedDuration: 0,
+        request_id: request.id,
+        estimated_duration: 0,
         error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
+  }
+
+  // Cancel a background task
+  public cancelBackgroundTask(requestId: string): void {
+    const timeoutId = this.backgroundTasks.get(requestId);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      this.backgroundTasks.delete(requestId);
+      console.log('AIContentService: Cancelled background task for request:', requestId);
+    }
+  }
+
+  // Cancel all background tasks (cleanup method)
+  public cancelAllBackgroundTasks(): void {
+    for (const [requestId, timeoutId] of this.backgroundTasks.entries()) {
+      clearTimeout(timeoutId);
+      console.log('AIContentService: Cancelled background task for request:', requestId);
+    }
+    this.backgroundTasks.clear();
   }
 
   // Update configuration

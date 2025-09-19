@@ -1,20 +1,19 @@
-import React, { memo, useMemo } from 'react';
-import { Github, Twitter, Linkedin, ExternalLink } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { getTextClasses } from '../utils/styles';
+'use client'
+
+import React, { memo, useMemo } from 'react'
+import { Github, Twitter, Linkedin, ExternalLink } from 'lucide-react'
+// Theme handled automatically by Tailwind dark: classes
+import { getTextClasses } from '@/utils/styles'
+import Image from 'next/image'
 
 const Footer: React.FC = memo(() => {
-  const { isDark } = useTheme();
+  // Theme handled automatically by Tailwind dark: classes
 
-  const titleClasses = useMemo(() => getTextClasses(isDark, 'primary'), [isDark]);
-  const subtitleClasses = useMemo(() => getTextClasses(isDark, 'secondary'), [isDark]);
+  const titleClasses = useMemo(() => getTextClasses('primary'), [])
+  const subtitleClasses = useMemo(() => getTextClasses('secondary'), [])
   const linkClasses = useMemo(() => 
-    `transition-colors duration-200 ${
-      isDark 
-        ? 'text-gray-300 hover:text-purple-400' 
-        : 'text-gray-700 hover:text-purple-700'  // Improved from gray-600 to gray-700 and purple-600 to purple-700
-    }`, [isDark]
-  );
+    'transition-colors duration-200 text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-purple-400', []
+  )
 
   const footerLinks = {
     product: [
@@ -40,34 +39,29 @@ const Footer: React.FC = memo(() => {
       { name: 'Partners', href: '#' },
       { name: 'Careers', href: '#' }
     ]
-  };
+  }
 
   return (
-    <footer className={`backdrop-blur-xl border-t ${
-      isDark 
-        ? 'bg-slate-950/80 border-purple-500/30' 
-        : 'bg-white/80 border-purple-400/40'  // Improved border contrast
-    }`}>
+    <footer className="backdrop-blur-xl border-t bg-white/80 border-purple-400/40 dark:bg-slate-950/80 dark:border-purple-500/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid lg:grid-cols-4 gap-12">
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-3 mb-6">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>
-                <img 
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center text-gray-900 dark:text-white">
+                <Image 
                   src="/logos/sentry-logo.svg" 
                   alt="Sentry Logo" 
-                  className="w-12 h-12"
-                  style={{ filter: isDark ? 'invert(1) brightness(1)' : 'brightness(0.1)' }}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 dark:invert dark:brightness-200"
                 />
               </div>
               <div>
                 <h3 className={`text-xl font-bold ${titleClasses}`}>
                   Sentry Academy
                 </h3>
-                <p className={`text-xs ${isDark ? 'text-purple-400' : 'text-purple-700'}`}>
+                <p className="text-xs text-purple-700 dark:text-purple-400">
                   Master Application Observability
                 </p>
               </div>
@@ -76,37 +70,19 @@ const Footer: React.FC = memo(() => {
               The comprehensive learning platform for mastering Sentry.io
             </p>
             <div className="flex space-x-4">
-              <a href="#" className={`w-10 h-10 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors group border hover:border-purple-400/40 ${
-                isDark 
-                  ? 'bg-slate-900/60 border-purple-500/20' 
-                  : 'bg-gray-100/60 border-purple-300/20'
-              }`}>
-                <Github className={`w-5 h-5 group-hover:text-purple-400 ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`} />
+              <a href="#" className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors group border hover:border-purple-400/40 bg-gray-100/60 border-purple-300/20 dark:bg-slate-900/60 dark:border-purple-500/20">
+                <Github className="w-5 h-5 group-hover:text-purple-400 text-gray-600 dark:text-gray-400" />
               </a>
-              <a href="#" className={`w-10 h-10 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors group border hover:border-purple-400/40 ${
-                isDark 
-                  ? 'bg-slate-900/60 border-purple-500/20' 
-                  : 'bg-gray-100/60 border-purple-300/20'
-              }`}>
-                <Twitter className={`w-5 h-5 group-hover:text-purple-400 ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`} />
+              <a href="#" className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors group border hover:border-purple-400/40 bg-gray-100/60 border-purple-300/20 dark:bg-slate-900/60 dark:border-purple-500/20">
+                <Twitter className="w-5 h-5 group-hover:text-purple-400 text-gray-600 dark:text-gray-400" />
               </a>
-              <a href="#" className={`w-10 h-10 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors group border hover:border-purple-400/40 ${
-                isDark 
-                  ? 'bg-slate-900/60 border-purple-500/20' 
-                  : 'bg-gray-100/60 border-purple-300/20'
-              }`}>
-                <Linkedin className={`w-5 h-5 group-hover:text-purple-400 ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`} />
+              <a href="#" className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors group border hover:border-purple-400/40 bg-gray-100/60 border-purple-300/20 dark:bg-slate-900/60 dark:border-purple-500/20">
+                <Linkedin className="w-5 h-5 group-hover:text-purple-400 text-gray-600 dark:text-gray-400" />
               </a>
             </div>
           </div>
 
-          {/* Links Sections */}
+          {/* Product Links */}
           <div>
             <h4 className={`font-semibold mb-6 ${titleClasses}`}>
               Product
@@ -122,6 +98,7 @@ const Footer: React.FC = memo(() => {
             </ul>
           </div>
 
+          {/* Resources Links */}
           <div>
             <h4 className={`font-semibold mb-6 ${titleClasses}`}>
               Resources
@@ -142,6 +119,7 @@ const Footer: React.FC = memo(() => {
             </ul>
           </div>
 
+          {/* Company Links */}
           <div>
             <h4 className={`font-semibold mb-6 ${titleClasses}`}>
               Company
@@ -158,9 +136,7 @@ const Footer: React.FC = memo(() => {
           </div>
         </div>
 
-        <div className={`border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center ${
-          isDark ? 'border-purple-500/20' : 'border-purple-300/20'
-        }`}>
+        <div className="border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center border-purple-300/20 dark:border-purple-500/20">
           <div className={`text-sm mb-4 md:mb-0 ${subtitleClasses}`}>
             © 2025 Sentry Academy. All rights reserved.
           </div>
@@ -172,9 +148,8 @@ const Footer: React.FC = memo(() => {
         </div>
       </div>
     </footer>
-  );
-});
+  )
+})
 
-Footer.displayName = 'Footer';
-
-export default Footer;
+Footer.displayName = 'Footer'
+export default Footer
