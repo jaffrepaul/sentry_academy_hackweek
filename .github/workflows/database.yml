@@ -81,13 +81,13 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: |
-          node src/lib/db/migrate.ts migrate --dry-run
+          npx tsx src/lib/db/migrate.ts migrate --dry-run
           echo "✅ Migration dry run completed successfully"
 
       - name: Validate database schema
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-        run: node src/lib/db/migrate.ts validate
+        run: npx tsx src/lib/db/migrate.ts validate
 
       - name: Run data validation
         env:
@@ -213,7 +213,7 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           echo "🚀 Running production migrations"
-          node src/lib/db/migrate.ts migrate --backup
+          npx tsx src/lib/db/migrate.ts migrate --backup
           echo "✅ Production migrations completed"
 
       - name: Post-deployment health check
@@ -276,8 +276,8 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           echo "🧹 Running data cleanup (dry run)"
-          node -e "
-            import('./src/lib/db/validation.js').then(async ({ DataValidator }) => {
+          npx tsx -e "
+            import('./src/lib/db/validation.ts').then(async ({ DataValidator }) => {
               const validator = new DataValidator();
               const actions = await validator.performCleanup(true);
               console.log('Cleanup actions that would be performed:');
