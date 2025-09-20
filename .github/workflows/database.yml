@@ -4,15 +4,17 @@ on:
   push:
     branches: [main, staging]
     paths:
-      - 'src/lib/db/**'
+      - 'src/lib/db/**/*'
       - 'drizzle.config.ts'
       - '.github/workflows/database.yml'
+      - 'pnpm-lock.yaml'
   pull_request:
     branches: [main, staging]
     paths:
-      - 'src/lib/db/**'
+      - 'src/lib/db/**/*'
       - 'drizzle.config.ts'
       - '.github/workflows/database.yml'
+      - 'pnpm-lock.yaml'
 
 env:
   NODE_VERSION: '20'
@@ -36,8 +38,22 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
 
+      - name: Debug - List files
+        run: |
+          echo "Checking for pnpm-lock.yaml and other important files..."
+          ls -la pnpm-lock.yaml || echo "pnpm-lock.yaml not found"
+          ls -la package.json || echo "package.json not found"
+          echo "Current directory contents:"
+          ls -la
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm install --frozen-lockfile
+          else
+            echo "Warning: pnpm-lock.yaml not found, running regular install"
+            pnpm install
+          fi
 
       - name: Generate schema
         run: pnpm run db:generate
@@ -73,7 +89,13 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm install --frozen-lockfile
+          else
+            echo "Warning: pnpm-lock.yaml not found, running regular install"
+            pnpm install
+          fi
 
       - name: Run migrations (dry run)
         env:
@@ -119,7 +141,13 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm install --frozen-lockfile
+          else
+            echo "Warning: pnpm-lock.yaml not found, running regular install"
+            pnpm install
+          fi
 
       - name: Create staging backup
         env:
@@ -188,7 +216,13 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm install --frozen-lockfile
+          else
+            echo "Warning: pnpm-lock.yaml not found, running regular install"
+            pnpm install
+          fi
 
       - name: Run production migrations (dry run first)
         env:
@@ -267,7 +301,13 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm install --frozen-lockfile
+          else
+            echo "Warning: pnpm-lock.yaml not found, running regular install"
+            pnpm install
+          fi
 
       - name: Run data cleanup
         env:
