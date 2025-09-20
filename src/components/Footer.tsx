@@ -2,13 +2,10 @@
 
 import React, { memo, useMemo } from 'react'
 import { Github, Twitter, Linkedin, ExternalLink } from 'lucide-react'
-// Theme handled automatically by Tailwind dark: classes
 import { getTextClasses } from '@/utils/styles'
 import Image from 'next/image'
 
 const Footer: React.FC = memo(() => {
-  // Theme handled automatically by Tailwind dark: classes
-
   const titleClasses = useMemo(() => getTextClasses('primary'), [])
   const subtitleClasses = useMemo(() => getTextClasses('secondary'), [])
   const linkClasses = useMemo(() => 
@@ -24,12 +21,9 @@ const Footer: React.FC = memo(() => {
     ],
     resources: [
       { name: 'Sentry Docs', href: 'https://docs.sentry.io', external: true },
-      { name: 'Sentry Platform', href: 'https://sentry.io', external: true },
       { name: 'Product Docs', href: 'https://docs.sentry.io/product/', external: true },
       { name: 'Sentry Blog', href: 'https://sentry-blog.sentry.dev/', external: true },
       { name: 'Sentry vs Logging', href: 'https://sentry.io/vs/logging/', external: true },
-      { name: 'Answers', href: 'https://sentry.io/answers/', external: true },
-      { name: 'Support Center', href: 'https://sentry.zendesk.com/hc/en-us/', external: true },
       { name: 'YouTube Channel', href: 'https://www.youtube.com/@Sentry-monitoring/videos', external: true },
       { name: 'Customer Stories', href: 'https://sentry.io/customers/', external: true }
     ],
