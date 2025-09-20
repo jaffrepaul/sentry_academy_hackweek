@@ -47,7 +47,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
         </div>
       )}
       
-      <div className={`${cardClasses} p-6 h-full group-hover:shadow-2xl`}>
+      <div className={`${cardClasses} p-6 h-full group-hover:shadow-2xl flex flex-col`}>
         <div className="flex items-center justify-between mb-4">
           <span className="text-xs font-medium uppercase tracking-wider px-2 py-1 rounded-full text-purple-700 bg-purple-200/60 dark:text-purple-300 dark:bg-purple-500/20">
             {category || 'General'}
@@ -64,7 +64,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
           {title}
         </h3>
 
-        <p className={`mb-6 leading-relaxed line-clamp-3 ${getTextClasses('secondary')}`}>
+        <p className={`mb-6 leading-relaxed line-clamp-3 flex-grow ${getTextClasses('secondary')}`}>
           {description || 'Course description not available.'}
         </p>
 
@@ -82,7 +82,7 @@ const CourseCard: React.FC<CourseCardProps> = memo(({
           <span className="text-xs">{students?.toLocaleString() || '0'} students</span>
         </div>
 
-        <div className={`flex items-center justify-between pt-4 border-t ${
+        <div className={`flex items-center justify-between pt-4 border-t mt-auto ${
           'border-gray-200/50 dark:border-slate-700/50'
         }`}>
           <span className={`font-medium transition-colors ${getTextClasses('accent')}`}>

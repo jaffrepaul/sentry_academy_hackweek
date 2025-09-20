@@ -4,19 +4,21 @@ on:
   push:
     branches: [main, staging]
     paths:
-      - 'src/lib/db/**'
+      - 'src/lib/db/**/*'
       - 'drizzle.config.ts'
       - '.github/workflows/database.yml'
+      - 'pnpm-lock.yaml'
   pull_request:
     branches: [main, staging]
     paths:
-      - 'src/lib/db/**'
+      - 'src/lib/db/**/*'
       - 'drizzle.config.ts'
       - '.github/workflows/database.yml'
+      - 'pnpm-lock.yaml'
 
 env:
   NODE_VERSION: '20'
-  PNPM_VERSION: '8'
+  PNPM_VERSION: '9'
 
 jobs:
   # Validate schema changes
