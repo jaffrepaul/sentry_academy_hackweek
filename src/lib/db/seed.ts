@@ -4,7 +4,7 @@
  * Populates the database with initial course data, learning paths, and sample users
  */
 
-// Load environment variables
+// Load environment variables for CLI context  
 import { config } from 'dotenv'
 config({ path: '.env.local' })
 

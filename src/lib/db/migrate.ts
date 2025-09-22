@@ -4,7 +4,7 @@
  * Handles schema changes and data migrations for Sentry Academy
  */
 
-// Load environment variables
+// Load environment variables for CLI context
 import { config } from 'dotenv'
 config({ path: '.env.local' })
 

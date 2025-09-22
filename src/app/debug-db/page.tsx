@@ -38,7 +38,7 @@ export default async function DebugPage() {
   try {
     dataStatus = await getDataStatus()
   } catch (error) {
-    dataStatus = { error: error.message }
+    dataStatus = { error: error instanceof Error ? error.message : String(error) }
   }
 
   return (
@@ -58,7 +58,7 @@ export default async function DebugPage() {
             <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Direct Database Query</h2>
             {directDbError ? (
               <div className="text-red-600 dark:text-red-400">
-                Error: {directDbError.message}
+                Error: {directDbError instanceof Error ? directDbError.message : String(directDbError)}
               </div>
             ) : (
               <div>
@@ -76,7 +76,7 @@ export default async function DebugPage() {
             <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Course Actions Query</h2>
             {courseActionsError ? (
               <div className="text-red-600 dark:text-red-400">
-                Error: {courseActionsError.message}
+                Error: {courseActionsError instanceof Error ? courseActionsError.message : String(courseActionsError)}
               </div>
             ) : (
               <div>
@@ -94,7 +94,7 @@ export default async function DebugPage() {
             <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Specific Course Query (sentry-fundamentals)</h2>
             {specificCourseError ? (
               <div className="text-red-600 dark:text-red-400">
-                Error: {specificCourseError.message}
+                Error: {specificCourseError instanceof Error ? specificCourseError.message : String(specificCourseError)}
               </div>
             ) : (
               <div>

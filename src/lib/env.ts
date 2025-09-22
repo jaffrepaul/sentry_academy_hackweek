@@ -123,8 +123,17 @@ function validateEnv() {
   }
 }
 
-// Export validated environment variables
-export const env = validateEnv()
+// Lazy validation - only validate when accessed
+let _env: ReturnType<typeof validateEnv> | null = null
+
+export const env = new Proxy({} as ReturnType<typeof validateEnv>, {
+  get(_target, prop) {
+    if (!_env) {
+      _env = validateEnv()
+    }
+    return _env[prop as keyof typeof _env]
+  }
+})
 
 // Type-safe environment access
 export type Environment = typeof env

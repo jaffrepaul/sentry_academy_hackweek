@@ -1,30 +1,29 @@
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import * as schema from './schema'
+import { loadEnvironmentIfNeeded, getOptionalEnv } from '../env-loader'
 
-// Load environment variables for non-Next.js contexts
-if (typeof window === 'undefined' && !process.env.NEXT_RUNTIME) {
+// Load environment variables if we're in a CLI context
+loadEnvironmentIfNeeded()
+
+// Get database URL with better error handling
+const DATABASE_URL = getOptionalEnv('DATABASE_URL', '', (url) => {
+  if (!url) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('DATABASE_URL is required in production')
+    }
+    return 'postgresql://dummy:dummy@localhost:5432/dummy'
+  }
+  
+  // Validate URL format
   try {
-    require('dotenv').config({ path: '.env.local' })
+    new URL(url)
   } catch {
-    // dotenv might not be available in all contexts
+    throw new Error(`Invalid DATABASE_URL format: ${url}`)
   }
-}
-
-// Note: fetchConnectionCache is now always enabled by default
-// neonConfig.fetchConnectionCache = true
-
-// Validate database URL
-const DATABASE_URL = process.env.DATABASE_URL
-if (!DATABASE_URL) {
-  if (process.env.NODE_ENV === 'production') {
-    // In production, warn but don't throw during module loading to allow builds to pass
-    // The actual error will be thrown when the database is used
-    console.warn('⚠️  DATABASE_URL not configured - database operations will fail')
-  } else {
-    console.warn('⚠️  DATABASE_URL not found - using dummy connection for development')
-  }
-}
+  
+  return url
+})
 
 // Create Neon connection with pooling
 const sql = neon(DATABASE_URL || 'postgresql://dummy:dummy@localhost:5432/dummy', {
