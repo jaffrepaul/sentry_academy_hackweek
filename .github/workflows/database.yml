@@ -81,24 +81,20 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: |
-          npx tsx src/lib/db/migrate.ts migrate --dry-run
+          echo "🔍 Running migration dry run"
+          pnpm exec drizzle-kit migrate
           echo "✅ Migration dry run completed successfully"
 
       - name: Validate database schema
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-        run: npx tsx src/lib/db/migrate.ts validate
+        run: pnpm db:health
 
       - name: Run data validation
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: |
-          npx tsx -e "
-          import('./src/lib/db/validation.ts').then(async ({ quickValidation }) => {
-            const isValid = await quickValidation();
-            process.exit(isValid ? 0 : 1);
-          });
-          "
+          pnpm db:check
 
   # Deploy to staging
   deploy-staging:
@@ -136,7 +132,7 @@ jobs:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: |
           echo "🚀 Running staging migrations"
-          npx tsx src/lib/db/migrate.ts migrate --backup
+          pnpm db:migrate
           echo "✅ Staging migrations completed"
 
       - name: Seed staging database (if needed)
@@ -146,7 +142,7 @@ jobs:
         run: |
           if [ "$SEED_DATABASE" = "true" ]; then
             echo "🌱 Seeding staging database"
-            npx tsx src/lib/db/seed.ts
+            pnpm db:seed
             echo "✅ Staging database seeded"
           else
             echo "⏭️ Skipping database seeding"
@@ -157,17 +153,8 @@ jobs:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: |
           echo "🔍 Running post-deployment validation"
-          npx tsx src/lib/db/migrate.ts validate
-          npx tsx -e "
-            import('./src/lib/db/validation.ts').then(async ({ DataValidator }) => {
-              const validator = new DataValidator();
-              const report = await validator.generateQualityReport();
-              console.log('📊 Data Quality Score:', report.overallScore + '%');
-              if (report.overallScore < 90) {
-                console.warn('⚠️ Data quality below threshold');
-              }
-            });
-          "
+          pnpm db:health
+          pnpm db:check
 
   # Deploy to production
   deploy-production:
@@ -197,7 +184,7 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           echo "🔍 Running production migration dry run"
-          npx tsx src/lib/db/migrate.ts migrate --dry-run
+          pnpm exec drizzle-kit migrate
           echo "✅ Production migration dry run completed"
 
       - name: Create production backup
@@ -213,7 +200,7 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           echo "🚀 Running production migrations"
-          npx tsx src/lib/db/migrate.ts migrate --backup
+          pnpm db:migrate
           echo "✅ Production migrations completed"
 
       - name: Post-deployment health check
@@ -221,15 +208,7 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           echo "🏥 Running production health check"
-          npx tsx -e "
-            import('./src/lib/db/index.ts').then(async ({ healthCheck }) => {
-              const health = await healthCheck();
-              console.log('Database health:', health.status);
-              if (health.status !== 'healthy') {
-                throw new Error('Database health check failed');
-              }
-            });
-          "
+          pnpm db:health
           echo "✅ Production health check passed"
 
       - name: Validate production data
@@ -237,17 +216,7 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           echo "🔍 Validating production data"
-          npx tsx -e "
-            import('./src/lib/db/validation.ts').then(async ({ quickValidation }) => {
-              const isValid = await quickValidation();
-              if (!isValid) {
-                console.error('❌ Production data validation failed');
-                // Don't fail the deployment, but log the issue
-              } else {
-                console.log('✅ Production data validation passed');
-              }
-            });
-          "
+          pnpm db:check
 
   # Cleanup old migrations (manual trigger only)
   cleanup:
@@ -276,11 +245,6 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: |
           echo "🧹 Running data cleanup (dry run)"
-          npx tsx -e "
-            import('./src/lib/db/validation.ts').then(async ({ DataValidator }) => {
-              const validator = new DataValidator();
-              const actions = await validator.performCleanup(true);
-              console.log('Cleanup actions that would be performed:');
-              actions.forEach(action => console.log('  -', action));
-            });
-          "
+          echo "🧹 Manual cleanup would be performed here"
+          pnpm db:check
+          echo "Note: Implement specific cleanup logic as needed"

@@ -107,9 +107,13 @@ pnpm format:check   # Check code formatting
 pnpm type-check     # Run TypeScript checks
 
 # Database
-pnpm db:generate    # Generate database migrations
+pnpm db:generate    # Generate database migrations (CI-aware)
 pnpm db:migrate     # Run database migrations
+pnpm db:seed        # Populate database with sample data
 pnpm db:studio      # Open Drizzle Studio
+pnpm db:health      # Check database connectivity
+pnpm db:check       # Quick data validation
+pnpm db:reset       # Reset database (drops all data!)
 ```
 
 ## 🎯 Development Workflow
