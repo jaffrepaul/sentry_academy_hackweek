@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 // Theme handled automatically by Tailwind dark: classes
 import { getTextClasses } from '@/utils/styles'
-import { getMockCourses } from '@/lib/actions/course-actions'
+import { getMockCourses } from '@/lib/fallback/mock-courses'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Image from 'next/image'
