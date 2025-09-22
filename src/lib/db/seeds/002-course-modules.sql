@@ -11,12 +11,12 @@ INSERT INTO course_modules (course_id, title, content, "order", duration) VALUES
 ((SELECT id FROM course_ids WHERE slug = 'sentry-fundamentals'), 'Customizing Session Replay', 'Configure session replay settings, privacy controls, and sampling rates to capture meaningful user interactions.', 4, '12 min'),
 ((SELECT id FROM course_ids WHERE slug = 'sentry-fundamentals'), 'Distributed Tracing', 'Implement performance monitoring with custom spans, trace API calls, and monitor user interactions across your application.', 5, '18 min'),
 
--- Sentry Logging modules (course slug: react-error-boundaries) 
-((SELECT id FROM course_ids WHERE slug = 'react-error-boundaries'), 'Introduction to Sentry Logs', 'Understanding structured logging and why logs are essential for debugging applications beyond errors.', 1, '8 min'),
-((SELECT id FROM course_ids WHERE slug = 'react-error-boundaries'), 'Setting Up Sentry Logging', 'Learn how to enable logging in your Sentry SDK configuration and start capturing logs from your applications.', 2, '12 min'),
-((SELECT id FROM course_ids WHERE slug = 'react-error-boundaries'), 'Structured Logging with Sentry.logger', 'Master the Sentry.logger API including trace, debug, info, warn, error, and fatal log levels with practical examples.', 3, '18 min'),
-((SELECT id FROM course_ids WHERE slug = 'react-error-boundaries'), 'Advanced Logging Features', 'Explore console logging integration, Winston integration, and the beforeSendLog callback for filtering logs.', 4, '15 min'),
-((SELECT id FROM course_ids WHERE slug = 'react-error-boundaries'), 'Viewing and Searching Logs in Sentry', 'Learn to navigate the Sentry Logs UI, search by text and properties, create alerts, and build dashboard widgets.', 5, '19 min'),
+-- Sentry Logging modules (course slug: sentry-logging) 
+((SELECT id FROM course_ids WHERE slug = 'sentry-logging'), 'Introduction to Sentry Logs', 'Understanding structured logging and why logs are essential for debugging applications beyond errors.', 1, '8 min'),
+((SELECT id FROM course_ids WHERE slug = 'sentry-logging'), 'Setting Up Sentry Logging', 'Learn how to enable logging in your Sentry SDK configuration and start capturing logs from your applications.', 2, '12 min'),
+((SELECT id FROM course_ids WHERE slug = 'sentry-logging'), 'Structured Logging with Sentry.logger', 'Master the Sentry.logger API including trace, debug, info, warn, error, and fatal log levels with practical examples.', 3, '18 min'),
+((SELECT id FROM course_ids WHERE slug = 'sentry-logging'), 'Advanced Logging Features', 'Explore console logging integration, Winston integration, and the beforeSendLog callback for filtering logs.', 4, '15 min'),
+((SELECT id FROM course_ids WHERE slug = 'sentry-logging'), 'Viewing and Searching Logs in Sentry', 'Learn to navigate the Sentry Logs UI, search by text and properties, create alerts, and build dashboard widgets.', 5, '19 min'),
 
 -- Performance Monitoring modules (course slug: performance-monitoring)
 ((SELECT id FROM course_ids WHERE slug = 'performance-monitoring'), 'Core Web Vitals Overview', 'Understanding LCP, FID, and CLS metrics and their impact on user experience and SEO.', 1, '25 min'),

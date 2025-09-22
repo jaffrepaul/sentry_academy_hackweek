@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 // Theme handled automatically by Tailwind dark: classes
 import { getTextClasses } from '@/utils/styles'
-import { getMockCourses } from '@/lib/actions/course-actions'
+import { getCourses } from '@/lib/actions/course-actions'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Image from 'next/image'
@@ -292,7 +292,10 @@ const CourseNavigation = ({ currentCourse }: { currentCourse: any }) => {
   const [allCourses, setAllCourses] = useState<any[]>([])
 
   useEffect(() => {
-    getMockCourses().then(setAllCourses)
+    getCourses().then(setAllCourses).catch(error => {
+      console.error('Error fetching courses for navigation:', error)
+      setAllCourses([])
+    })
   }, [])
 
   const getNavigationContext = () => {

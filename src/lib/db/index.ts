@@ -1,21 +1,29 @@
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import * as schema from './schema'
+import { loadEnvironmentIfNeeded, getOptionalEnv } from '../env-loader'
 
-// Note: fetchConnectionCache is now always enabled by default
-// neonConfig.fetchConnectionCache = true
+// Load environment variables if we're in a CLI context
+loadEnvironmentIfNeeded()
 
-// Validate database URL
-const DATABASE_URL = process.env.DATABASE_URL
-if (!DATABASE_URL) {
-  if (process.env.NODE_ENV === 'production') {
-    // In production, warn but don't throw during module loading to allow builds to pass
-    // The actual error will be thrown when the database is used
-    console.warn('⚠️  DATABASE_URL not configured - database operations will fail')
-  } else {
-    console.warn('⚠️  DATABASE_URL not found - using dummy connection for development')
+// Get database URL with better error handling
+const DATABASE_URL = getOptionalEnv('DATABASE_URL', '', (url) => {
+  if (!url) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('DATABASE_URL is required in production')
+    }
+    return 'postgresql://dummy:dummy@localhost:5432/dummy'
   }
-}
+  
+  // Validate URL format
+  try {
+    new URL(url)
+  } catch {
+    throw new Error(`Invalid DATABASE_URL format: ${url}`)
+  }
+  
+  return url
+})
 
 // Create Neon connection with pooling
 const sql = neon(DATABASE_URL || 'postgresql://dummy:dummy@localhost:5432/dummy', {

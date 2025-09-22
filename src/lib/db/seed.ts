@@ -4,6 +4,10 @@
  * Populates the database with initial course data, learning paths, and sample users
  */
 
+// Load environment variables for CLI context  
+import { config } from 'dotenv'
+config({ path: '.env.local' })
+
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import { migrate } from 'drizzle-orm/neon-http/migrator'
