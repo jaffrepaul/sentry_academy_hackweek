@@ -3,7 +3,7 @@ INSERT INTO courses (slug, title, description, content, difficulty, duration, ca
 -- Core Sentry courses
 ('sentry-fundamentals', 'Sentry Fundamentals', 'See Sentry in action through a comprehensive 10-minute demo. Learn how to efficiently identify and resolve errors and performance issues using Sentry''s platform.', 'Complete course content for Sentry Fundamentals covering SDK installation, error tracking, and basic monitoring setup.', 'Beginner', '10 min', 'Foundation', 'Beginner', 49, 12500, true, '/course-thumbnails/sentry-fundamentals.jpg', true),
 
-('react-error-boundaries', 'Sentry Logging', 'Master structured logging with Sentry. Learn to send, view, and query logs from your applications for better debugging and monitoring.', 'In-depth coverage of Sentry logging features, structured logging patterns, and log analysis.', 'Intermediate', '1.2 hrs', 'Monitoring', 'Intermediate', 48, 8900, false, '/course-thumbnails/sentry-logging.jpg', true),
+('sentry-logging', 'Sentry Logging', 'Master structured logging with Sentry. Learn to send, view, and query logs from your applications for better debugging and monitoring.', 'In-depth coverage of Sentry logging features, structured logging patterns, and log analysis.', 'Intermediate', '1.2 hrs', 'Monitoring', 'Intermediate', 48, 8900, false, '/course-thumbnails/sentry-logging.jpg', true),
 
 ('performance-monitoring', 'Performance Monitoring', 'Deep dive into performance tracking, Core Web Vitals, and optimizing your application''s speed and user experience.', 'Comprehensive guide to performance monitoring, Web Vitals tracking, and performance optimization strategies.', 'Advanced', '2.1 hrs', 'Performance', 'Advanced', 47, 6400, false, '/course-thumbnails/performance-monitoring.jpg', true),
 

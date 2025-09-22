@@ -2,6 +2,15 @@ import { drizzle } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import * as schema from './schema'
 
+// Load environment variables for non-Next.js contexts
+if (typeof window === 'undefined' && !process.env.NEXT_RUNTIME) {
+  try {
+    require('dotenv').config({ path: '.env.local' })
+  } catch {
+    // dotenv might not be available in all contexts
+  }
+}
+
 // Note: fetchConnectionCache is now always enabled by default
 // neonConfig.fetchConnectionCache = true
 

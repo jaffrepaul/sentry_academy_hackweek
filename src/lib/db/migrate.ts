@@ -4,6 +4,10 @@
  * Handles schema changes and data migrations for Sentry Academy
  */
 
+// Load environment variables
+import { config } from 'dotenv'
+config({ path: '.env.local' })
+
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import { migrate } from 'drizzle-orm/neon-http/migrator'
