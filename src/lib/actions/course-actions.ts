@@ -1,6 +1,5 @@
 'use server'
 
-import { cache } from 'react'
 import { db } from '@/lib/db'
 import { courses, learning_paths, course_modules } from '@/lib/db/schema'
 import { eq, like, and, desc } from 'drizzle-orm'
@@ -8,8 +7,9 @@ import { CourseFilters } from '@/types/api'
 import { getMockCourses, getMockCourseBySlug, getMockCourseModules, getMockLearningPaths } from '@/lib/fallback/mock-courses'
 import { healthCheck } from '@/lib/db'
 
-// Cached version of course fetching for better performance
-export const getCourses = cache(async (filters: CourseFilters & { limit?: number } = {}) => {
+// Course fetching for better performance
+export const getCourses = async (filters: CourseFilters & { limit?: number } = {}) => {
+  console.log('🔍 [getCourses] Attempting to fetch courses with filters:', filters)
   try {
     const query = db
       .select()
@@ -29,6 +29,7 @@ export const getCourses = cache(async (filters: CourseFilters & { limit?: number
     }
     
     const dbCourses = await query.execute()
+    console.log('🔍 [getCourses] Query result:', dbCourses.length, 'courses found')
     
     // If database is empty, fall back to mock data for development
     if (dbCourses.length === 0) {
@@ -36,16 +37,18 @@ export const getCourses = cache(async (filters: CourseFilters & { limit?: number
       return await getMockCourses(filters)
     }
     
+    console.log('✅ [getCourses] Found courses in database:', dbCourses.map(c => c.title).join(', '))
     return dbCourses
   } catch (error) {
     console.error('❌ Error fetching courses from database:', error)
     console.warn('⚠️  Falling back to mock data due to database error')
     return await getMockCourses(filters)
   }
-})
+}
 
-// Cached version of single course fetching
-export const getCourseBySlug = cache(async (slug: string) => {
+// Single course fetching
+export const getCourseBySlug = async (slug: string) => {
+  console.log(`🔍 [getCourseBySlug] Attempting to fetch course: ${slug}`)
   try {
     const course = await db
       .select()
@@ -53,6 +56,7 @@ export const getCourseBySlug = cache(async (slug: string) => {
       .where(and(eq(courses.slug, slug), eq(courses.is_published, true)))
       .limit(1)
     
+    console.log(`🔍 [getCourseBySlug] Query result:`, course.length, 'records')
     const dbCourse = course[0] || null
     
     // If course not found in database, fall back to mock data
@@ -61,16 +65,17 @@ export const getCourseBySlug = cache(async (slug: string) => {
       return await getMockCourseBySlug(slug)
     }
     
+    console.log(`✅ [getCourseBySlug] Found course in database: ${dbCourse.title}`)
     return dbCourse
   } catch (error) {
     console.error(`❌ Error fetching course '${slug}' from database:`, error)
     console.warn(`⚠️  Falling back to mock data for course: ${slug}`)
     return await getMockCourseBySlug(slug)
   }
-})
+}
 
-// Cached course modules fetching
-export const getCourseModules = cache(async (courseId: number) => {
+// Course modules fetching
+export const getCourseModules = async (courseId: number) => {
   try {
     const modules = await db
       .select()
@@ -90,10 +95,10 @@ export const getCourseModules = cache(async (courseId: number) => {
     console.warn(`⚠️  Falling back to mock data for course modules: ${courseId}`)
     return await getMockCourseModules(courseId)
   }
-})
+}
 
-// Cached learning paths fetching
-export const getLearningPaths = cache(async () => {
+// Learning paths fetching
+export const getLearningPaths = async () => {
   try {
     const paths = await db
       .select()
@@ -112,12 +117,12 @@ export const getLearningPaths = cache(async () => {
     console.warn('⚠️  Falling back to mock data for learning paths')
     return await getMockLearningPaths()
   }
-})
+}
 
 /**
  * Get database and data status for monitoring/debugging
  */
-export const getDataStatus = cache(async () => {
+export const getDataStatus = async () => {
   try {
     const dbHealth = await healthCheck()
     const coursesCount = await db.select().from(courses).then(rows => rows.length)
@@ -148,5 +153,5 @@ export const getDataStatus = cache(async () => {
       error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
-})
+}
 

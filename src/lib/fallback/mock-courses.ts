@@ -4,7 +4,6 @@
  * It matches the structure of the database courses table
  */
 
-import { cache } from 'react'
 import { CourseFilters } from '@/types/api'
 
 // Mock courses data that matches the original structure
@@ -230,7 +229,7 @@ const mockCoursesData = [
 /**
  * Get mock courses with filtering support
  */
-export const getMockCourses = cache(async (filters: CourseFilters & { limit?: number } = {}) => {
+export const getMockCourses = async (filters: CourseFilters & { limit?: number } = {}) => {
   console.log('🔄 Using fallback mock data for courses')
   
   let filtered = [...mockCoursesData]
@@ -255,21 +254,21 @@ export const getMockCourses = cache(async (filters: CourseFilters & { limit?: nu
   }
   
   return filtered
-})
+}
 
 /**
  * Get a single mock course by slug
  */
-export const getMockCourseBySlug = cache(async (slug: string) => {
+export const getMockCourseBySlug = async (slug: string) => {
   console.log(`🔄 Using fallback mock data for course: ${slug}`)
   const courses = await getMockCourses()
   return courses.find(course => course.slug === slug) || null
-})
+}
 
 /**
  * Mock course modules data (for when course modules can't be fetched from DB)
  */
-export const getMockCourseModules = cache(async (courseId: number) => {
+export const getMockCourseModules = async (courseId: number) => {
   console.log(`🔄 Using fallback mock data for course modules: ${courseId}`)
   
   // Return some basic modules that would work for any course
@@ -305,12 +304,12 @@ export const getMockCourseModules = cache(async (courseId: number) => {
       updated_at: new Date(),
     }
   ]
-})
+}
 
 /**
  * Mock learning paths data
  */
-export const getMockLearningPaths = cache(async () => {
+export const getMockLearningPaths = async () => {
   console.log('🔄 Using fallback mock data for learning paths')
   
   return [
@@ -345,4 +344,4 @@ export const getMockLearningPaths = cache(async () => {
       updated_at: new Date(),
     }
   ]
-})
+}
