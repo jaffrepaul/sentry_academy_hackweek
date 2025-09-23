@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Settings } from 'lucide-react'
 import NavigationLinks from './NavigationLinks'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import SignInButton from '@/components/auth/SignInButton'
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -39,6 +40,10 @@ const MobileMenu: React.FC<MobileMenuProps> = memo(({ isOpen, onClose }) => {
           <div className="flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 bg-gray-100/50 dark:bg-slate-800/30">
             <ThemeToggle />
           </div>
+        </div>
+
+        <div className="pt-3 border-t border-purple-500/20">
+          <SignInButton />
         </div>
       </div>
     </div>
