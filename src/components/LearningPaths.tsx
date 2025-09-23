@@ -3,7 +3,7 @@
 import React, { memo, useMemo } from 'react'
 import { ArrowRight, User, Code, Server, Settings, BarChart, Layers, Bot } from 'lucide-react'
 // Theme handled automatically by Tailwind dark: classes
-import { useRole } from '@/contexts/RoleContext'
+import { usePersonalizedLearning } from '@/contexts/PersonalizedLearningContext'
 import { getTextClasses } from '@/utils/styles'
 import PersonaPathDisplay from './PersonaPathDisplay'
 import { EngineerRole } from '@/types/roles'
@@ -20,12 +20,12 @@ const UserInputForm: React.FC = () => {
     )
   }
 
-  const { setUserRole } = useRole()
+  const { setEngineerRole } = usePersonalizedLearning()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (selectedRole) {
-      setUserRole(selectedRole as EngineerRole, selectedFeatures)
+      setEngineerRole(selectedRole as EngineerRole, selectedFeatures)
       console.log('Selected role:', selectedRole)
       console.log('Selected features:', selectedFeatures)
     }
@@ -207,14 +207,14 @@ const UserInputForm: React.FC = () => {
 
 const LearningPaths: React.FC = memo(() => {
   // Theme handled automatically by Tailwind dark: classes
-  const { userProgress } = useRole()
+  const { engineerRole } = usePersonalizedLearning()
 
   const titleClasses = useMemo(() => getTextClasses('primary'), [])
   const subtitleClasses = useMemo(() => getTextClasses('secondary'), [])
 
   // Jump directly to learning path when persona is selected (no animation)
   React.useEffect(() => {
-    if (userProgress.role) {
+    if (engineerRole) {
       // Use setTimeout with 0 to ensure DOM is updated first, then jump immediately
       setTimeout(() => {
         const pathsSection = document.getElementById('paths')
@@ -226,30 +226,31 @@ const LearningPaths: React.FC = memo(() => {
         }
       }, 0)
     }
-  }, [userProgress.role])
+  }, [engineerRole])
 
   return (
     <section id="paths" className="relative py-20 lg:py-32">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-200/20 to-transparent dark:via-purple-900/10"></div>
-      <div className="absolute left-0 top-1/2 h-72 w-72 rounded-full bg-purple-300/20 blur-3xl dark:bg-purple-500/10"></div>
-      <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-pink-300/20 blur-3xl dark:bg-violet-500/10"></div>
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 text-center">
-          <h2 className={`mb-6 text-3xl font-bold md:text-5xl ${titleClasses}`}>
-            {userProgress.role ? 'Your' : 'Choose Your'}{' '}
+      <div className="absolute top-1/2 left-0 w-72 h-72 rounded-full blur-3xl bg-purple-300/20 dark:bg-purple-500/10"></div>
+      <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl bg-pink-300/20 dark:bg-violet-500/10"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${titleClasses}`}>
+            {engineerRole ? 'Your' : 'Choose Your'}{' '}
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Learning Path
             </span>
           </h2>
-          <p className={`mx-auto max-w-3xl text-xl leading-relaxed ${subtitleClasses}`}>
-            {userProgress.role
-              ? `Great! You're set up as a ${userProgress.role} engineer. Here's what we recommend next.`
-              : 'Every expert started somewhere. Pick the path that matches your current experience and let us guide you to Sentry mastery.'}
+          <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${subtitleClasses}`}>
+            {engineerRole 
+              ? `Great! You're set up as a ${engineerRole} engineer. Here's what we recommend next.`
+              : 'Every expert started somewhere. Pick the path that matches your current experience and let us guide you to Sentry mastery.'
+            }
           </p>
         </div>
 
-        {userProgress.role ? <PersonaPathDisplay /> : <UserInputForm />}
+        {engineerRole ? <PersonaPathDisplay /> : <UserInputForm />}
       </div>
     </section>
   )

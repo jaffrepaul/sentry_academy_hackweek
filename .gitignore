@@ -37,6 +37,9 @@ dist/
 /.next/
 /out/
 
+# TypeScript
+*.tsbuildinfo
+
 # Backup files
 *.backup
 src/data.backup/

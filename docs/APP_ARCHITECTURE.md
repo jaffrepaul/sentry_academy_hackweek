@@ -1,4 +1,4 @@
-# Sentry Academy: Complete Application Architecture Guide
+# Sentry Academy: Complete APPLICATION ARCHITECTURE Guide
 
 ## Overview
 
