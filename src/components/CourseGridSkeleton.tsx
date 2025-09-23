@@ -9,24 +9,24 @@ interface CourseGridSkeletonProps {
 
 const CourseGridSkeleton: React.FC<CourseGridSkeletonProps> = ({ count = 6 }) => {
   return (
-    <section className="py-20 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section className="relative py-20 lg:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center">
           {/* Title skeleton */}
-          <div className="animate-pulse bg-gray-300/50 h-8 w-64 mx-auto rounded mb-6" />
+          <div className="mx-auto mb-6 h-8 w-64 animate-pulse rounded bg-gray-300/50" />
           {/* Subtitle skeleton */}
-          <div className="animate-pulse bg-gray-300/50 h-4 w-96 mx-auto rounded" />
+          <div className="mx-auto h-4 w-96 animate-pulse rounded bg-gray-300/50" />
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: count }).map((_, index) => (
             <LoadingCard key={index} lines={4} />
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="mt-12 text-center">
           {/* Button skeleton */}
-          <div className="animate-pulse bg-gray-300/50 h-12 w-48 mx-auto rounded-xl" />
+          <div className="mx-auto h-12 w-48 animate-pulse rounded-xl bg-gray-300/50" />
         </div>
       </div>
     </section>

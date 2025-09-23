@@ -137,43 +137,43 @@ Transform Sentry Academy from a static, role-based learning platform into an int
 
 ```typescript
 interface AIPersonaDetection {
-  detectedRole: EngineerRole;
-  confidence: number;
-  reasoning: string;
-  techStackSignals: string[];
-  sentryUsagePatterns: string[];
+  detectedRole: EngineerRole
+  confidence: number
+  reasoning: string
+  techStackSignals: string[]
+  sentryUsagePatterns: string[]
 }
 
 interface ConversationMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  timestamp: Date;
-  context: LearningContext;
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+  context: LearningContext
 }
 
 interface LearningContext {
-  currentCourse: string;
-  currentModule: string;
-  userPersona: EngineerRole;
-  progressData: UserProgress;
-  strugglingTopics: string[];
+  currentCourse: string
+  currentModule: string
+  userPersona: EngineerRole
+  progressData: UserProgress
+  strugglingTopics: string[]
 }
 
 interface AdaptiveContent {
-  originalContent: string;
-  personalizedContent: string;
-  adaptationReason: string;
-  confidenceScore: number;
-  techStackSpecific: boolean;
+  originalContent: string
+  personalizedContent: string
+  adaptationReason: string
+  confidenceScore: number
+  techStackSpecific: boolean
 }
 
 interface PathOptimization {
-  originalPath: LearningPath;
-  optimizedPath: LearningPath;
-  modifications: PathModification[];
-  reasoning: string;
-  expectedImprovement: number;
+  originalPath: LearningPath
+  optimizedPath: LearningPath
+  modifications: PathModification[]
+  reasoning: string
+  expectedImprovement: number
 }
 ```
 
@@ -182,13 +182,13 @@ interface PathOptimization {
 ```typescript
 interface UserProgress {
   // existing fields...
-  aiDetectedRole?: EngineerRole;
-  roleConfidence?: number;
-  learningStyle: "visual" | "hands-on" | "conceptual" | "mixed";
-  strugglingTopics: string[];
-  completionTimes: Record<string, number>;
-  pathOptimizations: PathOptimization[];
-  conversationHistory: ConversationMessage[];
+  aiDetectedRole?: EngineerRole
+  roleConfidence?: number
+  learningStyle: 'visual' | 'hands-on' | 'conceptual' | 'mixed'
+  strugglingTopics: string[]
+  completionTimes: Record<string, number>
+  pathOptimizations: PathOptimization[]
+  conversationHistory: ConversationMessage[]
 }
 ```
 

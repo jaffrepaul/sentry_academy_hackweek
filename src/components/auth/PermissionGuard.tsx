@@ -12,11 +12,11 @@ interface PermissionGuardProps {
 
 export function PermissionGuard({ permission, fallback = null, children }: PermissionGuardProps) {
   const { hasPermission } = usePermissions()
-  
+
   if (!hasPermission(permission)) {
     return <>{fallback}</>
   }
-  
+
   return <>{children}</>
 }
 
@@ -41,10 +41,10 @@ interface RoleGuardProps {
 
 export function RoleGuard({ allowedRoles, fallback = null, children }: RoleGuardProps) {
   const { userRole, isAuthenticated } = usePermissions()
-  
+
   if (!isAuthenticated || !userRole || !allowedRoles.includes(userRole)) {
     return <>{fallback}</>
   }
-  
+
   return <>{children}</>
 }

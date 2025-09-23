@@ -3,8 +3,10 @@
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+
+// Extended session type for server actions
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -36,15 +38,11 @@ export async function getCurrentUser() {
         name: session.user.name,
         role: session.user.role || 'student',
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }
     }
 
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, session.user.email))
-      .limit(1)
+    const [user] = await db.select().from(users).where(eq(users.email, session.user.email)).limit(1)
 
     return user || null
   } catch (error) {
@@ -54,62 +52,61 @@ export async function getCurrentUser() {
 }
 
 // Create a new user account
-export async function createUser(userData: CreateUserData): Promise<{ 
-  success: boolean 
+export async function createUser(userData: CreateUserData): Promise<{
+  success: boolean
   user?: typeof users.$inferSelect
-  error?: string 
+  error?: string
 }> {
   try {
     // Check if user already exists
-    const existing = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, userData.email))
-      .limit(1)
+    const existing = await db.select().from(users).where(eq(users.email, userData.email)).limit(1)
 
     if (existing.length > 0) {
       return {
         success: false,
-        error: 'User already exists with this email'
+        error: 'User already exists with this email',
       }
     }
 
     // Create new user - generate ID
     const userId = crypto.randomUUID()
-    const [newUser] = await db.insert(users).values({
-      id: userId,
-      email: userData.email,
-      name: userData.name || null,
-      role: userData.role || 'student',
-      created_at: new Date(),
-      updated_at: new Date()
-    }).returning()
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        id: userId,
+        email: userData.email,
+        name: userData.name || null,
+        role: userData.role || 'student',
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+      .returning()
 
     if (!newUser) {
       return {
         success: false,
-        error: 'Failed to create user'
+        error: 'Failed to create user',
       }
     }
 
     revalidatePath('/admin')
-    
+
     return {
       success: true,
-      user: newUser
+      user: newUser,
     }
   } catch (error) {
     console.error('Error creating user:', error)
     return {
       success: false,
-      error: 'Failed to create user account'
+      error: 'Failed to create user account',
     }
   }
 }
 
 // Update user profile
 export async function updateUserProfile(
-  userId: string, 
+  userId: string,
   updates: UpdateUserData
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -119,11 +116,7 @@ export async function updateUserProfile(
     }
 
     // Check if user exists and has permission to update
-    const [existingUser] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1)
+    const [existingUser] = await db.select().from(users).where(eq(users.id, userId)).limit(1)
 
     if (!existingUser) {
       return { success: false, error: 'User not found' }
@@ -141,29 +134,30 @@ export async function updateUserProfile(
     }
 
     // Update user
-    await db.update(users)
+    await db
+      .update(users)
       .set({
         ...updates,
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .where(eq(users.id, userId))
 
     revalidatePath('/profile')
     revalidatePath('/admin')
-    
+
     return { success: true }
   } catch (error) {
     console.error('Error updating user profile:', error)
-    return { 
-      success: false, 
-      error: 'Failed to update profile' 
+    return {
+      success: false,
+      error: 'Failed to update profile',
     }
   }
 }
 
 // Change user role (admin only)
 export async function changeUserRole(
-  userId: string, 
+  userId: string,
   newRole: 'student' | 'instructor' | 'admin'
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -172,21 +166,22 @@ export async function changeUserRole(
       return { success: false, error: 'Permission denied - admin required' }
     }
 
-    await db.update(users)
+    await db
+      .update(users)
       .set({
         role: newRole,
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .where(eq(users.id, userId))
 
     revalidatePath('/admin')
-    
+
     return { success: true }
   } catch (error) {
     console.error('Error changing user role:', error)
-    return { 
-      success: false, 
-      error: 'Failed to change user role' 
+    return {
+      success: false,
+      error: 'Failed to change user role',
     }
   }
 }
@@ -205,22 +200,21 @@ export async function deleteUser(userId: string): Promise<{ success: boolean; er
       return { success: false, error: 'Permission denied' }
     }
 
-    await db.delete(users)
-      .where(eq(users.id, userId))
+    await db.delete(users).where(eq(users.id, userId))
 
     revalidatePath('/admin')
-    
+
     // If user deleted their own account, sign them out
     if (currentUser.id === userId) {
       redirect('/auth/signin')
     }
-    
+
     return { success: true }
   } catch (error) {
     console.error('Error deleting user:', error)
-    return { 
-      success: false, 
-      error: 'Failed to delete user account' 
+    return {
+      success: false,
+      error: 'Failed to delete user account',
     }
   }
 }
@@ -240,7 +234,7 @@ export async function getAllUsers(limit: number = 50, offset: number = 0) {
         name: users.name,
         role: users.role,
         created_at: users.created_at,
-        updated_at: users.updated_at
+        updated_at: users.updated_at,
       })
       .from(users)
       .limit(limit)
@@ -270,12 +264,12 @@ export async function checkUserPermission(
       case 'create_course':
       case 'edit_course':
         return ['instructor', 'admin'].includes(currentUser.role || '')
-      
+
       case 'delete_course':
       case 'manage_users':
       case 'view_analytics':
         return currentUser.role === 'admin'
-      
+
       default:
         return false
     }
@@ -289,9 +283,9 @@ export async function checkUserPermission(
 export async function getUserRole(userId?: string): Promise<string | null> {
   try {
     let user
-    
+
     if (userId) {
-      [user] = await db
+      ;[user] = await db
         .select({ role: users.role })
         .from(users)
         .where(eq(users.id, userId))
@@ -312,7 +306,7 @@ export async function signOutUser(): Promise<{ success: boolean }> {
   try {
     // This will be handled by NextAuth signOut function on client side
     // This server action is mainly for cleanup if needed
-    
+
     revalidatePath('/')
     redirect('/auth/signin')
   } catch (error) {
@@ -324,9 +318,10 @@ export async function signOutUser(): Promise<{ success: boolean }> {
 // Update user last login time
 export async function updateLastLogin(email: string): Promise<void> {
   try {
-    await db.update(users)
+    await db
+      .update(users)
       .set({
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .where(eq(users.email, email))
   } catch (error) {

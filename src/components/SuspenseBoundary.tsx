@@ -11,27 +11,23 @@ interface SuspenseBoundaryProps {
 
 const DefaultFallback: React.FC = () => {
   return (
-    <div className="flex items-center justify-center min-h-[200px]">
+    <div className="flex min-h-[200px] items-center justify-center">
       <div className="text-center">
         <LoadingSpinner size="lg" />
-        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-          Loading content...
-        </p>
+        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Loading content...</p>
       </div>
     </div>
   )
 }
 
-const SuspenseBoundary: React.FC<SuspenseBoundaryProps> = ({ 
-  children, 
+const SuspenseBoundary: React.FC<SuspenseBoundaryProps> = ({
+  children,
   fallback,
-  className = '' 
+  className = '',
 }) => {
   return (
     <div className={className}>
-      <Suspense fallback={fallback || <DefaultFallback />}>
-        {children}
-      </Suspense>
+      <Suspense fallback={fallback || <DefaultFallback />}>{children}</Suspense>
     </div>
   )
 }

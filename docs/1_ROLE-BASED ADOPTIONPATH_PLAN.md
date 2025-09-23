@@ -103,18 +103,18 @@ Example flows:
 
 ```typescript
 interface NextContentRecommendation {
-  moduleId: string;
-  stepId: string;
-  priority: number;
-  reasoning: string;
-  timeEstimate: string;
+  moduleId: string
+  stepId: string
+  priority: number
+  reasoning: string
+  timeEstimate: string
 }
 
 interface PersonalizedContent {
-  roleSpecificExplanation: string;
-  whyRelevantToRole: string;
-  nextStepNudge: string;
-  difficultyForRole: "beginner" | "intermediate" | "advanced";
+  roleSpecificExplanation: string
+  whyRelevantToRole: string
+  nextStepNudge: string
+  difficultyForRole: 'beginner' | 'intermediate' | 'advanced'
 }
 ```
 
@@ -123,9 +123,9 @@ interface PersonalizedContent {
 ```typescript
 interface UserProgress {
   // existing fields...
-  lastActiveDate: Date;
-  preferredContentType: "hands-on" | "conceptual" | "mixed";
-  hasSeenOnboarding: boolean;
+  lastActiveDate: Date
+  preferredContentType: 'hands-on' | 'conceptual' | 'mixed'
+  hasSeenOnboarding: boolean
 }
 ```
 

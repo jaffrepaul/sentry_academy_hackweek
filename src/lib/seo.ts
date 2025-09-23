@@ -2,10 +2,18 @@ import { Metadata } from 'next'
 
 export const DEFAULT_SEO = {
   title: 'Sentry Academy - Master Application Observability',
-  description: 'Interactive learning platform to master Sentry\'s powerful observability tools through hands-on experience and personalized learning paths.',
-  keywords: ['Sentry', 'error monitoring', 'application observability', 'performance monitoring', 'session replay', 'learning platform'],
+  description:
+    "Interactive learning platform to master Sentry's powerful observability tools through hands-on experience and personalized learning paths.",
+  keywords: [
+    'Sentry',
+    'error monitoring',
+    'application observability',
+    'performance monitoring',
+    'session replay',
+    'learning platform',
+  ],
   url: 'https://sentry-academy.vercel.app',
-  image: '/favicon.svg'
+  image: '/favicon.svg',
 }
 
 export interface SEOProps {
@@ -31,11 +39,13 @@ export function generateSEO({
   publishedTime,
   modifiedTime,
   author,
-  section
+  section,
 }: SEOProps = {}): Metadata {
   const seoTitle = title ? `${title} | Sentry Academy` : DEFAULT_SEO.title
   const seoDescription = description || DEFAULT_SEO.description
-  const seoKeywords = keywords?.length ? [...keywords, ...DEFAULT_SEO.keywords] : DEFAULT_SEO.keywords
+  const seoKeywords = keywords?.length
+    ? [...keywords, ...DEFAULT_SEO.keywords]
+    : DEFAULT_SEO.keywords
   const seoUrl = url ? `${DEFAULT_SEO.url}${url}` : DEFAULT_SEO.url
   const seoImage = image || DEFAULT_SEO.image
 
@@ -65,7 +75,7 @@ export function generateSEO({
           width: 1200,
           height: 630,
           alt: seoTitle,
-        }
+        },
       ],
       locale: 'en_US',
       ...(publishedTime && { publishedTime }),
@@ -123,15 +133,17 @@ export function generateCourseStructuredData(course: {
     provider: {
       '@type': 'Organization',
       name: 'Sentry Academy',
-      url: 'https://sentry-academy.vercel.app'
+      url: 'https://sentry-academy.vercel.app',
     },
-    instructor: course.instructor ? {
-      '@type': 'Person',
-      name: course.instructor
-    } : {
-      '@type': 'Organization',
-      name: 'Sentry Academy'
-    },
+    instructor: course.instructor
+      ? {
+          '@type': 'Person',
+          name: course.instructor,
+        }
+      : {
+          '@type': 'Organization',
+          name: 'Sentry Academy',
+        },
     courseCode: course.id.toString(),
     educationalLevel: course.level,
     about: course.category,
@@ -141,20 +153,20 @@ export function generateCourseStructuredData(course: {
         '@type': 'AggregateRating',
         ratingValue: course.rating,
         reviewCount: course.reviewCount || 1,
-        bestRating: 5
-      }
+        bestRating: 5,
+      },
     }),
     ...(course.price !== undefined && {
       offers: {
         '@type': 'Offer',
         price: course.price,
         priceCurrency: course.currency || 'USD',
-        availability: 'https://schema.org/InStock'
-      }
+        availability: 'https://schema.org/InStock',
+      },
     }),
     ...(course.thumbnail && {
-      image: course.thumbnail
-    })
+      image: course.thumbnail,
+    }),
   }
 }
 
@@ -166,22 +178,22 @@ export function generateOrganizationStructuredData() {
     alternateName: 'Sentry Learning Platform',
     url: 'https://sentry-academy.vercel.app',
     logo: 'https://sentry-academy.vercel.app/logos/sentry-logo.svg',
-    description: 'Interactive learning platform to master Sentry\'s powerful observability tools',
+    description: "Interactive learning platform to master Sentry's powerful observability tools",
     sameAs: [
       'https://sentry.io',
       'https://github.com/getsentry',
       'https://twitter.com/getsentry',
-      'https://www.youtube.com/@Sentry-monitoring'
+      'https://www.youtube.com/@Sentry-monitoring',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
-      url: 'https://sentry.zendesk.com/hc/en-us/'
+      url: 'https://sentry.zendesk.com/hc/en-us/',
     },
     founder: {
       '@type': 'Organization',
-      name: 'Sentry'
-    }
+      name: 'Sentry',
+    },
   }
 }
 
@@ -191,16 +203,16 @@ export function generateWebsiteStructuredData() {
     '@type': 'WebSite',
     name: 'Sentry Academy',
     url: 'https://sentry-academy.vercel.app',
-    description: 'Interactive learning platform to master Sentry\'s powerful observability tools',
+    description: "Interactive learning platform to master Sentry's powerful observability tools",
     publisher: {
       '@type': 'Organization',
-      name: 'Sentry Academy'
+      name: 'Sentry Academy',
     },
     potentialAction: {
       '@type': 'SearchAction',
       target: 'https://sentry-academy.vercel.app/#courses',
-      'query-input': 'required name=search_term_string'
-    }
+      'query-input': 'required name=search_term_string',
+    },
   }
 }
 
@@ -212,7 +224,7 @@ export function generateBreadcrumbStructuredData(items: Array<{ name: string; ur
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: `https://sentry-academy.vercel.app${item.url}`
-    }))
+      item: `https://sentry-academy.vercel.app${item.url}`,
+    })),
   }
 }

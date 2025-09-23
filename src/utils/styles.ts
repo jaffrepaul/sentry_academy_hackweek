@@ -1,15 +1,15 @@
 // Style utility functions for consistent theming using Tailwind dark: classes
-import { backgroundOption4 } from './backgroundOptions'; // or 3, 4, 5
-export const getBackgroundStyle = backgroundOption4;
+import { backgroundOption4 } from './backgroundOptions' // or 3, 4, 5
+export const getBackgroundStyle = backgroundOption4
 
 /**
  * Card classes using Tailwind dark: modifier
  * Now automatically handles light/dark themes without JavaScript conditionals
  */
-export const getCardClasses = (isHover = true) => 
+export const getCardClasses = (isHover = true) =>
   `backdrop-blur-sm border rounded-2xl transition-all duration-300 ease-out ${
-    isHover ? 'transform hover:scale-105 hover:shadow-xl' : ''          
-  } bg-white/75 dark:bg-slate-900/40 border-purple-400/40 dark:border-purple-500/30 hover:border-purple-500/60 dark:hover:border-purple-400/60 hover:bg-white/85 dark:hover:bg-slate-900/60 hover:shadow-purple-400/20 dark:hover:shadow-purple-500/20`;
+    isHover ? 'transform hover:scale-105 hover:shadow-xl' : ''
+  } bg-white/75 dark:bg-slate-900/40 border-purple-400/40 dark:border-purple-500/30 hover:border-purple-500/60 dark:hover:border-purple-400/60 hover:bg-white/85 dark:hover:bg-slate-900/60 hover:shadow-purple-400/20 dark:hover:shadow-purple-500/20`
 
 /**
  * Text classes using Tailwind dark: modifier
@@ -19,10 +19,10 @@ export const getTextClasses = (variant: 'primary' | 'secondary' | 'accent' = 'pr
   const variants = {
     primary: 'text-gray-900 dark:text-white',
     secondary: 'text-gray-700 dark:text-gray-300',
-    accent: 'text-purple-700 dark:text-purple-400'
-  };
-  return variants[variant];
-};
+    accent: 'text-purple-700 dark:text-purple-400',
+  }
+  return variants[variant]
+}
 
 /**
  * Button classes using Tailwind dark: modifier
@@ -30,41 +30,41 @@ export const getTextClasses = (variant: 'primary' | 'secondary' | 'accent' = 'pr
  */
 export const getButtonClasses = (variant: 'primary' | 'secondary' = 'primary') => {
   if (variant === 'primary') {
-    return 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg hover:shadow-purple-500/30';
+    return 'bg-gradient-to-r from-purple-500 to-violet-600 text-white hover:from-purple-600 hover:to-violet-700 transition-smooth transform hover:scale-105 shadow-lg hover:shadow-purple-500/30'
   }
-  
-  return 'backdrop-blur-sm border transition-all duration-300 ease-out shadow-lg bg-white/70 dark:bg-slate-900/50 border-purple-400/50 dark:border-purple-500/40 text-gray-900 dark:text-white hover:border-purple-500/70 dark:hover:border-purple-400/60 hover:bg-white/80 dark:hover:bg-slate-900/70 hover:shadow-purple-400/20 dark:hover:shadow-purple-500/20';
-};
+
+  return 'backdrop-blur-sm border transition-all duration-300 ease-out shadow-lg bg-white/70 dark:bg-slate-900/50 border-purple-400/50 dark:border-purple-500/40 text-gray-900 dark:text-white hover:border-purple-500/70 dark:hover:border-purple-400/60 hover:bg-white/80 dark:hover:bg-slate-900/70 hover:shadow-purple-400/20 dark:hover:shadow-purple-500/20'
+}
 
 /**
  * Navigation link classes using Tailwind dark: modifier
  * Clean, consistent styling across light and dark themes
  */
-export const getNavLinkClasses = () => 
-  'transition-colors duration-300 ease-out text-gray-800 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-300';
+export const getNavLinkClasses = () =>
+  'transition-colors duration-300 ease-out text-gray-800 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-300'
 
 export const scrollToSection = (sectionId: string, smooth: boolean = true) => {
-  const element = document.getElementById(sectionId);
+  const element = document.getElementById(sectionId)
   if (element) {
     // Account for fixed header height (80px) plus some padding
-    const headerOffset = 100;
-    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-    const offsetPosition = elementPosition - headerOffset;
+    const headerOffset = 100
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+    const offsetPosition = elementPosition - headerOffset
 
     window.scrollTo({
       top: Math.max(0, offsetPosition),
-      behavior: smooth ? 'smooth' : 'auto'
-    });
+      behavior: smooth ? 'smooth' : 'auto',
+    })
   }
-};
+}
 
 // Utility function to handle hash navigation for App Router
 export const handleHashNavigation = (hash: string, delay: number = 500) => {
   if (hash) {
-    const sectionId = hash.startsWith('#') ? hash.substring(1) : hash;
+    const sectionId = hash.startsWith('#') ? hash.substring(1) : hash
     // Wait for the page to fully load before scrolling
     setTimeout(() => {
-      scrollToSection(sectionId);
-    }, delay);
+      scrollToSection(sectionId)
+    }, delay)
   }
-};
+}

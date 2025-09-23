@@ -6,12 +6,8 @@ import { eq, and } from 'drizzle-orm'
 
 export async function getUserById(id: string) {
   try {
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1)
-    
+    const user = await db.select().from(users).where(eq(users.id, id)).limit(1)
+
     return user[0] || null
   } catch (error) {
     console.error('Error fetching user:', error)
@@ -21,10 +17,7 @@ export async function getUserById(id: string) {
 
 export async function getUserProgress(userId: string) {
   try {
-    return await db
-      .select()
-      .from(user_progress)
-      .where(eq(user_progress.user_id, userId))
+    return await db.select().from(user_progress).where(eq(user_progress.user_id, userId))
   } catch (error) {
     console.error('Error fetching user progress:', error)
     return []
@@ -41,14 +34,9 @@ export async function updateUserProgress(
     const existing = await db
       .select()
       .from(user_progress)
-      .where(
-        and(
-          eq(user_progress.user_id, userId),
-          eq(user_progress.course_id, courseId)
-        )
-      )
+      .where(and(eq(user_progress.user_id, userId), eq(user_progress.course_id, courseId)))
       .limit(1)
-    
+
     if (existing.length > 0 && existing[0]) {
       await db
         .update(user_progress)
@@ -67,7 +55,7 @@ export async function updateUserProgress(
         last_accessed_at: new Date(),
       })
     }
-    
+
     return { success: true }
   } catch (error) {
     console.error('Error updating user progress:', error)

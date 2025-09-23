@@ -4,7 +4,12 @@ import { db } from '@/lib/db'
 import { courses, learning_paths, course_modules } from '@/lib/db/schema'
 import { eq, like, and, desc } from 'drizzle-orm'
 import { CourseFilters } from '@/types/api'
-import { getMockCourses, getMockCourseBySlug, getMockCourseModules, getMockLearningPaths } from '@/lib/fallback/mock-courses'
+import {
+  getMockCourses,
+  getMockCourseBySlug,
+  getMockCourseModules,
+  getMockLearningPaths,
+} from '@/lib/fallback/mock-courses'
 import { healthCheck } from '@/lib/db'
 
 // Course fetching for better performance
@@ -23,21 +28,24 @@ export const getCourses = async (filters: CourseFilters & { limit?: number } = {
         )
       )
       .orderBy(desc(courses.created_at))
-    
+
     if (filters.limit) {
       query.limit(filters.limit)
     }
-    
+
     const dbCourses = await query.execute()
     console.log('🔍 [getCourses] Query result:', dbCourses.length, 'courses found')
-    
+
     // If database is empty, fall back to mock data for development
     if (dbCourses.length === 0) {
       console.warn('⚠️  No courses found in database, falling back to mock data')
       return await getMockCourses(filters)
     }
-    
-    console.log('✅ [getCourses] Found courses in database:', dbCourses.map(c => c.title).join(', '))
+
+    console.log(
+      '✅ [getCourses] Found courses in database:',
+      dbCourses.map(c => c.title).join(', ')
+    )
     return dbCourses
   } catch (error) {
     console.error('❌ Error fetching courses from database:', error)
@@ -55,16 +63,16 @@ export const getCourseBySlug = async (slug: string) => {
       .from(courses)
       .where(and(eq(courses.slug, slug), eq(courses.is_published, true)))
       .limit(1)
-    
+
     console.log(`🔍 [getCourseBySlug] Query result:`, course.length, 'records')
     const dbCourse = course[0] || null
-    
+
     // If course not found in database, fall back to mock data
     if (!dbCourse) {
       console.warn(`⚠️  Course '${slug}' not found in database, checking mock data`)
       return await getMockCourseBySlug(slug)
     }
-    
+
     console.log(`✅ [getCourseBySlug] Found course in database: ${dbCourse.title}`)
     return dbCourse
   } catch (error) {
@@ -82,13 +90,13 @@ export const getCourseModules = async (courseId: number) => {
       .from(course_modules)
       .where(eq(course_modules.course_id, courseId))
       .orderBy(course_modules.order)
-    
+
     // If no modules found in database, fall back to mock data
     if (modules.length === 0) {
       console.warn(`⚠️  No modules found for course ${courseId}, falling back to mock data`)
       return await getMockCourseModules(courseId)
     }
-    
+
     return modules
   } catch (error) {
     console.error(`❌ Error fetching course modules for course ${courseId}:`, error)
@@ -100,17 +108,14 @@ export const getCourseModules = async (courseId: number) => {
 // Learning paths fetching
 export const getLearningPaths = async () => {
   try {
-    const paths = await db
-      .select()
-      .from(learning_paths)
-      .orderBy(learning_paths.title)
-    
+    const paths = await db.select().from(learning_paths).orderBy(learning_paths.title)
+
     // If no learning paths found in database, fall back to mock data
     if (paths.length === 0) {
       console.warn('⚠️  No learning paths found in database, falling back to mock data')
       return await getMockLearningPaths()
     }
-    
+
     return paths
   } catch (error) {
     console.error('❌ Error fetching learning paths:', error)
@@ -125,19 +130,28 @@ export const getLearningPaths = async () => {
 export const getDataStatus = async () => {
   try {
     const dbHealth = await healthCheck()
-    const coursesCount = await db.select().from(courses).then(rows => rows.length)
-    const learningPathsCount = await db.select().from(learning_paths).then(rows => rows.length)
-    const modulesCount = await db.select().from(course_modules).then(rows => rows.length)
-    
+    const coursesCount = await db
+      .select()
+      .from(courses)
+      .then(rows => rows.length)
+    const learningPathsCount = await db
+      .select()
+      .from(learning_paths)
+      .then(rows => rows.length)
+    const modulesCount = await db
+      .select()
+      .from(course_modules)
+      .then(rows => rows.length)
+
     return {
       database: dbHealth,
       counts: {
         courses: coursesCount,
         learningPaths: learningPathsCount,
-        courseModules: modulesCount
+        courseModules: modulesCount,
       },
       usingFallback: false,
-      lastChecked: new Date()
+      lastChecked: new Date(),
     }
   } catch (error) {
     console.warn('❌ Database status check failed:', error)
@@ -146,12 +160,11 @@ export const getDataStatus = async () => {
       counts: {
         courses: 12, // Mock data counts
         learningPaths: 3,
-        courseModules: 0
+        courseModules: 0,
       },
       usingFallback: true,
       lastChecked: new Date(),
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     }
   }
 }
-

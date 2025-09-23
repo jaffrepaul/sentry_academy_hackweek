@@ -23,11 +23,11 @@ const ThemeToggle: React.FC = memo(() => {
   if (!mounted) {
     return (
       <button
-        className="p-2 rounded-lg transition-smooth transform hover:scale-110 bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 dark:text-yellow-400"
+        className="transition-smooth transform rounded-lg bg-gray-100 p-2 text-gray-800 hover:scale-110 hover:bg-gray-200 dark:bg-slate-800/50 dark:text-yellow-400 dark:hover:bg-slate-700/50"
         aria-label="Toggle theme"
         disabled
       >
-        <div className="w-5 h-5 animate-pulse bg-gray-400 rounded" />
+        <div className="h-5 w-5 animate-pulse rounded bg-gray-400" />
       </button>
     )
   }
@@ -35,11 +35,11 @@ const ThemeToggle: React.FC = memo(() => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg transition-smooth transform hover:scale-110 bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 dark:text-yellow-400"
+      className="transition-smooth transform rounded-lg bg-gray-100 p-2 text-gray-800 hover:scale-110 hover:bg-gray-200 dark:bg-slate-800/50 dark:text-yellow-400 dark:hover:bg-slate-700/50"
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
       title={`Switch to ${isDark ? 'light' : 'dark'} theme`}
     >
-      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </button>
   )
 })

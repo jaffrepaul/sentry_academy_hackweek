@@ -5,28 +5,23 @@ import { user_progress, users, courses } from '@/lib/db/schema'
 import { eq, and, desc, count } from 'drizzle-orm'
 
 // GET /api/user-progress/[userId] - Get specific user's progress (admin only or own progress)
-export async function GET(
-  _request: NextRequest,
-  context: { params: Promise<{ userId: string }> }
-) {
+export async function GET(_request: NextRequest, context: { params: Promise<{ userId: string }> }) {
   try {
     const params = await context.params
     const currentUser = await getCurrentUser()
     if (!currentUser) {
-      return NextResponse.json(
-        { success: false, error: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 })
     }
 
     const targetUserId = params.userId
 
     // Check permissions - users can only see their own progress unless admin
-    if (currentUser.id !== targetUserId && currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
-      return NextResponse.json(
-        { success: false, error: 'Permission denied' },
-        { status: 403 }
-      )
+    if (
+      currentUser.id !== targetUserId &&
+      currentUser.role !== 'admin' &&
+      currentUser.role !== 'super_admin'
+    ) {
+      return NextResponse.json({ success: false, error: 'Permission denied' }, { status: 403 })
     }
 
     // Get user info
@@ -35,17 +30,14 @@ export async function GET(
         id: users.id,
         name: users.name,
         email: users.email,
-        role: users.role
+        role: users.role,
       })
       .from(users)
       .where(eq(users.id, targetUserId))
       .limit(1)
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 })
     }
 
     // Get detailed progress with course information
@@ -62,7 +54,7 @@ export async function GET(
         courseDuration: courses.duration,
         courseCategory: courses.category,
         courseDifficulty: courses.difficulty,
-        courseImageUrl: courses.image_url
+        courseImageUrl: courses.image_url,
       })
       .from(user_progress)
       .innerJoin(courses, eq(user_progress.course_id, courses.id))
@@ -79,9 +71,12 @@ export async function GET(
       .where(eq(user_progress.user_id, targetUserId))
 
     // Calculate average progress
-    const avgProgress = progressList.length > 0 
-      ? Math.round(progressList.reduce((sum, p) => sum + (p.progress || 0), 0) / progressList.length)
-      : 0
+    const avgProgress =
+      progressList.length > 0
+        ? Math.round(
+            progressList.reduce((sum, p) => sum + (p.progress || 0), 0) / progressList.length
+          )
+        : 0
 
     return NextResponse.json({
       success: true,
@@ -89,15 +84,15 @@ export async function GET(
         id: user.id,
         name: user.name,
         email: currentUser.role === 'admin' ? user.email : undefined,
-        role: user.role
+        role: user.role,
       },
       progress: progressList,
       stats: {
         totalCoursesStarted: stats?.totalCourses || 0,
         completedCourses: progressList.filter(p => p.completed).length,
         averageProgress: avgProgress,
-        recentActivity: progressList.slice(0, 5) // Last 5 activities
-      }
+        recentActivity: progressList.slice(0, 5), // Last 5 activities
+      },
     })
   } catch (error) {
     console.error('Error fetching user progress:', error)
@@ -132,34 +127,26 @@ export async function DELETE(
       // Reset progress for specific course
       const courseIdNum = parseInt(courseId)
       if (isNaN(courseIdNum)) {
-        return NextResponse.json(
-          { success: false, error: 'Invalid course ID' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid course ID' }, { status: 400 })
       }
 
       await db
         .delete(user_progress)
         .where(
-          and(
-            eq(user_progress.user_id, targetUserId),
-            eq(user_progress.course_id, courseIdNum)
-          )
+          and(eq(user_progress.user_id, targetUserId), eq(user_progress.course_id, courseIdNum))
         )
 
       return NextResponse.json({
         success: true,
-        message: 'Course progress reset successfully'
+        message: 'Course progress reset successfully',
       })
     } else {
       // Reset all progress for user
-      await db
-        .delete(user_progress)
-        .where(eq(user_progress.user_id, targetUserId))
+      await db.delete(user_progress).where(eq(user_progress.user_id, targetUserId))
 
       return NextResponse.json({
         success: true,
-        message: 'All user progress reset successfully'
+        message: 'All user progress reset successfully',
       })
     }
   } catch (error) {

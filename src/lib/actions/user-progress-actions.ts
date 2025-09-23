@@ -7,18 +7,25 @@ import { eq } from 'drizzle-orm'
 import { EngineerRole, SentryFeature } from '@/types/roles'
 import { revalidatePath } from 'next/cache'
 
+// Extended session type for server actions
+interface ExtendedSession {
+  user: {
+    id: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    role?: string | null
+  }
+}
+
 export async function getUserProgress() {
-  const session = await getAuthSession()
+  const session = (await getAuthSession()) as ExtendedSession | null
   if (!session?.user?.id) {
     throw new Error('User not authenticated')
   }
 
   try {
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, session.user.id))
-      .limit(1)
+    const user = await db.select().from(users).where(eq(users.id, session.user.id)).limit(1)
 
     if (!user.length) {
       throw new Error('User not found')
@@ -35,10 +42,10 @@ export async function getUserProgress() {
         onboardingCompleted: false,
         lastActiveDate: new Date(),
         preferredContentType: 'mixed' as const,
-        hasSeenOnboarding: false
+        hasSeenOnboarding: false,
       }
     }
-    
+
     return {
       role: userData.engineer_role as EngineerRole | null,
       currentStep: userData.current_step || 0,
@@ -46,7 +53,8 @@ export async function getUserProgress() {
       completedModules: (userData.completed_modules as string[]) || [],
       completedFeatures: (userData.completed_features as SentryFeature[]) || [],
       onboardingCompleted: userData.onboarding_completed || false,
-      preferredContentType: (userData.preferred_content_type as 'hands-on' | 'conceptual' | 'mixed') || 'mixed',
+      preferredContentType:
+        (userData.preferred_content_type as 'hands-on' | 'conceptual' | 'mixed') || 'mixed',
       hasSeenOnboarding: userData.has_seen_onboarding || false,
       lastActiveDate: userData.updated_at || new Date(),
     }
@@ -56,8 +64,11 @@ export async function getUserProgress() {
   }
 }
 
-export async function updateUserRole(role: EngineerRole, selectedFeatures: string[] = []): Promise<{ success: boolean; error?: string }> {
-  const session = await getAuthSession()
+export async function updateUserRole(
+  role: EngineerRole,
+  selectedFeatures: string[] = []
+): Promise<{ success: boolean; error?: string }> {
+  const session = (await getAuthSession()) as ExtendedSession | null
   if (!session?.user?.id) {
     return { success: false, error: 'User not authenticated' }
   }
@@ -91,7 +102,7 @@ export async function updateUserProgress(updates: {
   onboardingCompleted?: boolean
   preferredContentType?: 'hands-on' | 'conceptual' | 'mixed'
 }) {
-  const session = await getAuthSession()
+  const session = (await getAuthSession()) as ExtendedSession | null
   if (!session?.user?.id) {
     throw new Error('User not authenticated')
   }
@@ -114,7 +125,7 @@ export async function updateUserProgress(updates: {
 }
 
 export async function completeModule(moduleId: string) {
-  const session = await getAuthSession()
+  const session = (await getAuthSession()) as ExtendedSession | null
   if (!session?.user?.id) {
     throw new Error('User not authenticated')
   }
@@ -123,7 +134,7 @@ export async function completeModule(moduleId: string) {
     // First get current progress
     const currentProgress = await getUserProgress()
     const updatedCompletedModules = [...currentProgress.completedModules]
-    
+
     if (!updatedCompletedModules.includes(moduleId)) {
       updatedCompletedModules.push(moduleId)
     }
@@ -145,7 +156,7 @@ export async function completeModule(moduleId: string) {
 }
 
 export async function resetProgress() {
-  const session = await getAuthSession()
+  const session = (await getAuthSession()) as ExtendedSession | null
   if (!session?.user?.id) {
     throw new Error('User not authenticated')
   }

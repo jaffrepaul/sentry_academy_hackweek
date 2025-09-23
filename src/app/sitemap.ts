@@ -3,7 +3,7 @@ import { getCourses } from '@/lib/actions/course-actions'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const courses = await getCourses()
-  
+
   // Static pages
   const staticPages = [
     {
@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   // Dynamic course pages
-  const coursePages = courses.map((course) => ({
+  const coursePages = courses.map(course => ({
     url: `https://sentry-academy.vercel.app/courses/${course.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,

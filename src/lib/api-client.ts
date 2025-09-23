@@ -1,25 +1,25 @@
 'use client'
 
-import { 
-  CourseFilters, 
-  CreateCourseRequest, 
+import {
+  CourseFilters,
+  CreateCourseRequest,
   UpdateCourseRequest,
   UpdateProgressRequest,
   AIContentRequest,
   ConvertToCourseRequest,
-  ApproveContentRequest
+  ApproveContentRequest,
+  CourseResponse,
+  ProgressResponse,
+  APIResponse,
 } from '@/types/api'
 
 // API client configuration
 const API_BASE = '/api'
 
 // Generic fetch wrapper with error handling
-async function apiRequest<T>(
-  endpoint: string, 
-  options: RequestInit = {}
-): Promise<T> {
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE}${endpoint}`
-  
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -44,9 +44,9 @@ async function apiRequest<T>(
 // Courses API
 export const coursesApi = {
   // Get all courses with filters
-  async getCourses(filters: CourseFilters = {}) {
+  async getCourses(filters: CourseFilters = {}): Promise<CourseResponse> {
     const params = new URLSearchParams()
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         params.append(key, value.toString())
@@ -55,45 +55,47 @@ export const coursesApi = {
 
     const queryString = params.toString()
     const endpoint = `/courses${queryString ? `?${queryString}` : ''}`
-    
-    return apiRequest(endpoint, { method: 'GET' })
+
+    return apiRequest<CourseResponse>(endpoint, { method: 'GET' })
   },
 
   // Get single course by ID
-  async getCourse(courseId: number) {
-    return apiRequest(`/courses/${courseId}`, { method: 'GET' })
+  async getCourse(courseId: number): Promise<CourseResponse> {
+    return apiRequest<CourseResponse>(`/courses/${courseId}`, { method: 'GET' })
   },
 
   // Create new course
-  async createCourse(courseData: CreateCourseRequest) {
-    return apiRequest('/courses', {
+  async createCourse(courseData: CreateCourseRequest): Promise<CourseResponse> {
+    return apiRequest<CourseResponse>('/courses', {
       method: 'POST',
       body: JSON.stringify(courseData),
     })
   },
 
   // Update existing course
-  async updateCourse(courseId: number, updates: UpdateCourseRequest) {
-    return apiRequest(`/courses/${courseId}`, {
+  async updateCourse(courseId: number, updates: UpdateCourseRequest): Promise<CourseResponse> {
+    return apiRequest<CourseResponse>(`/courses/${courseId}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
     })
   },
 
   // Delete course
-  async deleteCourse(courseId: number) {
-    return apiRequest(`/courses/${courseId}`, {
+  async deleteCourse(courseId: number): Promise<APIResponse> {
+    return apiRequest<APIResponse>(`/courses/${courseId}`, {
       method: 'DELETE',
     })
-  }
+  },
 }
 
 // User Progress API
 export const progressApi = {
   // Get user progress (for current user or specific user if admin)
-  async getProgress(params: { courseId?: number; userId?: number } = {}) {
+  async getProgress(
+    params: { courseId?: number; userId?: number } = {}
+  ): Promise<ProgressResponse> {
     const searchParams = new URLSearchParams()
-    
+
     if (params.courseId) {
       searchParams.append('courseId', params.courseId.toString())
     }
@@ -103,30 +105,30 @@ export const progressApi = {
 
     const queryString = searchParams.toString()
     const endpoint = `/user-progress${queryString ? `?${queryString}` : ''}`
-    
-    return apiRequest(endpoint, { method: 'GET' })
+
+    return apiRequest<ProgressResponse>(endpoint, { method: 'GET' })
   },
 
   // Get specific user's progress (admin only or own progress)
-  async getUserProgress(userId: number) {
-    return apiRequest(`/user-progress/${userId}`, { method: 'GET' })
+  async getUserProgress(userId: number): Promise<ProgressResponse> {
+    return apiRequest<ProgressResponse>(`/user-progress/${userId}`, { method: 'GET' })
   },
 
   // Update progress for current user
-  async updateProgress(progressData: UpdateProgressRequest) {
-    return apiRequest('/user-progress', {
+  async updateProgress(progressData: UpdateProgressRequest): Promise<ProgressResponse> {
+    return apiRequest<ProgressResponse>('/user-progress', {
       method: 'POST',
       body: JSON.stringify(progressData),
     })
   },
 
   // Reset user progress (admin only)
-  async resetProgress(userId: number, courseId?: number) {
+  async resetProgress(userId: number, courseId?: number): Promise<APIResponse> {
     const params = courseId ? `?courseId=${courseId}` : ''
-    return apiRequest(`/user-progress/${userId}${params}`, {
+    return apiRequest<APIResponse>(`/user-progress/${userId}${params}`, {
       method: 'DELETE',
     })
-  }
+  },
 }
 
 // AI Content API
@@ -142,7 +144,7 @@ export const aiContentApi = {
   // Get generated AI content with pagination
   async getGeneratedContent(params: { limit?: number; offset?: number } = {}) {
     const searchParams = new URLSearchParams()
-    
+
     if (params.limit) {
       searchParams.append('limit', params.limit.toString())
     }
@@ -152,7 +154,7 @@ export const aiContentApi = {
 
     const queryString = searchParams.toString()
     const endpoint = `/ai-content${queryString ? `?${queryString}` : ''}`
-    
+
     return apiRequest(endpoint, { method: 'GET' })
   },
 
@@ -170,7 +172,7 @@ export const aiContentApi = {
       method: 'PUT',
       body: JSON.stringify({
         action: 'convert_to_course',
-        courseData
+        courseData,
       } as ConvertToCourseRequest),
     })
   },
@@ -180,7 +182,7 @@ export const aiContentApi = {
     return apiRequest(`/ai-content/${contentId}`, {
       method: 'DELETE',
     })
-  }
+  },
 }
 
 // Utility functions for optimistic updates
@@ -197,7 +199,7 @@ export const optimisticApi = {
       type: 'UPDATE_PROGRESS',
       courseId,
       progress,
-      completed
+      completed,
     })
 
     try {
@@ -224,7 +226,7 @@ export const optimisticApi = {
     // Apply optimistic update immediately
     optimisticUpdate({
       type: 'ADD_COURSE',
-      course: tempCourse
+      course: tempCourse,
     })
 
     try {
@@ -247,7 +249,7 @@ export const optimisticApi = {
     optimisticUpdate({
       type: 'UPDATE_COURSE',
       courseId,
-      updates
+      updates,
     })
 
     try {
@@ -257,7 +259,7 @@ export const optimisticApi = {
       // Revert optimistic update on error
       throw error
     }
-  }
+  },
 }
 
 // Error handling utilities
@@ -282,13 +284,13 @@ export function isNetworkError(error: any): boolean {
 
 export function shouldRetry(error: any, retryCount: number): boolean {
   if (retryCount >= 3) return false
-  
+
   // Retry on network errors or 5xx status codes
   if (isNetworkError(error)) return true
-  
+
   if (isApiError(error) && error.status) {
     return error.status >= 500 && error.status < 600
   }
-  
+
   return false
 }

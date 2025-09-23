@@ -5,11 +5,11 @@ async function importActions() {
   try {
     const aiActions = await import('@/lib/actions/ai-actions')
     const authActions = await import('@/lib/actions/auth-actions')
-    
-    return { 
+
+    return {
       generateAIContent: aiActions.generateAIContent,
       getAIGeneratedContent: aiActions.getAIGeneratedContent,
-      checkUserPermission: authActions.checkUserPermission
+      checkUserPermission: authActions.checkUserPermission,
     }
   } catch (error) {
     console.error('Failed to import actions:', error)
@@ -33,10 +33,7 @@ export async function POST(request: NextRequest) {
     // Check permissions - only instructors and admins can generate content
     const canCreate = await checkUserPermission('create_course')
     if (!canCreate) {
-      return NextResponse.json(
-        { success: false, error: 'Permission denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ success: false, error: 'Permission denied' }, { status: 403 })
     }
 
     const body = await request.json()
@@ -53,10 +50,7 @@ export async function POST(request: NextRequest) {
     // Validate type
     const validTypes = ['course', 'module', 'quiz', 'exercise']
     if (!validTypes.includes(type)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid content type' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Invalid content type' }, { status: 400 })
     }
 
     const contentRequest: {
@@ -70,23 +64,23 @@ export async function POST(request: NextRequest) {
       prompt,
       targetAudience,
       difficulty,
-      duration
+      duration,
     }
 
     const result = await generateAIContent(contentRequest)
 
     if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: 500 }
-      )
+      return NextResponse.json({ success: false, error: result.error }, { status: 500 })
     }
 
-    return NextResponse.json({
-      success: true,
-      content: result.content,
-      id: result.id
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        content: result.content,
+        id: result.id,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error generating AI content:', error)
     return NextResponse.json(
@@ -112,10 +106,7 @@ export async function GET(request: NextRequest) {
     // Check permissions - only instructors and admins can view generated content
     const canView = await checkUserPermission('create_course')
     if (!canView) {
-      return NextResponse.json(
-        { success: false, error: 'Permission denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ success: false, error: 'Permission denied' }, { status: 403 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -127,7 +118,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       content,
-      count: content.length
+      count: content.length,
     })
   } catch (error) {
     console.error('Error fetching AI content:', error)

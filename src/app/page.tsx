@@ -5,7 +5,7 @@ import CourseGridSkeleton from '@/components/CourseGridSkeleton'
 
 /**
  * Home page - Server Component
- * 
+ *
  * This page leverages Next.js App Router by:
  * 1. Server-side data fetching with proper caching
  * 2. Suspense boundaries for progressive loading
@@ -17,8 +17,15 @@ import { generateSEO } from '@/lib/seo'
 // Static metadata for SEO
 export const metadata = generateSEO({
   title: 'Master Application Observability',
-  description: 'Interactive learning platform to master Sentry\'s powerful observability tools through hands-on experience and personalized learning paths.',
-  keywords: ['Sentry courses', 'error monitoring tutorials', 'application observability training', 'performance monitoring guide', 'session replay learning'],
+  description:
+    "Interactive learning platform to master Sentry's powerful observability tools through hands-on experience and personalized learning paths.",
+  keywords: [
+    'Sentry courses',
+    'error monitoring tutorials',
+    'application observability training',
+    'performance monitoring guide',
+    'session replay learning',
+  ],
   url: '/',
 })
 

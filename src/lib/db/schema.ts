@@ -8,7 +8,7 @@ export const users = pgTable('users', {
   name: text('name'),
   image: text('image'),
   role: text('role').default('student'), // 'student', 'instructor', 'admin', 'super_admin'
-  
+
   // Learning role and progress
   engineer_role: text('engineer_role'), // 'backend', 'frontend', 'sre', 'fullstack', 'ai-ml', 'pm-manager'
   current_step: integer('current_step').default(0),
@@ -18,41 +18,53 @@ export const users = pgTable('users', {
   onboarding_completed: boolean('onboarding_completed').default(false),
   preferred_content_type: text('preferred_content_type').default('mixed'),
   has_seen_onboarding: boolean('has_seen_onboarding').default(false),
-  
+
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
 })
 
 // NextAuth required tables
-export const accounts = pgTable('accounts', {
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  type: text('type').notNull(),
-  provider: text('provider').notNull(),
-  provider_account_id: text('provider_account_id').notNull(),
-  refresh_token: text('refresh_token'),
-  access_token: text('access_token'),
-  expires_at: integer('expires_at'),
-  token_type: text('token_type'),
-  scope: text('scope'),
-  id_token: text('id_token'),
-  session_state: text('session_state'),
-}, (account) => ({
-  compoundKey: { columns: [account.provider, account.provider_account_id] }
-}))
+export const accounts = pgTable(
+  'accounts',
+  {
+    user_id: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    type: text('type').notNull(),
+    provider: text('provider').notNull(),
+    provider_account_id: text('provider_account_id').notNull(),
+    refresh_token: text('refresh_token'),
+    access_token: text('access_token'),
+    expires_at: integer('expires_at'),
+    token_type: text('token_type'),
+    scope: text('scope'),
+    id_token: text('id_token'),
+    session_state: text('session_state'),
+  },
+  account => ({
+    compoundKey: { columns: [account.provider, account.provider_account_id] },
+  })
+)
 
 export const sessions = pgTable('sessions', {
   session_token: text('session_token').primaryKey(),
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  user_id: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
   expires: timestamp('expires', { mode: 'date' }).notNull(),
 })
 
-export const verification_tokens = pgTable('verification_tokens', {
-  identifier: text('identifier').notNull(),
-  token: text('token').notNull(),
-  expires: timestamp('expires', { mode: 'date' }).notNull(),
-}, (vt) => ({
-  compoundKey: { columns: [vt.identifier, vt.token] }
-}))
+export const verification_tokens = pgTable(
+  'verification_tokens',
+  {
+    identifier: text('identifier').notNull(),
+    token: text('token').notNull(),
+    expires: timestamp('expires', { mode: 'date' }).notNull(),
+  },
+  vt => ({
+    compoundKey: { columns: [vt.identifier, vt.token] },
+  })
+)
 
 // Courses table
 export const courses = pgTable('courses', {
@@ -89,7 +101,9 @@ export const learning_paths = pgTable('learning_paths', {
 // User progress table
 export const user_progress = pgTable('user_progress', {
   id: serial('id').primaryKey(),
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  user_id: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
   course_id: integer('course_id').references(() => courses.id, { onDelete: 'cascade' }),
   completed: boolean('completed').default(false),
   progress: integer('progress').default(0), // Percentage 0-100

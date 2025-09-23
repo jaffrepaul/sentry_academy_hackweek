@@ -3,12 +3,22 @@
 import { useState, useEffect, useOptimistic, useTransition } from 'react'
 import { UserProgress, SentryFeature } from '@/types/roles'
 import { useSession } from 'next-auth/react'
-import { 
-  getUserProgress, 
+import {
+  getUserProgress,
   updateUserProgress as updateUserProgressAction,
   completeModule as completeModuleAction,
-  resetProgress as resetProgressAction
+  resetProgress as resetProgressAction,
 } from '@/lib/actions/user-progress-actions'
+
+interface ExtendedSession {
+  user: {
+    id: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    role?: string | null
+  }
+}
 
 const defaultUserProgress: UserProgress = {
   role: null,
@@ -19,7 +29,7 @@ const defaultUserProgress: UserProgress = {
   onboardingCompleted: false,
   lastActiveDate: new Date(),
   preferredContentType: 'mixed',
-  hasSeenOnboarding: false
+  hasSeenOnboarding: false,
 }
 
 /**
@@ -27,13 +37,14 @@ const defaultUserProgress: UserProgress = {
  */
 export function useUserProgress() {
   const { data: session, status } = useSession()
+  const extendedSession = session as unknown as ExtendedSession
   const [userProgress, setUserProgress] = useState<UserProgress>(defaultUserProgress)
   const [optimisticProgress, updateOptimisticProgress] = useOptimistic(
     userProgress,
     (state: UserProgress, updates: Partial<UserProgress>) => ({
       ...state,
       ...updates,
-      lastActiveDate: new Date()
+      lastActiveDate: new Date(),
     })
   )
   const [isPending, startTransition] = useTransition()
@@ -42,8 +53,8 @@ export function useUserProgress() {
   // Load progress from database when user is authenticated
   useEffect(() => {
     if (status === 'loading') return
-    
-    if (session?.user?.id) {
+
+    if (extendedSession?.user?.id) {
       getUserProgress()
         .then(progress => {
           setUserProgress(progress)
@@ -59,15 +70,15 @@ export function useUserProgress() {
       setUserProgress(defaultUserProgress)
       setIsLoading(false)
     }
-  }, [session?.user?.id, status])
+  }, [extendedSession?.user?.id, status])
 
   const updateProgress = (updates: Partial<UserProgress>) => {
-    if (!session?.user?.id) {
+    if (!extendedSession?.user?.id) {
       // For unauthenticated users, just update local state
       setUserProgress(prev => ({
         ...prev,
         ...updates,
-        lastActiveDate: new Date()
+        lastActiveDate: new Date(),
       }))
       return
     }
@@ -82,7 +93,7 @@ export function useUserProgress() {
           currentStep: updates.currentStep || 0,
           completedSteps: updates.completedSteps || [],
           completedModules: updates.completedModules || [],
-          completedFeatures: updates.completedFeatures as SentryFeature[] || [],
+          completedFeatures: (updates.completedFeatures as SentryFeature[]) || [],
           onboardingCompleted: updates.onboardingCompleted || false,
           preferredContentType: updates.preferredContentType || 'mixed',
         })
@@ -99,7 +110,7 @@ export function useUserProgress() {
   }
 
   const completeModule = (moduleId: string) => {
-    if (!session?.user?.id) {
+    if (!extendedSession?.user?.id) {
       // For unauthenticated users, just update local state
       setUserProgress(prev => {
         const newCompletedModules = [...prev.completedModules]
@@ -109,7 +120,7 @@ export function useUserProgress() {
         return {
           ...prev,
           completedModules: newCompletedModules,
-          lastActiveDate: new Date()
+          lastActiveDate: new Date(),
         }
       })
       return
@@ -139,7 +150,7 @@ export function useUserProgress() {
   }
 
   const resetProgress = () => {
-    if (!session?.user?.id) {
+    if (!extendedSession?.user?.id) {
       // For unauthenticated users, just reset local state
       setUserProgress(defaultUserProgress)
       return
@@ -168,6 +179,6 @@ export function useUserProgress() {
     completeModule,
     resetProgress,
     isLoading,
-    isPending
+    isPending,
   }
 }
