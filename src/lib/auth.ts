@@ -39,21 +39,22 @@ declare module 'next-auth/jwt' {
 
 export const authOptions: NextAuthOptions = {
   // Use database adapter if DATABASE_URL is available, otherwise fallback to JWT only
-  adapter: (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('dummy')) 
-    ? DrizzleAdapter(db, {
-        usersTable: users as any, // Schema field naming mismatch with NextAuth
-        accountsTable: accounts as any,
-        sessionsTable: sessions as any,
-        verificationTokensTable: verification_tokens as any,
-      })
-    : undefined as any, // Type assertion to bypass strict typing during build
-  
+  adapter:
+    process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('dummy')
+      ? DrizzleAdapter(db, {
+          usersTable: users as any, // Schema field naming mismatch with NextAuth
+          accountsTable: accounts as any,
+          sessionsTable: sessions as any,
+          verificationTokensTable: verification_tokens as any,
+        })
+      : (undefined as any), // Type assertion to bypass strict typing during build
+
   providers: [
     CredentialsProvider({
       name: 'credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -77,11 +78,11 @@ export const authOptions: NextAuthOptions = {
           if (!foundUser) {
             return null
           }
-          
+
           // For now, we'll skip password verification since we don't have a password field
           // In a real app, you'd verify the password here
           // const isPasswordValid = await bcrypt.compare(credentials.password, foundUser.password)
-          
+
           return {
             id: foundUser.id,
             email: foundUser.email,
@@ -93,22 +94,26 @@ export const authOptions: NextAuthOptions = {
           console.error('Authentication error:', error)
           return null
         }
-      }
+      },
     }),
 
-    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      })
-    ] : []),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          }),
+        ]
+      : []),
 
-    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET ? [
-      GitHubProvider({
-        clientId: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      })
-    ] : []),
+    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+      ? [
+          GitHubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          }),
+        ]
+      : []),
   ],
 
   session: {
@@ -128,7 +133,7 @@ export const authOptions: NextAuthOptions = {
             .from(users)
             .where(eq(users.id, token.sub))
             .limit(1)
-          
+
           if (dbUser.length > 0 && dbUser[0]) {
             token.role = dbUser[0].role || 'student'
           }
@@ -142,7 +147,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.sub!
-        session.user.role = token.role as string || 'student'
+        session.user.role = (token.role as string) || 'student'
       }
       return session
     },

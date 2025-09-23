@@ -14,21 +14,21 @@ const DesktopNavigation: React.FC = memo(() => {
   }, [router])
 
   return (
-    <nav className="hidden md:flex items-center space-x-8">
+    <nav className="hidden items-center space-x-8 md:flex">
       <NavigationLinks />
-      
+
       <button
         onClick={handleAdminClick}
-        className="p-2 rounded-lg transition-smooth transform hover:scale-110 bg-gray-100 hover:bg-gray-200 text-purple-600 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 dark:text-purple-400"
+        className="transition-smooth transform rounded-lg bg-gray-100 p-2 text-purple-600 hover:scale-110 hover:bg-gray-200 dark:bg-slate-800/50 dark:text-purple-400 dark:hover:bg-slate-700/50"
         aria-label="Access admin dashboard"
         title="Admin Dashboard"
       >
-        <Settings className="w-5 h-5" />
+        <Settings className="h-5 w-5" />
       </button>
-      
+
       <ThemeToggle />
-      
-      <button 
+
+      <button
         onClick={() => {
           // Scroll to learning paths section to get started
           if (window.location.pathname !== '/') {
@@ -46,7 +46,7 @@ const DesktopNavigation: React.FC = memo(() => {
             }
           }
         }}
-        className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-4 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-violet-700 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+        className="transform rounded-lg bg-gradient-to-r from-purple-500 to-violet-600 px-4 py-2 font-medium text-white shadow-lg shadow-purple-500/25 transition-all duration-200 hover:scale-105 hover:from-purple-600 hover:to-violet-700 hover:shadow-purple-500/40"
       >
         Get Started
       </button>

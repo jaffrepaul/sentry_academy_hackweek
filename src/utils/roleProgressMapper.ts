@@ -6,7 +6,7 @@ import { EngineerRole, SentryFeature } from '@/types/roles'
  * as completed based on the user's existing Sentry knowledge
  */
 export function mapFeaturesToProgress(
-  role: EngineerRole, 
+  role: EngineerRole,
   selectedFeatures: string[]
 ): {
   completedModules: string[]
@@ -19,10 +19,11 @@ export function mapFeaturesToProgress(
 
   // If user selected ANY feature other than error-tracking, or explicitly selected error-tracking,
   // we assume they have basic Sentry setup and thus error tracking is complete
-  const hasOtherFeatures = selectedFeatures.length > 0 && 
-    (selectedFeatures.includes('error-tracking') || 
-     selectedFeatures.some(f => f !== 'error-tracking'))
-     
+  const hasOtherFeatures =
+    selectedFeatures.length > 0 &&
+    (selectedFeatures.includes('error-tracking') ||
+      selectedFeatures.some(f => f !== 'error-tracking'))
+
   if (hasOtherFeatures) {
     completedFeatures.push('error-tracking')
     // For different roles, error tracking means different starting modules
@@ -55,149 +56,194 @@ export function mapFeaturesToProgress(
   }
 
   // Map other features to their respective modules and steps
-  const featureMapping: Record<string, { 
-    feature: SentryFeature
-    modules: string[]
-    getStepIds: (role: EngineerRole) => string[]
-  }> = {
+  const featureMapping: Record<
+    string,
+    {
+      feature: SentryFeature
+      modules: string[]
+      getStepIds: (role: EngineerRole) => string[]
+    }
+  > = {
     'performance-monitoring': {
       feature: 'performance-monitoring',
       modules: ['performance-monitoring'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'frontend': return ['frontend-performance']
-          case 'backend': return ['backend-performance']
-          case 'fullstack': return ['fullstack-performance']
-          case 'sre': return ['sre-performance-tracing']
-          case 'ai-ml': return ['ai-ml-performance']
-          default: return []
+          case 'frontend':
+            return ['frontend-performance']
+          case 'backend':
+            return ['backend-performance']
+          case 'fullstack':
+            return ['fullstack-performance']
+          case 'sre':
+            return ['sre-performance-tracing']
+          case 'ai-ml':
+            return ['ai-ml-performance']
+          default:
+            return []
         }
-      }
+      },
     },
     'session-replay': {
       feature: 'session-replay',
       modules: ['react-error-boundaries'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'frontend': return ['frontend-session-replay']
-          case 'fullstack': return ['fullstack-session-replay']
-          default: return []
+          case 'frontend':
+            return ['frontend-session-replay']
+          case 'fullstack':
+            return ['fullstack-session-replay']
+          default:
+            return []
         }
-      }
+      },
     },
-    'logging': {
+    logging: {
       feature: 'logging',
       modules: ['react-error-boundaries'], // Using this as logging course placeholder
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'frontend': return ['frontend-logging']
-          case 'backend': return ['backend-logging']
-          case 'fullstack': return ['fullstack-logging']
-          case 'sre': return ['sre-logging']
-          case 'ai-ml': return ['ai-ml-logging']
-          default: return []
+          case 'frontend':
+            return ['frontend-logging']
+          case 'backend':
+            return ['backend-logging']
+          case 'fullstack':
+            return ['fullstack-logging']
+          case 'sre':
+            return ['sre-logging']
+          case 'ai-ml':
+            return ['ai-ml-logging']
+          default:
+            return []
         }
-      }
+      },
     },
     'distributed-tracing': {
       feature: 'distributed-tracing',
       modules: ['distributed-tracing'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'backend': return ['backend-distributed-tracing']
-          case 'fullstack': return ['fullstack-distributed-tracing']
-          case 'sre': return ['sre-performance-tracing']
-          case 'ai-ml': return ['ai-ml-distributed-tracing']
-          default: return []
+          case 'backend':
+            return ['backend-distributed-tracing']
+          case 'fullstack':
+            return ['fullstack-distributed-tracing']
+          case 'sre':
+            return ['sre-performance-tracing']
+          case 'ai-ml':
+            return ['ai-ml-distributed-tracing']
+          default:
+            return []
         }
-      }
+      },
     },
     'release-health': {
       feature: 'release-health',
       modules: ['release-health'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'backend': return ['backend-release-health']
-          case 'sre': return ['sre-release-health']
-          default: return []
+          case 'backend':
+            return ['backend-release-health']
+          case 'sre':
+            return ['sre-release-health']
+          default:
+            return []
         }
-      }
+      },
     },
     'dashboards-alerts': {
       feature: 'dashboards-alerts',
       modules: ['custom-dashboards'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'frontend': return ['frontend-dashboards-alerts']
-          case 'backend': return ['backend-dashboards-alerts']
-          case 'fullstack': return ['fullstack-dashboards-alerts']
-          case 'sre': return ['sre-dashboards']
-          case 'ai-ml': return ['ai-ml-dashboards-alerts']
-          default: return []
+          case 'frontend':
+            return ['frontend-dashboards-alerts']
+          case 'backend':
+            return ['backend-dashboards-alerts']
+          case 'fullstack':
+            return ['fullstack-dashboards-alerts']
+          case 'sre':
+            return ['sre-dashboards']
+          case 'ai-ml':
+            return ['ai-ml-dashboards-alerts']
+          default:
+            return []
         }
-      }
+      },
     },
-    'integrations': {
+    integrations: {
       feature: 'integrations',
       modules: ['team-workflows'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'frontend': return ['frontend-integrations']
-          case 'sre': return ['sre-integrations']
-          default: return []
+          case 'frontend':
+            return ['frontend-integrations']
+          case 'sre':
+            return ['sre-integrations']
+          default:
+            return []
         }
-      }
+      },
     },
     'user-feedback': {
       feature: 'user-feedback',
       modules: ['user-feedback'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'frontend': return ['frontend-user-feedback']
-          default: return []
+          case 'frontend':
+            return ['frontend-user-feedback']
+          default:
+            return []
         }
-      }
+      },
     },
     'seer-mcp': {
       feature: 'seer-mcp',
       modules: ['seer-mcp'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'ai-ml': return ['ai-ml-seer-mcp']
-          default: return []
+          case 'ai-ml':
+            return ['ai-ml-seer-mcp']
+          default:
+            return []
         }
-      }
+      },
     },
     'custom-metrics': {
       feature: 'custom-metrics',
       modules: ['custom-metrics'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'ai-ml': return ['ai-ml-custom-metrics']
-          default: return []
+          case 'ai-ml':
+            return ['ai-ml-custom-metrics']
+          default:
+            return []
         }
-      }
+      },
     },
     'metrics-insights': {
       feature: 'metrics-insights',
       modules: ['metrics-insights'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'pm-manager': return ['pm-understanding-metrics']
-          default: return []
+          case 'pm-manager':
+            return ['pm-understanding-metrics']
+          default:
+            return []
         }
-      }
+      },
     },
     'stakeholder-reporting': {
       feature: 'stakeholder-reporting',
       modules: ['stakeholder-dashboards'],
-      getStepIds: (role) => {
+      getStepIds: role => {
         switch (role) {
-          case 'pm-manager': return ['pm-stakeholder-reporting']
-          default: return []
+          case 'pm-manager':
+            return ['pm-stakeholder-reporting']
+          default:
+            return []
         }
-      }
-    }
+      },
+    },
   }
 
   // Process each selected feature
@@ -213,6 +259,6 @@ export function mapFeaturesToProgress(
   return {
     completedModules,
     completedFeatures,
-    completedStepIds
+    completedStepIds,
   }
 }

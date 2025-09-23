@@ -4,7 +4,9 @@ import { execSync } from 'child_process'
 
 // Check if we're in a CI environment
 if (process.env.CI || process.env.VERCEL) {
-  console.log('🏗️  Skipping db:generate in CI environment (no database connection needed for build)')
+  console.log(
+    '🏗️  Skipping db:generate in CI environment (no database connection needed for build)'
+  )
   process.exit(0)
 }
 

@@ -8,10 +8,10 @@ export async function GET() {
   } catch (error) {
     console.error('Status API error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to get status',
         usingFallback: true,
-        database: { status: 'unhealthy', timestamp: new Date() }
+        database: { status: 'unhealthy', timestamp: new Date() },
       },
       { status: 500 }
     )

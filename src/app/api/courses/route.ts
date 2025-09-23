@@ -44,14 +44,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       courses: coursesList,
-      count: coursesList.length
+      count: coursesList.length,
     })
   } catch (error) {
     console.error('Error fetching courses:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch courses' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to fetch courses' }, { status: 500 })
   }
 }
 
@@ -61,10 +58,7 @@ export async function POST(request: NextRequest) {
     // Check permissions
     const canCreate = await checkUserPermission('create_course')
     if (!canCreate) {
-      return NextResponse.json(
-        { success: false, error: 'Permission denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ success: false, error: 'Permission denied' }, { status: 403 })
     }
 
     const body = await request.json()
@@ -77,7 +71,7 @@ export async function POST(request: NextRequest) {
       duration,
       category,
       imageUrl,
-      isPublished = false
+      isPublished = false,
     } = body
 
     // Validate required fields
@@ -89,11 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if slug already exists
-    const existing = await db
-      .select()
-      .from(courses)
-      .where(eq(courses.slug, slug))
-      .limit(1)
+    const existing = await db.select().from(courses).where(eq(courses.slug, slug)).limit(1)
 
     if (existing.length > 0) {
       return NextResponse.json(
@@ -103,32 +93,35 @@ export async function POST(request: NextRequest) {
     }
 
     // Create course
-    const [newCourse] = await db.insert(courses).values({
-      slug,
-      title,
-      description: description || null,
-      content: content || null,
-      difficulty: difficulty || null,
-      duration: duration || null,
-      category: category || null,
-      image_url: imageUrl || null,
-      is_published: isPublished,
-      created_at: new Date(),
-      updated_at: new Date()
-    }).returning()
+    const [newCourse] = await db
+      .insert(courses)
+      .values({
+        slug,
+        title,
+        description: description || null,
+        content: content || null,
+        difficulty: difficulty || null,
+        duration: duration || null,
+        category: category || null,
+        image_url: imageUrl || null,
+        is_published: isPublished,
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+      .returning()
 
     revalidatePath('/courses')
     revalidatePath('/admin')
 
-    return NextResponse.json({
-      success: true,
-      course: newCourse
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        course: newCourse,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating course:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create course' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to create course' }, { status: 500 })
   }
 }

@@ -8,8 +8,8 @@ import { getLearningPathForRole } from '@/data/roles'
  * Hook for managing learning path state and recommendations
  */
 export function useLearningPath(
-  role: EngineerRole | null, 
-  completedSteps: string[], 
+  role: EngineerRole | null,
+  completedSteps: string[],
   _completedFeatures: SentryFeature[]
 ) {
   const [currentLearningPath, setCurrentLearningPath] = useState<LearningPath | null>(null)
@@ -22,19 +22,20 @@ export function useLearningPath(
         // Update path with completion status and unlocking logic
         const updatedPath = {
           ...path,
-          steps: path.steps.map((step) => {
+          steps: path.steps.map(step => {
             const isCompleted = completedSteps.includes(step.id)
-            const isFirstIncompleteStep = !isCompleted && 
+            const isFirstIncompleteStep =
+              !isCompleted &&
               path.steps
                 .filter(s => s.priority < step.priority)
                 .every(s => completedSteps.includes(s.id))
-            
+
             return {
               ...step,
               isCompleted: isCompleted,
-              isUnlocked: isCompleted || isFirstIncompleteStep || step.priority === 1
+              isUnlocked: isCompleted || isFirstIncompleteStep || step.priority === 1,
             }
-          })
+          }),
         }
         setCurrentLearningPath(updatedPath)
       } else {
@@ -48,9 +49,7 @@ export function useLearningPath(
   // Get current step
   const currentStep = useMemo(() => {
     if (!currentLearningPath) return null
-    return currentLearningPath.steps.find(step => 
-      !step.isCompleted && step.isUnlocked
-    ) || null
+    return currentLearningPath.steps.find(step => !step.isCompleted && step.isUnlocked) || null
   }, [currentLearningPath])
 
   // Get next recommendation
@@ -66,21 +65,21 @@ export function useLearningPath(
 
     // Get the primary module for this step
     const primaryModule = nextStep.modules[0]
-    
+
     if (!primaryModule) return null
-    
+
     return {
       moduleId: primaryModule,
       stepId: nextStep.id,
       priority: nextStep.priority,
       reasoning: nextStep.description,
-      timeEstimate: nextStep.estimatedTime
+      timeEstimate: nextStep.estimatedTime,
     }
   }
 
   return {
     currentLearningPath,
     currentStep,
-    getNextRecommendation
+    getNextRecommendation,
   }
 }

@@ -1,8 +1,8 @@
 type ArcadeProps = {
-  src: string;
-};
+  src: string
+}
 
-export function Arcade({src}: ArcadeProps) {
+export function Arcade({ src }: ArcadeProps) {
   return (
     <div
       style={{
@@ -27,5 +27,5 @@ export function Arcade({src}: ArcadeProps) {
         }}
       />
     </div>
-  );
+  )
 }

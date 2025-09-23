@@ -15,7 +15,7 @@ interface ProvidersProps {
  * This component handles all context providers that require client-side functionality.
  * By separating providers into their own client component, we keep the root layout
  * as a server component, following Next.js App Router best practices.
- * 
+ *
  * Features:
  * - Error boundary protection for providers
  * - Proper provider nesting order
@@ -24,7 +24,7 @@ interface ProvidersProps {
 export default function Providers({ children }: ProvidersProps) {
   const handleProviderError = (error: Error, errorInfo: React.ErrorInfo) => {
     console.error('Provider error:', error, errorInfo)
-    
+
     // In production, you might want to send this to an error reporting service
     if (process.env.NODE_ENV === 'production') {
       // Example: reportError(error, { context: 'providers', ...errorInfo })
@@ -35,9 +35,7 @@ export default function Providers({ children }: ProvidersProps) {
     <ErrorBoundary onError={handleProviderError}>
       <SessionProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
-          <RoleProvider>
-            {children}
-          </RoleProvider>
+          <RoleProvider>{children}</RoleProvider>
         </ThemeProvider>
       </SessionProvider>
     </ErrorBoundary>

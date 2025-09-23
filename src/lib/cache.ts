@@ -1,6 +1,6 @@
 /**
  * Cache configuration and utilities for App Router
- * 
+ *
  * This file contains cache configuration and utilities
  * to optimize data fetching and revalidation strategies.
  */
@@ -21,11 +21,11 @@ export const CACHE_DURATIONS = {
   courses: 3600, // 1 hour
   learningPaths: 3600, // 1 hour
   concepts: 7200, // 2 hours
-  
+
   // Dynamic content
   userProgress: 300, // 5 minutes
   stats: 1800, // 30 minutes
-  
+
   // Admin content (no cache)
   admin: 0,
 } as const
@@ -44,6 +44,6 @@ export function createCacheKey(prefix: string, params: Record<string, any> = {})
     .sort()
     .map(key => `${key}=${params[key]}`)
     .join('&')
-  
+
   return paramString ? `${prefix}?${paramString}` : prefix
 }

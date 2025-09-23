@@ -45,18 +45,12 @@ export default function DatabaseStatus({ className = '' }: { className?: string 
   }, [])
 
   if (loading) {
-    return (
-      <div className={`text-sm text-gray-500 ${className}`}>
-        Checking database status...
-      </div>
-    )
+    return <div className={`text-sm text-gray-500 ${className}`}>Checking database status...</div>
   }
 
   if (!status) {
     return (
-      <div className={`text-sm text-red-500 ${className}`}>
-        Unable to check database status
-      </div>
+      <div className={`text-sm text-red-500 ${className}`}>Unable to check database status</div>
     )
   }
 
@@ -67,17 +61,15 @@ export default function DatabaseStatus({ className = '' }: { className?: string 
   return (
     <div className={`text-sm ${className}`}>
       <div className={`font-medium ${statusColor}`}>
-        Database: {isHealthy ? '✅ Healthy' : '❌ Unhealthy'}{fallbackText}
+        Database: {isHealthy ? '✅ Healthy' : '❌ Unhealthy'}
+        {fallbackText}
       </div>
-      <div className="text-gray-600 mt-1">
-        Data: {status.counts.courses} courses, {status.counts.learningPaths} paths, {status.counts.courseModules} modules
+      <div className="mt-1 text-gray-600">
+        Data: {status.counts.courses} courses, {status.counts.learningPaths} paths,{' '}
+        {status.counts.courseModules} modules
       </div>
-      {status.error && (
-        <div className="text-red-500 text-xs mt-1">
-          Error: {status.error}
-        </div>
-      )}
-      <div className="text-gray-400 text-xs mt-1">
+      {status.error && <div className="mt-1 text-xs text-red-500">Error: {status.error}</div>}
+      <div className="mt-1 text-xs text-gray-400">
         Last checked: {status.lastChecked.toLocaleTimeString()}
       </div>
     </div>

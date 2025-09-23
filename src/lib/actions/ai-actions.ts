@@ -24,66 +24,73 @@ export interface AIContentResponse {
 export async function generateAIContent(request: AIContentRequest): Promise<AIContentResponse> {
   try {
     // Insert the request into the database
-    const [newContent] = await db.insert(ai_generated_content).values({
-      type: request.type,
-      prompt: request.prompt,
-      status: 'pending',
-      content: null
-    }).returning()
+    const [newContent] = await db
+      .insert(ai_generated_content)
+      .values({
+        type: request.type,
+        prompt: request.prompt,
+        status: 'pending',
+        content: null,
+      })
+      .returning()
 
     if (!newContent) {
       return {
         success: false,
-        error: 'Failed to create content record'
+        error: 'Failed to create content record',
       }
     }
 
     // Mock AI content generation (replace with actual AI service integration)
     const mockContent = await generateMockContent(request)
-    
+
     // Update the content with generated data
-    await db.update(ai_generated_content)
+    await db
+      .update(ai_generated_content)
       .set({
         content: mockContent,
         status: 'generated',
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .where(eq(ai_generated_content.id, newContent.id))
 
     revalidatePath('/admin')
-    
+
     return {
       success: true,
       content: mockContent,
-      id: newContent.id
+      id: newContent.id,
     }
   } catch (error) {
     console.error('Error generating AI content:', error)
     return {
       success: false,
-      error: 'Failed to generate AI content'
+      error: 'Failed to generate AI content',
     }
   }
 }
 
 // Approve generated content
-export async function approveAIContent(contentId: number): Promise<{ success: boolean; error?: string }> {
+export async function approveAIContent(
+  contentId: number
+): Promise<{ success: boolean; error?: string }> {
   try {
-    await db.update(ai_generated_content)
+    await db
+      .update(ai_generated_content)
       .set({
         status: 'approved',
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .where(eq(ai_generated_content.id, contentId))
 
     revalidatePath('/admin')
-    
+
     return { success: true }
   } catch (error) {
     console.error('Error approving AI content:', error)
-    return { 
-      success: false, 
-      error: 'Failed to approve content' 
+    return {
+      success: false,
+      error: 'Failed to approve content',
     }
   }
 }
@@ -104,15 +111,18 @@ export async function getAIGeneratedContent(limit: number = 10, offset: number =
 }
 
 // Convert approved AI content to actual course
-export async function convertAIContentToCourse(contentId: number, additionalData: {
-  slug: string
-  title: string
-  description?: string
-  category?: string
-  difficulty?: string
-  duration?: string
-  imageUrl?: string
-}): Promise<{ success: boolean; courseId?: number; error?: string }> {
+export async function convertAIContentToCourse(
+  contentId: number,
+  additionalData: {
+    slug: string
+    title: string
+    description?: string
+    category?: string
+    difficulty?: string
+    duration?: string
+    imageUrl?: string
+  }
+): Promise<{ success: boolean; courseId?: number; error?: string }> {
   try {
     // Get the AI content
     const [aiContent] = await db
@@ -126,50 +136,59 @@ export async function convertAIContentToCourse(contentId: number, additionalData
     }
 
     // Create the course
-    const [newCourse] = await db.insert(courses).values({
-      slug: additionalData.slug,
-      title: additionalData.title,
-      description: additionalData.description || '',
-      content: JSON.stringify(aiContent.content),
-      category: additionalData.category || null,
-      difficulty: additionalData.difficulty || null,
-      duration: additionalData.duration || null,
-      image_url: additionalData.imageUrl || null,
-      is_published: false // Needs manual review before publishing
-    }).returning()
+    const [newCourse] = await db
+      .insert(courses)
+      .values({
+        slug: additionalData.slug,
+        title: additionalData.title,
+        description: additionalData.description || '',
+        content: JSON.stringify(aiContent.content),
+        category: additionalData.category || null,
+        difficulty: additionalData.difficulty || null,
+        duration: additionalData.duration || null,
+        image_url: additionalData.imageUrl || null,
+        is_published: false, // Needs manual review before publishing
+      })
+      .returning()
 
     // If content includes modules, create them
-    if (newCourse && aiContent.content && typeof aiContent.content === 'object' && 'modules' in aiContent.content && Array.isArray(aiContent.content.modules)) {
+    if (
+      newCourse &&
+      aiContent.content &&
+      typeof aiContent.content === 'object' &&
+      'modules' in aiContent.content &&
+      Array.isArray(aiContent.content.modules)
+    ) {
       for (const [index, module] of aiContent.content.modules.entries()) {
         await db.insert(course_modules).values({
           course_id: newCourse.id,
           title: module.title || `Module ${index + 1}`,
           content: module.content || '',
           order: index,
-          duration: module.duration || '30 min'
+          duration: module.duration || '30 min',
         })
       }
     }
 
     revalidatePath('/admin')
     if (!newCourse) {
-      return { 
+      return {
         success: false,
-        error: 'Failed to create course'
+        error: 'Failed to create course',
       }
     }
 
     revalidatePath('/courses')
-    
-    return { 
-      success: true, 
-      courseId: newCourse.id 
+
+    return {
+      success: true,
+      courseId: newCourse.id,
     }
   } catch (error) {
     console.error('Error converting AI content to course:', error)
-    return { 
-      success: false, 
-      error: 'Failed to create course from AI content' 
+    return {
+      success: false,
+      error: 'Failed to create course from AI content',
     }
   }
 }
@@ -188,24 +207,24 @@ async function generateMockContent(request: AIContentRequest) {
           {
             title: `Introduction to ${request.prompt}`,
             content: `<h2>Welcome to ${request.prompt}</h2><p>In this module, you'll learn the fundamentals...</p>`,
-            duration: '30 min'
+            duration: '30 min',
           },
           {
             title: `Advanced ${request.prompt} Techniques`,
             content: `<h2>Advanced Concepts</h2><p>Now that you understand the basics, let's dive deeper...</p>`,
-            duration: '45 min'
+            duration: '45 min',
           },
           {
             title: `${request.prompt} Best Practices`,
             content: `<h2>Best Practices</h2><p>Learn industry-standard practices for ${request.prompt}...</p>`,
-            duration: '35 min'
-          }
+            duration: '35 min',
+          },
         ],
         totalDuration: request.duration || '1.5 hours',
         difficulty: request.difficulty || 'Intermediate',
-        targetAudience: request.targetAudience || 'Developers'
+        targetAudience: request.targetAudience || 'Developers',
       }
-    
+
     case 'module':
       return {
         title: `Module: ${request.prompt}`,
@@ -216,11 +235,11 @@ async function generateMockContent(request: AIContentRequest) {
             type: 'quiz',
             question: `What is the main purpose of ${request.prompt}?`,
             options: ['Option A', 'Option B', 'Option C', 'Option D'],
-            correctAnswer: 0
-          }
-        ]
+            correctAnswer: 0,
+          },
+        ],
       }
-    
+
     case 'quiz':
       return {
         title: `Quiz: ${request.prompt}`,
@@ -230,20 +249,20 @@ async function generateMockContent(request: AIContentRequest) {
             type: 'multiple-choice',
             options: ['Option A', 'Option B', 'Option C', 'Option D'],
             correctAnswer: 0,
-            explanation: `${request.prompt} is...`
+            explanation: `${request.prompt} is...`,
           },
           {
             question: `How would you implement ${request.prompt}?`,
             type: 'multiple-choice',
             options: ['Method A', 'Method B', 'Method C', 'Method D'],
             correctAnswer: 1,
-            explanation: 'The correct approach is...'
-          }
+            explanation: 'The correct approach is...',
+          },
         ],
         passingScore: 70,
-        timeLimit: 10 // minutes
+        timeLimit: 10, // minutes
       }
-    
+
     case 'exercise':
       return {
         title: `Exercise: ${request.prompt}`,
@@ -252,17 +271,17 @@ async function generateMockContent(request: AIContentRequest) {
           'Step 1: Set up your environment',
           'Step 2: Implement the basic functionality',
           'Step 3: Test your implementation',
-          'Step 4: Optimize and refine'
+          'Step 4: Optimize and refine',
         ],
         code_template: `// TODO: Implement ${request.prompt}\nfunction implement${request.prompt.replace(/\s+/g, '')}() {\n  // Your code here\n}`,
         expected_output: 'Expected results...',
-        difficulty: request.difficulty || 'Intermediate'
+        difficulty: request.difficulty || 'Intermediate',
       }
-    
+
     default:
       return {
         content: `Generated content for: ${request.prompt}`,
-        type: request.type
+        type: request.type,
       }
   }
 }
@@ -275,26 +294,27 @@ function generateCourseTitle(prompt: string): string {
     `${prompt} Fundamentals`,
     `Advanced ${prompt} Techniques`,
     `${prompt} Best Practices`,
-    `Professional ${prompt} Development`
+    `Professional ${prompt} Development`,
   ]
-  
+
   return titleTemplates[Math.floor(Math.random() * titleTemplates.length)] || 'Generated Course'
 }
 
 // Delete AI generated content
-export async function deleteAIContent(contentId: number): Promise<{ success: boolean; error?: string }> {
+export async function deleteAIContent(
+  contentId: number
+): Promise<{ success: boolean; error?: string }> {
   try {
-    await db.delete(ai_generated_content)
-      .where(eq(ai_generated_content.id, contentId))
+    await db.delete(ai_generated_content).where(eq(ai_generated_content.id, contentId))
 
     revalidatePath('/admin')
-    
+
     return { success: true }
   } catch (error) {
     console.error('Error deleting AI content:', error)
-    return { 
-      success: false, 
-      error: 'Failed to delete AI content' 
+    return {
+      success: false,
+      error: 'Failed to delete AI content',
     }
   }
 }

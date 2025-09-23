@@ -9,7 +9,7 @@
  * @returns Decimal rating for display (e.g., 4.9)
  */
 export function dbRatingToDisplay(dbRating: number): number {
-  return dbRating / 10;
+  return dbRating / 10
 }
 
 /**
@@ -18,7 +18,7 @@ export function dbRatingToDisplay(dbRating: number): number {
  * @returns Integer rating for database storage (e.g., 49)
  */
 export function displayRatingToDb(displayRating: number): number {
-  return Math.round(displayRating * 10);
+  return Math.round(displayRating * 10)
 }
 
 /**
@@ -28,8 +28,8 @@ export function displayRatingToDb(displayRating: number): number {
  * @returns Formatted string (e.g., "4.9")
  */
 export function formatRating(rating: number, isDbRating: boolean = false): string {
-  const displayRating = isDbRating ? dbRatingToDisplay(rating) : rating;
-  return displayRating.toFixed(1);
+  const displayRating = isDbRating ? dbRatingToDisplay(rating) : rating
+  return displayRating.toFixed(1)
 }
 
 /**
@@ -41,10 +41,10 @@ export function formatRating(rating: number, isDbRating: boolean = false): strin
 export function isValidRating(rating: number, isDbRating: boolean = false): boolean {
   if (isDbRating) {
     // Database ratings should be integers between 0 and 50 (representing 0.0 to 5.0)
-    return Number.isInteger(rating) && rating >= 0 && rating <= 50;
+    return Number.isInteger(rating) && rating >= 0 && rating <= 50
   } else {
     // Display ratings should be decimals between 0.0 and 5.0
-    return rating >= 0 && rating <= 5.0;
+    return rating >= 0 && rating <= 5.0
   }
 }
 
@@ -55,15 +55,15 @@ export function isValidRating(rating: number, isDbRating: boolean = false): bool
  * @returns Object with full stars, half star, and empty stars counts
  */
 export function getStarComponents(rating: number, isDbRating: boolean = false) {
-  const displayRating = isDbRating ? dbRatingToDisplay(rating) : rating;
-  const fullStars = Math.floor(displayRating);
-  const hasHalfStar = displayRating % 1 >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  
+  const displayRating = isDbRating ? dbRatingToDisplay(rating) : rating
+  const fullStars = Math.floor(displayRating)
+  const hasHalfStar = displayRating % 1 >= 0.5
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+
   return {
     fullStars,
     hasHalfStar,
     emptyStars,
-    displayRating
-  };
+    displayRating,
+  }
 }

@@ -62,11 +62,11 @@
   .transition-fade {
     @apply transition-all duration-700 ease-out;
   }
-  
+
   .transition-smooth {
     @apply transition-all duration-300 ease-out;
   }
-  
+
   .transition-smooth-slow {
     @apply transition-all duration-500 ease-out;
   }
@@ -74,7 +74,7 @@
 
 /* Force checkbox styles to override browser defaults */
 @layer components {
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -82,19 +82,19 @@
     background-image: none !important;
     position: relative;
   }
-  
+
   /* Ensure checkboxes work in dark mode */
-  .dark input[type="checkbox"] {
+  .dark input[type='checkbox'] {
     background-color: white !important;
   }
-  
+
   /* Style the checked state with a simple checkmark */
-  input[type="checkbox"]:checked {
+  input[type='checkbox']:checked {
     background-color: #a855f7 !important;
   }
-  
-  input[type="checkbox"]:checked::after {
-    content: "✓";
+
+  input[type='checkbox']:checked::after {
+    content: '✓';
     position: absolute;
     color: white;
     font-size: 12px;
@@ -103,8 +103,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  
-  .dark input[type="checkbox"]:checked {
+
+  .dark input[type='checkbox']:checked {
     background-color: #a855f7 !important;
   }
 }
@@ -117,13 +117,13 @@
     --gradient-from: rgb(196 181 253 / 0.25); /* purple-300 subtle */
     --gradient-to: rgb(251 207 232 / 0.25); /* pink-200 subtle */
   }
-  
+
   .dark {
     /* Dark mode background variables (exactly matching original) */
     --bg-main: rgb(15 15 20) !important; /* Very dark gray - original */
     --gradient-from: rgb(88 28 135 / 0.15) !important; /* purple-800 subtle - original */
     --gradient-to: rgb(30 58 138 / 0.15) !important; /* blue-800 subtle - original */
-    
+
     /* Ensure proper dark mode behavior */
     color-scheme: dark;
     --background: 222.2 84% 4.9%; /* slate-950 equivalent for Tailwind classes */

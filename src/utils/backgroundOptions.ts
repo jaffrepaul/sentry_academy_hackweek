@@ -4,18 +4,19 @@
 // Option 4: Subtle Gray with Hint of Purple (Current option)
 export const backgroundOption4 = () => ({
   // Use CSS custom properties that will be overridden by our global CSS
-  backgroundColor: 'var(--bg-main, rgb(251 251 253))', 
-  '--tw-gradient-from': 'var(--gradient-from, rgb(196 181 253 / 0.25)) var(--tw-gradient-from-position)',
-  '--tw-gradient-to': 'var(--gradient-to, rgb(251 207 232 / 0.25)) var(--tw-gradient-to-position)'
-});
+  backgroundColor: 'var(--bg-main, rgb(251 251 253))',
+  '--tw-gradient-from':
+    'var(--gradient-from, rgb(196 181 253 / 0.25)) var(--tw-gradient-from-position)',
+  '--tw-gradient-to': 'var(--gradient-to, rgb(251 207 232 / 0.25)) var(--tw-gradient-to-position)',
+})
 
 // Keep other options available but simplified
-export const backgroundOption1 = backgroundOption4;
-export const backgroundOption2 = backgroundOption4;
-export const backgroundOption3 = backgroundOption4;
-export const backgroundOption5 = backgroundOption4;
-export const backgroundOption6 = backgroundOption4;
-export const backgroundOption7 = backgroundOption4;
-export const backgroundOption8 = backgroundOption4;
-export const backgroundOption9 = backgroundOption4;
-export const backgroundOption10 = backgroundOption4;
+export const backgroundOption1 = backgroundOption4
+export const backgroundOption2 = backgroundOption4
+export const backgroundOption3 = backgroundOption4
+export const backgroundOption5 = backgroundOption4
+export const backgroundOption6 = backgroundOption4
+export const backgroundOption7 = backgroundOption4
+export const backgroundOption8 = backgroundOption4
+export const backgroundOption9 = backgroundOption4
+export const backgroundOption10 = backgroundOption4

@@ -3,11 +3,11 @@
 import { useState, useEffect, useOptimistic, useTransition } from 'react'
 import { UserProgress, SentryFeature } from '@/types/roles'
 import { useSession } from 'next-auth/react'
-import { 
-  getUserProgress, 
+import {
+  getUserProgress,
   updateUserProgress as updateUserProgressAction,
   completeModule as completeModuleAction,
-  resetProgress as resetProgressAction
+  resetProgress as resetProgressAction,
 } from '@/lib/actions/user-progress-actions'
 
 const defaultUserProgress: UserProgress = {
@@ -19,7 +19,7 @@ const defaultUserProgress: UserProgress = {
   onboardingCompleted: false,
   lastActiveDate: new Date(),
   preferredContentType: 'mixed',
-  hasSeenOnboarding: false
+  hasSeenOnboarding: false,
 }
 
 /**
@@ -33,7 +33,7 @@ export function useUserProgress() {
     (state: UserProgress, updates: Partial<UserProgress>) => ({
       ...state,
       ...updates,
-      lastActiveDate: new Date()
+      lastActiveDate: new Date(),
     })
   )
   const [isPending, startTransition] = useTransition()
@@ -42,7 +42,7 @@ export function useUserProgress() {
   // Load progress from database when user is authenticated
   useEffect(() => {
     if (status === 'loading') return
-    
+
     if (session?.user?.id) {
       getUserProgress()
         .then(progress => {
@@ -67,7 +67,7 @@ export function useUserProgress() {
       setUserProgress(prev => ({
         ...prev,
         ...updates,
-        lastActiveDate: new Date()
+        lastActiveDate: new Date(),
       }))
       return
     }
@@ -82,7 +82,7 @@ export function useUserProgress() {
           currentStep: updates.currentStep || 0,
           completedSteps: updates.completedSteps || [],
           completedModules: updates.completedModules || [],
-          completedFeatures: updates.completedFeatures as SentryFeature[] || [],
+          completedFeatures: (updates.completedFeatures as SentryFeature[]) || [],
           onboardingCompleted: updates.onboardingCompleted || false,
           preferredContentType: updates.preferredContentType || 'mixed',
         })
@@ -109,7 +109,7 @@ export function useUserProgress() {
         return {
           ...prev,
           completedModules: newCompletedModules,
-          lastActiveDate: new Date()
+          lastActiveDate: new Date(),
         }
       })
       return
@@ -168,6 +168,6 @@ export function useUserProgress() {
     completeModule,
     resetProgress,
     isLoading,
-    isPending
+    isPending,
   }
 }

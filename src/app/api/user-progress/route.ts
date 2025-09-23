@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  updateUserProgress 
-} from '../../../lib/actions/user-actions'
+import { updateUserProgress } from '../../../lib/actions/user-actions'
 import { getCurrentUser } from '@/lib/actions/auth-actions'
 import { db } from '@/lib/db'
 import { user_progress, courses } from '@/lib/db/schema'
@@ -12,10 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser()
     if (!currentUser) {
-      return NextResponse.json(
-        { success: false, error: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -28,20 +23,14 @@ export async function GET(request: NextRequest) {
       targetUserId = userId // userId is now string, no need to parseInt
     } else if (userId && currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
       // Non-admin users can only access their own progress
-      return NextResponse.json(
-        { success: false, error: 'Permission denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ success: false, error: 'Permission denied' }, { status: 403 })
     }
 
     if (courseId) {
       // Get progress for specific course
       const courseIdNum = parseInt(courseId)
       if (isNaN(courseIdNum)) {
-        return NextResponse.json(
-          { success: false, error: 'Invalid course ID' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid course ID' }, { status: 400 })
       }
 
       const [progress] = await db
@@ -54,21 +43,18 @@ export async function GET(request: NextRequest) {
           last_accessed_at: user_progress.last_accessed_at,
           created_at: user_progress.created_at,
           courseTitle: courses.title,
-          courseSlug: courses.slug
+          courseSlug: courses.slug,
         })
         .from(user_progress)
         .innerJoin(courses, eq(user_progress.course_id, courses.id))
         .where(
-          and(
-            eq(user_progress.user_id, targetUserId),
-            eq(user_progress.course_id, courseIdNum)
-          )
+          and(eq(user_progress.user_id, targetUserId), eq(user_progress.course_id, courseIdNum))
         )
         .limit(1)
 
       return NextResponse.json({
         success: true,
-        progress: progress || null
+        progress: progress || null,
       })
     } else {
       // Get all progress for user
@@ -84,7 +70,7 @@ export async function GET(request: NextRequest) {
           courseTitle: courses.title,
           courseSlug: courses.slug,
           courseDuration: courses.duration,
-          courseCategory: courses.category
+          courseCategory: courses.category,
         })
         .from(user_progress)
         .innerJoin(courses, eq(user_progress.course_id, courses.id))
@@ -93,7 +79,7 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        progress: progressList
+        progress: progressList,
       })
     }
   } catch (error) {
@@ -110,10 +96,7 @@ export async function POST(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser()
     if (!currentUser) {
-      return NextResponse.json(
-        { success: false, error: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -136,17 +119,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate course exists
-    const [course] = await db
-      .select()
-      .from(courses)
-      .where(eq(courses.id, courseId))
-      .limit(1)
+    const [course] = await db.select().from(courses).where(eq(courses.id, courseId)).limit(1)
 
     if (!course) {
-      return NextResponse.json(
-        { success: false, error: 'Course not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Course not found' }, { status: 404 })
     }
 
     const result = await updateUserProgress(
@@ -157,15 +133,12 @@ export async function POST(request: NextRequest) {
     )
 
     if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: 500 }
-      )
+      return NextResponse.json({ success: false, error: result.error }, { status: 500 })
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Progress updated successfully'
+      message: 'Progress updated successfully',
     })
   } catch (error) {
     console.error('Error updating user progress:', error)

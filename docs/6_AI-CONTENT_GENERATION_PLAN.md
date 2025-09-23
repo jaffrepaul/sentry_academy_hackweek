@@ -7,13 +7,15 @@ Develop an AI-powered content generation system that allows administrators to in
 ## Core Feature Requirements
 
 ### Admin Interface for Content Generation
+
 - **Keywords Input**: Text area for entering Sentry concepts/features (e.g., "profiling", "insights", "cron monitoring", "uptime monitoring")
 - **Resource Selection**: Checkboxes for selecting which data sources to prioritize during research
 - **Content Type Configuration**: Toggle between course types (beginner/intermediate/advanced, specific role focus)
 - **Preview and Approval**: System to review generated content before publication
 
 ### AI Research and Content Synthesis
-- **Hybrid Research Approach**: 
+
+- **Hybrid Research Approach**:
   1. **Keyword-based exploration** - Start with broad concept discovery across suggested resources
   2. **Deep-dive URL analysis** - Focus on specific official documentation and resources
 - **Multi-source Content Aggregation**: Process and synthesize information from:
@@ -30,6 +32,7 @@ Develop an AI-powered content generation system that allows administrators to in
 ### Data Layer (Phase 1)
 
 #### New Type Definitions
+
 - **File**: `src/types/aiGeneration.ts`
   - `AIGeneratedCourse` interface extending existing `Course`
   - `ContentGenerationRequest` interface
@@ -38,12 +41,14 @@ Develop an AI-powered content generation system that allows administrators to in
   - `AIContentTemplate` interface matching existing course content structure
 
 #### Data Management
+
 - **File**: `src/data/aiGeneratedCourses.ts`
   - Storage and management for AI-generated course data
   - Integration functions with existing `courses.ts` structure
   - Version tracking and content approval status
 
 #### API Integration Layer
+
 - **File**: `src/services/aiContentService.ts`
   - OpenAI API integration for content generation
   - Web scraping utilities for Sentry resource research
@@ -51,6 +56,7 @@ Develop an AI-powered content generation system that allows administrators to in
   - Rate limiting and error handling for external API calls
 
 #### Content Generation Engine
+
 - **File**: `src/services/contentResearchEngine.ts`
   - **Function**: `researchSentryContent(keywords: string[], sources: ResearchSource[])`
   - **Function**: `synthesizeWebContent(urls: string[])`
@@ -60,12 +66,14 @@ Develop an AI-powered content generation system that allows administrators to in
 ### UI Components (Phase 2A)
 
 #### Admin Dashboard
+
 - **File**: `src/components/AdminDashboard.tsx`
   - Main admin interface for content generation
   - Content preview and approval workflows
   - Generated course management and editing
 
 #### Content Generation Form
+
 - **File**: `src/components/ContentGenerationForm.tsx`
   - Keywords input with validation
   - Resource selection checkboxes
@@ -73,12 +81,14 @@ Develop an AI-powered content generation system that allows administrators to in
   - Progress tracking during generation process
 
 #### Generated Content Preview
+
 - **File**: `src/components/GeneratedContentPreview.tsx`
   - Preview generated course content before publication
   - Side-by-side comparison with existing course templates
   - Edit and approval controls
 
 #### Content Management Components
+
 - **File**: `src/components/AIContentManager.tsx`
   - List and manage all AI-generated content
   - Bulk operations (approve, reject, archive)
@@ -87,18 +97,21 @@ Develop an AI-powered content generation system that allows administrators to in
 ### Integration Layer (Phase 2B)
 
 #### Course System Integration
+
 - **Modified File**: `src/data/courses.ts`
   - **Function**: `addAIGeneratedCourse(course: AIGeneratedCourse)`
   - **Function**: `getAIGeneratedCourses()`
   - **Function**: `mergeCourseData()` - Combine manual and AI courses
 
-#### Learning Path Integration  
+#### Learning Path Integration
+
 - **Modified File**: `src/data/roles.ts`
   - **Function**: `addAIGeneratedLearningPathStep()`
   - **Function**: `generatePersonalizationForAICourse()`
   - Auto-integration of approved AI courses into role-specific learning paths
 
 #### Context Integration
+
 - **Modified File**: `src/contexts/RoleContext.tsx`
   - Support for AI-generated course progression
   - Dynamic learning path updates when new content is approved
@@ -106,12 +119,14 @@ Develop an AI-powered content generation system that allows administrators to in
 ### Content Template System
 
 #### Template Matching Engine
+
 - **File**: `src/services/templateMatcher.ts`
   - **Function**: `mapToExistingStructure(rawContent: any): CourseContent`
   - **Function**: `generateModuleStructure(concept: string, role: EngineerRole)`
   - **Function**: `createRoleSpecificContent(baseContent: any, role: EngineerRole)`
 
 #### Content Quality Validation
+
 - **File**: `src/services/contentValidator.ts`
   - **Function**: `validateCourseStructure(course: AIGeneratedCourse)`
   - **Function**: `checkContentQuality(content: string)`
@@ -120,6 +135,7 @@ Develop an AI-powered content generation system that allows administrators to in
 ## Algorithms and Implementation Details
 
 ### Content Research Algorithm
+
 1. **Keyword Expansion**: Use AI to expand input keywords into related Sentry concepts
 2. **Source Prioritization**: Weight different resource types based on content needs:
    - Official docs (highest priority for technical accuracy)
@@ -130,12 +146,13 @@ Develop an AI-powered content generation system that allows administrators to in
    - Web scraping for documentation and blogs
    - YouTube API for video transcripts and metadata
    - Structured data extraction from customer case studies
-4. **Synthesis and Template Population**: 
+4. **Synthesis and Template Population**:
    - Combine information from multiple sources
    - Generate role-specific explanations using existing personalization patterns
    - Create code examples, scenarios, and key takeaways matching existing format
 
 ### Content Generation Workflow
+
 1. **Research Phase**: Gather raw content from all selected sources
 2. **Analysis Phase**: Identify key concepts, use cases, and technical requirements
 3. **Template Mapping**: Map discovered content to existing course structure (`Course`, `CourseModule`, `LearningPathStep`)
@@ -144,6 +161,7 @@ Develop an AI-powered content generation system that allows administrators to in
 6. **Integration Preparation**: Format content for seamless integration with existing course system
 
 ### Template Structure Preservation
+
 - **Maintain existing interfaces**: All generated content must conform to `Course`, `CourseModule`, `LearningPathStep` interfaces
 - **Preserve content patterns**: Match existing patterns for `keyTakeaways`, `scenario`, `codeExample`, `contentConfig`
 - **Role-specific adaptation**: Generate content variations matching existing `rolePersonalizations` structure
@@ -152,6 +170,7 @@ Develop an AI-powered content generation system that allows administrators to in
 ## Admin Workflow Integration
 
 ### Content Generation Process
+
 1. Admin enters keywords (e.g., "profiling", "insights", "alerts")
 2. System researches across selected Sentry resources
 3. AI synthesizes findings into course structure
@@ -160,6 +179,7 @@ Develop an AI-powered content generation system that allows administrators to in
 6. System integrates approved content into existing course catalog and learning paths
 
 ### Quality Assurance
+
 - **Content validation**: Ensure technical accuracy and relevance
 - **Template compliance**: Verify all generated content matches existing structure
 - **Role relevance**: Confirm content is valuable for target engineer roles
@@ -168,6 +188,7 @@ Develop an AI-powered content generation system that allows administrators to in
 ## Future Extensibility
 
 ### Phase 3 Enhancements
+
 - **Content versioning**: Track changes and updates to AI-generated content
 - **User feedback integration**: Incorporate course completion data to improve future generations
 - **Multi-language support**: Generate content for different languages

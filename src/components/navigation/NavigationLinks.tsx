@@ -10,81 +10,83 @@ interface NavigationLinksProps {
   onLinkClick?: () => void
 }
 
-const NavigationLinks: React.FC<NavigationLinksProps> = memo(({ 
-  isMobile = false, 
-  onLinkClick 
-}) => {
-  // Theme handled automatically by Tailwind dark: classes
-  const router = useRouter()
+const NavigationLinks: React.FC<NavigationLinksProps> = memo(
+  ({ isMobile = false, onLinkClick }) => {
+    // Theme handled automatically by Tailwind dark: classes
+    const router = useRouter()
 
-  const navLinkClasses = useMemo(() => 
-    `${getNavLinkClasses()} ${isMobile ? 'text-left' : ''}`, 
-    [isMobile]
-  )
+    const navLinkClasses = useMemo(
+      () => `${getNavLinkClasses()} ${isMobile ? 'text-left' : ''}`,
+      [isMobile]
+    )
 
-  const handleScrollToSection = useCallback((sectionId: string) => {
-    onLinkClick?.()
-    
-    // If we're not on the homepage, navigate there first
-    if (window.location.pathname !== '/') {
-      router.push('/')
-      // After navigation, wait and scroll to section
-      setTimeout(() => {
-        scrollToSection(sectionId)
-      }, 200)
-    } else {
-      // We're already on the homepage, just scroll
-      scrollToSection(sectionId)
-    }
-  }, [router, onLinkClick])
+    const handleScrollToSection = useCallback(
+      (sectionId: string) => {
+        onLinkClick?.()
 
-  const handleConceptsClick = useCallback(() => {
-    onLinkClick?.()
-    router.push('/concepts')
-  }, [router, onLinkClick])
+        // If we're not on the homepage, navigate there first
+        if (window.location.pathname !== '/') {
+          router.push('/')
+          // After navigation, wait and scroll to section
+          setTimeout(() => {
+            scrollToSection(sectionId)
+          }, 200)
+        } else {
+          // We're already on the homepage, just scroll
+          scrollToSection(sectionId)
+        }
+      },
+      [router, onLinkClick]
+    )
 
-  const links = [
-    {
-      label: 'Courses',
-      onClick: () => handleScrollToSection('courses'),
-      'aria-label': 'Go to courses section'
-    },
-    {
-      label: 'Learning Paths',
-      onClick: () => handleScrollToSection('paths'),
-      'aria-label': 'Go to learning paths section'
-    },
-    {
-      label: 'Concepts 101',
-      onClick: handleConceptsClick,
-      'aria-label': 'Go to Concepts 101 page'
-    }
-  ]
+    const handleConceptsClick = useCallback(() => {
+      onLinkClick?.()
+      router.push('/concepts')
+    }, [router, onLinkClick])
 
-  return (
-    <>
-      {links.map((link) => (
-        <button 
-          key={link.label}
-          onClick={link.onClick} 
+    const links = [
+      {
+        label: 'Courses',
+        onClick: () => handleScrollToSection('courses'),
+        'aria-label': 'Go to courses section',
+      },
+      {
+        label: 'Learning Paths',
+        onClick: () => handleScrollToSection('paths'),
+        'aria-label': 'Go to learning paths section',
+      },
+      {
+        label: 'Concepts 101',
+        onClick: handleConceptsClick,
+        'aria-label': 'Go to Concepts 101 page',
+      },
+    ]
+
+    return (
+      <>
+        {links.map(link => (
+          <button
+            key={link.label}
+            onClick={link.onClick}
+            className={navLinkClasses}
+            aria-label={link['aria-label']}
+          >
+            {link.label}
+          </button>
+        ))}
+        <a
+          href="https://sentry-build.sentry.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
           className={navLinkClasses}
-          aria-label={link['aria-label']}
+          onClick={onLinkClick}
         >
-          {link.label}
-        </button>
-      ))}
-      <a 
-        href="https://sentry-build.sentry.dev/" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className={navLinkClasses}
-        onClick={onLinkClick}
-      >
-        Workshops
-      </a>
-    </>
-  )
-})
+          Workshops
+        </a>
+      </>
+    )
+  }
+)
 
 NavigationLinks.displayName = 'NavigationLinks'
 export default NavigationLinks

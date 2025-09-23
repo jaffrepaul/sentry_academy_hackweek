@@ -14,11 +14,7 @@ export async function getUserProgress() {
   }
 
   try {
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, session.user.id))
-      .limit(1)
+    const user = await db.select().from(users).where(eq(users.id, session.user.id)).limit(1)
 
     if (!user.length) {
       throw new Error('User not found')
@@ -35,10 +31,10 @@ export async function getUserProgress() {
         onboardingCompleted: false,
         lastActiveDate: new Date(),
         preferredContentType: 'mixed' as const,
-        hasSeenOnboarding: false
+        hasSeenOnboarding: false,
       }
     }
-    
+
     return {
       role: userData.engineer_role as EngineerRole | null,
       currentStep: userData.current_step || 0,
@@ -46,7 +42,8 @@ export async function getUserProgress() {
       completedModules: (userData.completed_modules as string[]) || [],
       completedFeatures: (userData.completed_features as SentryFeature[]) || [],
       onboardingCompleted: userData.onboarding_completed || false,
-      preferredContentType: (userData.preferred_content_type as 'hands-on' | 'conceptual' | 'mixed') || 'mixed',
+      preferredContentType:
+        (userData.preferred_content_type as 'hands-on' | 'conceptual' | 'mixed') || 'mixed',
       hasSeenOnboarding: userData.has_seen_onboarding || false,
       lastActiveDate: userData.updated_at || new Date(),
     }
@@ -56,7 +53,10 @@ export async function getUserProgress() {
   }
 }
 
-export async function updateUserRole(role: EngineerRole, selectedFeatures: string[] = []): Promise<{ success: boolean; error?: string }> {
+export async function updateUserRole(
+  role: EngineerRole,
+  selectedFeatures: string[] = []
+): Promise<{ success: boolean; error?: string }> {
   const session = await getAuthSession()
   if (!session?.user?.id) {
     return { success: false, error: 'User not authenticated' }
@@ -123,7 +123,7 @@ export async function completeModule(moduleId: string) {
     // First get current progress
     const currentProgress = await getUserProgress()
     const updatedCompletedModules = [...currentProgress.completedModules]
-    
+
     if (!updatedCompletedModules.includes(moduleId)) {
       updatedCompletedModules.push(moduleId)
     }

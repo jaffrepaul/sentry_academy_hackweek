@@ -12,9 +12,11 @@ export function usePermissions() {
 
   return {
     hasPermission: (permission: Permission) => hasPermission(userRole || undefined, permission),
-    hasAnyPermission: (permissions: Permission[]) => hasAnyPermission(userRole || undefined, permissions),
-    hasAllPermissions: (permissions: Permission[]) => hasAllPermissions(userRole || undefined, permissions),
+    hasAnyPermission: (permissions: Permission[]) =>
+      hasAnyPermission(userRole || undefined, permissions),
+    hasAllPermissions: (permissions: Permission[]) =>
+      hasAllPermissions(userRole || undefined, permissions),
     userRole,
-    isAuthenticated: !!session
+    isAuthenticated: !!session,
   }
 }

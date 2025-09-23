@@ -3,7 +3,7 @@ import { getAuthSession } from './auth'
 // Define user roles
 export enum UserRole {
   STUDENT = 'student',
-  INSTRUCTOR = 'instructor', 
+  INSTRUCTOR = 'instructor',
   ADMIN = 'admin',
   SUPER_ADMIN = 'super_admin',
 }
@@ -16,30 +16,28 @@ export enum Permission {
   EDIT_COURSE = 'edit_course',
   DELETE_COURSE = 'delete_course',
   PUBLISH_COURSE = 'publish_course',
-  
+
   // User permissions
   VIEW_USERS = 'view_users',
   EDIT_USER = 'edit_user',
   DELETE_USER = 'delete_user',
-  
+
   // Admin permissions
   ACCESS_ADMIN = 'access_admin',
   MANAGE_SETTINGS = 'manage_settings',
-  
+
   // AI content permissions
   GENERATE_CONTENT = 'generate_content',
   REVIEW_CONTENT = 'review_content',
-  
+
   // Analytics permissions
   VIEW_ANALYTICS = 'view_analytics',
 }
 
 // Role-permission mapping
 const rolePermissions: Record<UserRole, Permission[]> = {
-  [UserRole.STUDENT]: [
-    Permission.VIEW_COURSES,
-  ],
-  
+  [UserRole.STUDENT]: [Permission.VIEW_COURSES],
+
   [UserRole.INSTRUCTOR]: [
     Permission.VIEW_COURSES,
     Permission.CREATE_COURSE,
@@ -47,7 +45,7 @@ const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.GENERATE_CONTENT,
     Permission.VIEW_ANALYTICS,
   ],
-  
+
   [UserRole.ADMIN]: [
     Permission.VIEW_COURSES,
     Permission.CREATE_COURSE,
@@ -61,7 +59,7 @@ const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.REVIEW_CONTENT,
     Permission.VIEW_ANALYTICS,
   ],
-  
+
   [UserRole.SUPER_ADMIN]: [
     ...Object.values(Permission), // All permissions
   ],
@@ -72,7 +70,7 @@ export function hasPermission(userRole: string | undefined, permission: Permissi
   if (!userRole || !(userRole in rolePermissions)) {
     return false
   }
-  
+
   const role = userRole as UserRole
   return rolePermissions[role].includes(permission)
 }
@@ -81,7 +79,10 @@ export function hasAnyPermission(userRole: string | undefined, permissions: Perm
   return permissions.some(permission => hasPermission(userRole, permission))
 }
 
-export function hasAllPermissions(userRole: string | undefined, permissions: Permission[]): boolean {
+export function hasAllPermissions(
+  userRole: string | undefined,
+  permissions: Permission[]
+): boolean {
   return permissions.every(permission => hasPermission(userRole, permission))
 }
 

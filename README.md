@@ -65,24 +65,28 @@ npm install -g pnpm
 ## 🏗️ Modern Tech Stack
 
 ### Frontend
+
 - **Next.js 15** - React framework with App Router and Server Components
 - **React 18** - Modern React with hooks, Suspense, and concurrent features
 - **TypeScript** - Type-safe development with strict mode enabled
 - **Tailwind CSS** - Utility-first CSS framework with optimizations
 
 ### Backend & Database
+
 - **Next.js Server Actions** - Type-safe server functions
 - **Drizzle ORM** - Type-safe database ORM with migrations
 - **Neon Postgres** - Serverless PostgreSQL database
 - **NextAuth.js** - Authentication with role-based access control
 
 ### Performance & SEO
+
 - **Next.js Image** - Optimized image loading with WebP/AVIF support
 - **Dynamic Imports** - Code splitting for optimal bundle size
 - **Structured Data** - Rich snippets and SEO optimization
 - **Server-Side Rendering** - Enhanced SEO and performance
 
 ### Development Tools
+
 - **ESLint** - Advanced linting with Next.js and TypeScript rules
 - **Prettier** - Consistent code formatting with Tailwind sorting
 - **TypeScript Strict Mode** - Maximum type safety and error prevention

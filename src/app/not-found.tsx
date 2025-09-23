@@ -3,55 +3,54 @@ import { Search, Home, BookOpen } from 'lucide-react'
 
 /**
  * 404 Not Found page
- * 
+ *
  * This page is shown when a user navigates to a route that doesn't exist.
  * It provides helpful navigation options to get back to the main content.
  */
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 px-4">
-      <div className="text-center max-w-lg">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 px-4">
+      <div className="max-w-lg text-center">
         {/* 404 illustration */}
         <div className="mb-8">
-          <div className="text-8xl font-bold text-purple-500 mb-4">404</div>
-          <div className="w-20 h-20 mx-auto mb-6 text-gray-400">
-            <Search className="w-full h-full" />
+          <div className="mb-4 text-8xl font-bold text-purple-500">404</div>
+          <div className="mx-auto mb-6 h-20 w-20 text-gray-400">
+            <Search className="h-full w-full" />
           </div>
         </div>
-        
+
         {/* Error message */}
-        <h1 className="text-3xl font-bold text-white mb-4">
-          Page Not Found
-        </h1>
-        
-        <p className="text-gray-400 mb-8 text-lg">
-          The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.
+        <h1 className="mb-4 text-3xl font-bold text-white">Page Not Found</h1>
+
+        <p className="mb-8 text-lg text-gray-400">
+          The page you're looking for doesn't exist. It might have been moved, deleted, or you
+          entered the wrong URL.
         </p>
-        
+
         {/* Navigation options */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Link
             href="/"
-            className="inline-flex items-center px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+            className="inline-flex items-center rounded-lg bg-purple-600 px-6 py-3 font-medium text-white transition-colors hover:bg-purple-700"
           >
-            <Home className="w-4 h-4 mr-2" />
+            <Home className="mr-2 h-4 w-4" />
             Go to Home
           </Link>
-          
+
           <Link
             href="/#courses"
-            className="inline-flex items-center px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors"
+            className="inline-flex items-center rounded-lg bg-slate-700 px-6 py-3 font-medium text-white transition-colors hover:bg-slate-600"
           >
-            <BookOpen className="w-4 h-4 mr-2" />
+            <BookOpen className="mr-2 h-4 w-4" />
             View Courses
           </Link>
         </div>
-        
+
         {/* Additional help */}
-        <div className="mt-12 pt-8 border-t border-slate-700">
+        <div className="mt-12 border-t border-slate-700 pt-8">
           <p className="text-sm text-gray-500">
             Need help? Try searching for what you're looking for or{' '}
-            <Link href="/" className="text-purple-400 hover:text-purple-300 underline">
+            <Link href="/" className="text-purple-400 underline hover:text-purple-300">
               start from the homepage
             </Link>
             .

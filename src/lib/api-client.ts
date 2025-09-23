@@ -1,8 +1,8 @@
 'use client'
 
-import { 
-  CourseFilters, 
-  CreateCourseRequest, 
+import {
+  CourseFilters,
+  CreateCourseRequest,
   UpdateCourseRequest,
   UpdateProgressRequest,
   AIContentRequest,
@@ -10,19 +10,16 @@ import {
   ApproveContentRequest,
   CourseResponse,
   ProgressResponse,
-  APIResponse
+  APIResponse,
 } from '@/types/api'
 
 // API client configuration
 const API_BASE = '/api'
 
 // Generic fetch wrapper with error handling
-async function apiRequest<T>(
-  endpoint: string, 
-  options: RequestInit = {}
-): Promise<T> {
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE}${endpoint}`
-  
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -49,7 +46,7 @@ export const coursesApi = {
   // Get all courses with filters
   async getCourses(filters: CourseFilters = {}): Promise<CourseResponse> {
     const params = new URLSearchParams()
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         params.append(key, value.toString())
@@ -58,7 +55,7 @@ export const coursesApi = {
 
     const queryString = params.toString()
     const endpoint = `/courses${queryString ? `?${queryString}` : ''}`
-    
+
     return apiRequest<CourseResponse>(endpoint, { method: 'GET' })
   },
 
@@ -88,15 +85,17 @@ export const coursesApi = {
     return apiRequest<APIResponse>(`/courses/${courseId}`, {
       method: 'DELETE',
     })
-  }
+  },
 }
 
 // User Progress API
 export const progressApi = {
   // Get user progress (for current user or specific user if admin)
-  async getProgress(params: { courseId?: number; userId?: number } = {}): Promise<ProgressResponse> {
+  async getProgress(
+    params: { courseId?: number; userId?: number } = {}
+  ): Promise<ProgressResponse> {
     const searchParams = new URLSearchParams()
-    
+
     if (params.courseId) {
       searchParams.append('courseId', params.courseId.toString())
     }
@@ -106,7 +105,7 @@ export const progressApi = {
 
     const queryString = searchParams.toString()
     const endpoint = `/user-progress${queryString ? `?${queryString}` : ''}`
-    
+
     return apiRequest<ProgressResponse>(endpoint, { method: 'GET' })
   },
 
@@ -129,7 +128,7 @@ export const progressApi = {
     return apiRequest<APIResponse>(`/user-progress/${userId}${params}`, {
       method: 'DELETE',
     })
-  }
+  },
 }
 
 // AI Content API
@@ -145,7 +144,7 @@ export const aiContentApi = {
   // Get generated AI content with pagination
   async getGeneratedContent(params: { limit?: number; offset?: number } = {}) {
     const searchParams = new URLSearchParams()
-    
+
     if (params.limit) {
       searchParams.append('limit', params.limit.toString())
     }
@@ -155,7 +154,7 @@ export const aiContentApi = {
 
     const queryString = searchParams.toString()
     const endpoint = `/ai-content${queryString ? `?${queryString}` : ''}`
-    
+
     return apiRequest(endpoint, { method: 'GET' })
   },
 
@@ -173,7 +172,7 @@ export const aiContentApi = {
       method: 'PUT',
       body: JSON.stringify({
         action: 'convert_to_course',
-        courseData
+        courseData,
       } as ConvertToCourseRequest),
     })
   },
@@ -183,7 +182,7 @@ export const aiContentApi = {
     return apiRequest(`/ai-content/${contentId}`, {
       method: 'DELETE',
     })
-  }
+  },
 }
 
 // Utility functions for optimistic updates
@@ -200,7 +199,7 @@ export const optimisticApi = {
       type: 'UPDATE_PROGRESS',
       courseId,
       progress,
-      completed
+      completed,
     })
 
     try {
@@ -227,7 +226,7 @@ export const optimisticApi = {
     // Apply optimistic update immediately
     optimisticUpdate({
       type: 'ADD_COURSE',
-      course: tempCourse
+      course: tempCourse,
     })
 
     try {
@@ -250,7 +249,7 @@ export const optimisticApi = {
     optimisticUpdate({
       type: 'UPDATE_COURSE',
       courseId,
-      updates
+      updates,
     })
 
     try {
@@ -260,7 +259,7 @@ export const optimisticApi = {
       // Revert optimistic update on error
       throw error
     }
-  }
+  },
 }
 
 // Error handling utilities
@@ -285,13 +284,13 @@ export function isNetworkError(error: any): boolean {
 
 export function shouldRetry(error: any, retryCount: number): boolean {
   if (retryCount >= 3) return false
-  
+
   // Retry on network errors or 5xx status codes
   if (isNetworkError(error)) return true
-  
+
   if (isApiError(error) && error.status) {
     return error.status >= 500 && error.status < 600
   }
-  
+
   return false
 }
