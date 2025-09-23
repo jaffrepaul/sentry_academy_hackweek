@@ -3,8 +3,10 @@
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+
+// Extended session type for server actions
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 

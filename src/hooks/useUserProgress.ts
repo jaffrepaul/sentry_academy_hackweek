@@ -10,6 +10,16 @@ import {
   resetProgress as resetProgressAction,
 } from '@/lib/actions/user-progress-actions'
 
+interface ExtendedSession {
+  user: {
+    id: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    role?: string | null
+  }
+}
+
 const defaultUserProgress: UserProgress = {
   role: null,
   currentStep: 0,
@@ -27,6 +37,7 @@ const defaultUserProgress: UserProgress = {
  */
 export function useUserProgress() {
   const { data: session, status } = useSession()
+  const extendedSession = session as unknown as ExtendedSession
   const [userProgress, setUserProgress] = useState<UserProgress>(defaultUserProgress)
   const [optimisticProgress, updateOptimisticProgress] = useOptimistic(
     userProgress,
@@ -43,7 +54,7 @@ export function useUserProgress() {
   useEffect(() => {
     if (status === 'loading') return
 
-    if (session?.user?.id) {
+    if (extendedSession?.user?.id) {
       getUserProgress()
         .then(progress => {
           setUserProgress(progress)
@@ -59,10 +70,10 @@ export function useUserProgress() {
       setUserProgress(defaultUserProgress)
       setIsLoading(false)
     }
-  }, [session?.user?.id, status])
+  }, [extendedSession?.user?.id, status])
 
   const updateProgress = (updates: Partial<UserProgress>) => {
-    if (!session?.user?.id) {
+    if (!extendedSession?.user?.id) {
       // For unauthenticated users, just update local state
       setUserProgress(prev => ({
         ...prev,
@@ -99,7 +110,7 @@ export function useUserProgress() {
   }
 
   const completeModule = (moduleId: string) => {
-    if (!session?.user?.id) {
+    if (!extendedSession?.user?.id) {
       // For unauthenticated users, just update local state
       setUserProgress(prev => {
         const newCompletedModules = [...prev.completedModules]
@@ -139,7 +150,7 @@ export function useUserProgress() {
   }
 
   const resetProgress = () => {
-    if (!session?.user?.id) {
+    if (!extendedSession?.user?.id) {
       // For unauthenticated users, just reset local state
       setUserProgress(defaultUserProgress)
       return

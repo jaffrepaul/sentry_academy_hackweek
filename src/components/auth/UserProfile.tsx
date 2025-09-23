@@ -4,6 +4,16 @@ import { useSession } from 'next-auth/react'
 import { User, Star, BookOpen, Award } from 'lucide-react'
 import Image from 'next/image'
 
+interface ExtendedSession {
+  user: {
+    id: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    role?: string | null
+  }
+}
+
 export default function UserProfile() {
   const { data: session } = useSession()
 
@@ -11,15 +21,18 @@ export default function UserProfile() {
     return null
   }
 
+  // Type cast to include the role property
+  const extendedSession = session as unknown as ExtendedSession
+
   return (
     <div className="rounded-2xl border border-purple-400/40 bg-white/75 p-6 backdrop-blur-sm dark:border-purple-500/30 dark:bg-slate-900/40">
       <div className="mb-6 flex items-center space-x-4">
         {/* Profile Image */}
         <div className="relative">
-          {session.user?.image ? (
+          {extendedSession.user?.image ? (
             <Image
-              src={session.user.image}
-              alt={session.user.name || 'User'}
+              src={extendedSession.user.image}
+              alt={extendedSession.user.name || 'User'}
               width={64}
               height={64}
               className="h-16 w-16 rounded-full"
@@ -31,29 +44,29 @@ export default function UserProfile() {
           )}
           <div
             className={`absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white ${
-              session.user?.role === 'admin'
+              extendedSession.user?.role === 'admin'
                 ? 'bg-gradient-to-r from-red-500 to-pink-500'
                 : 'bg-gradient-to-r from-emerald-500 to-teal-500'
             }`}
           >
-            {session.user?.role === 'admin' ? 'A' : 'U'}
+            {extendedSession.user?.role === 'admin' ? 'A' : 'U'}
           </div>
         </div>
 
         {/* User Info */}
         <div className="flex-1">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-            {session.user?.name || 'User'}
+            {extendedSession.user?.name || 'User'}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{session.user?.email}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{extendedSession.user?.email}</p>
           <div
             className={`mt-1 inline-flex items-center space-x-1 rounded-full px-2 py-1 text-xs ${
-              session.user?.role === 'admin'
+              extendedSession.user?.role === 'admin'
                 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                 : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
             }`}
           >
-            <span>{session.user?.role === 'admin' ? 'Admin' : 'Student'}</span>
+            <span>{extendedSession.user?.role === 'admin' ? 'Admin' : 'Student'}</span>
           </div>
         </div>
       </div>

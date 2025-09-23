@@ -1,5 +1,3 @@
-import NextAuth from 'next-auth'
-import type { NextAuthOptions } from 'next-auth'
 import { getServerSession } from 'next-auth/next'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -10,34 +8,9 @@ import { users, accounts, sessions, verification_tokens } from './db/schema'
 // import bcrypt from 'bcryptjs' // TODO: Install bcryptjs for password hashing
 import { eq } from 'drizzle-orm'
 
-// Extend NextAuth types
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string
-      email?: string | null
-      name?: string | null
-      image?: string | null
-      role?: string | null
-    }
-  }
+// NextAuth types are declared in src/types/next-auth.d.ts
 
-  interface User {
-    id: string
-    email?: string | null
-    name?: string | null
-    image?: string | null
-    role?: string | null
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    role?: string | null
-  }
-}
-
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   // Use database adapter if DATABASE_URL is available, otherwise fallback to JWT only
   adapter:
     process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('dummy')
@@ -122,7 +95,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.role = user.role || 'student'
       } else if (token.sub) {
@@ -144,15 +117,15 @@ export const authOptions: NextAuthOptions = {
       return token
     },
 
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (token && session.user) {
-        session.user.id = token.sub!
+        session.user.id = token.sub as string
         session.user.role = (token.role as string) || 'student'
       }
       return session
     },
 
-    async signIn({ user, account }) {
+    async signIn({ user, account }: { user: any; account: any }) {
       // For OAuth providers, set default role if not exists
       if (account?.provider !== 'credentials' && user.email) {
         try {
@@ -181,14 +154,14 @@ export const authOptions: NextAuthOptions = {
   },
 
   events: {
-    async createUser({ user }) {
+    async createUser({ user }: { user: any }) {
       console.log('New user created:', user.email)
       // Here you could send welcome emails, set up default preferences, etc.
     },
   },
 }
 
-export default NextAuth(authOptions)
+// Export removed to avoid conflicts with route handler
 
 // Helper to get server-side session
 export const getAuthSession = () => getServerSession(authOptions)

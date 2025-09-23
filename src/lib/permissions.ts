@@ -1,5 +1,16 @@
 import { getAuthSession } from './auth'
 
+// Extended session type for server actions
+interface ExtendedSession {
+  user: {
+    id: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    role?: string | null
+  }
+}
+
 // Define user roles
 export enum UserRole {
   STUDENT = 'student',
@@ -88,7 +99,7 @@ export function hasAllPermissions(
 
 // Server-side permission checking
 export async function checkPermission(permission: Permission): Promise<boolean> {
-  const session = await getAuthSession()
+  const session = (await getAuthSession()) as ExtendedSession | null
   return hasPermission(session?.user?.role || undefined, permission)
 }
 
