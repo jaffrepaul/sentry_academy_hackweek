@@ -18,7 +18,8 @@
     "db:studio": "drizzle-kit studio",
     "db:health": "tsx -e \"import('./src/lib/db/index.ts').then(async ({healthCheck}) => console.log(await healthCheck()))\"",
     "db:check": "tsx -e \"import('./src/lib/db/validation.ts').then(async ({quickValidation}) => console.log(await quickValidation()))\"",
-    "db:reset": "drizzle-kit drop && pnpm db:migrate && pnpm db:seed"
+    "db:reset": "drizzle-kit drop && pnpm db:migrate && pnpm db:seed",
+    "prepare": "husky"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.4.2",
@@ -48,6 +49,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.21",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.0",
     "postcss": "^8.4.35",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
@@ -55,6 +58,15 @@
     "tsx": "^4.19.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.44.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }
