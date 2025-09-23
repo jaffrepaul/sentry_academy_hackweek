@@ -69,7 +69,7 @@ class AIContentService {
   }
 
   // OpenAI API call wrapper
-  // @ts-ignore: Method is used but TypeScript incorrectly reports it as unused
+  // @ts-expect-error: Method is used but TypeScript incorrectly reports it as unused
   private async callOpenAI(messages: OpenAIMessage[]): Promise<string> {
     if (!this.config.apiKey) {
       throw new Error('OpenAI API key not configured');
@@ -395,8 +395,8 @@ Main takeaways: ${synthesizedContent.keyTakeaways.slice(0, 3).join(', ')}`
 
     for (let i = 0; i < moduleCount; i++) {
       const concept = synthesizedContent.mainConcepts[i] || `Advanced Topic ${i + 1}`;
-      const module = await this.generateSingleModule(concept, synthesizedContent, request, i);
-      modules.push(module);
+      const moduleData = await this.generateSingleModule(concept, synthesizedContent, request, i);
+      modules.push(moduleData);
     }
 
     console.log('AIContentService: Generated', modules.length, 'modules');

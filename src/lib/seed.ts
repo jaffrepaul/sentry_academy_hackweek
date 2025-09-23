@@ -275,7 +275,7 @@ export async function shouldSeedDatabase(): Promise<boolean> {
   try {
     const existingCourses = await db.select().from(courses).limit(1)
     return existingCourses.length === 0
-  } catch (error) {
+  } catch {
     console.log('Database might not be initialized yet')
     return true
   }

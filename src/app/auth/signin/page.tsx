@@ -57,7 +57,7 @@ export default function SignInPage() {
       } else if (result?.ok) {
         router.push(callbackUrl)
       }
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.')
     } finally {
       setIsLoading(false)
@@ -196,7 +196,7 @@ export default function SignInPage() {
             </form>
 
             <p className="text-center text-sm mt-6 text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button
                 onClick={() => {/* For demo purposes, you can implement sign up later */}}
                 className="font-medium hover:underline text-purple-600 dark:text-purple-400"

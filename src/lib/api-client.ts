@@ -7,7 +7,10 @@ import {
   UpdateProgressRequest,
   AIContentRequest,
   ConvertToCourseRequest,
-  ApproveContentRequest
+  ApproveContentRequest,
+  CourseResponse,
+  ProgressResponse,
+  APIResponse
 } from '@/types/api'
 
 // API client configuration
@@ -44,7 +47,7 @@ async function apiRequest<T>(
 // Courses API
 export const coursesApi = {
   // Get all courses with filters
-  async getCourses(filters: CourseFilters = {}) {
+  async getCourses(filters: CourseFilters = {}): Promise<CourseResponse> {
     const params = new URLSearchParams()
     
     Object.entries(filters).forEach(([key, value]) => {
@@ -56,33 +59,33 @@ export const coursesApi = {
     const queryString = params.toString()
     const endpoint = `/courses${queryString ? `?${queryString}` : ''}`
     
-    return apiRequest(endpoint, { method: 'GET' })
+    return apiRequest<CourseResponse>(endpoint, { method: 'GET' })
   },
 
   // Get single course by ID
-  async getCourse(courseId: number) {
-    return apiRequest(`/courses/${courseId}`, { method: 'GET' })
+  async getCourse(courseId: number): Promise<CourseResponse> {
+    return apiRequest<CourseResponse>(`/courses/${courseId}`, { method: 'GET' })
   },
 
   // Create new course
-  async createCourse(courseData: CreateCourseRequest) {
-    return apiRequest('/courses', {
+  async createCourse(courseData: CreateCourseRequest): Promise<CourseResponse> {
+    return apiRequest<CourseResponse>('/courses', {
       method: 'POST',
       body: JSON.stringify(courseData),
     })
   },
 
   // Update existing course
-  async updateCourse(courseId: number, updates: UpdateCourseRequest) {
-    return apiRequest(`/courses/${courseId}`, {
+  async updateCourse(courseId: number, updates: UpdateCourseRequest): Promise<CourseResponse> {
+    return apiRequest<CourseResponse>(`/courses/${courseId}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
     })
   },
 
   // Delete course
-  async deleteCourse(courseId: number) {
-    return apiRequest(`/courses/${courseId}`, {
+  async deleteCourse(courseId: number): Promise<APIResponse> {
+    return apiRequest<APIResponse>(`/courses/${courseId}`, {
       method: 'DELETE',
     })
   }
@@ -91,7 +94,7 @@ export const coursesApi = {
 // User Progress API
 export const progressApi = {
   // Get user progress (for current user or specific user if admin)
-  async getProgress(params: { courseId?: number; userId?: number } = {}) {
+  async getProgress(params: { courseId?: number; userId?: number } = {}): Promise<ProgressResponse> {
     const searchParams = new URLSearchParams()
     
     if (params.courseId) {
@@ -104,26 +107,26 @@ export const progressApi = {
     const queryString = searchParams.toString()
     const endpoint = `/user-progress${queryString ? `?${queryString}` : ''}`
     
-    return apiRequest(endpoint, { method: 'GET' })
+    return apiRequest<ProgressResponse>(endpoint, { method: 'GET' })
   },
 
   // Get specific user's progress (admin only or own progress)
-  async getUserProgress(userId: number) {
-    return apiRequest(`/user-progress/${userId}`, { method: 'GET' })
+  async getUserProgress(userId: number): Promise<ProgressResponse> {
+    return apiRequest<ProgressResponse>(`/user-progress/${userId}`, { method: 'GET' })
   },
 
   // Update progress for current user
-  async updateProgress(progressData: UpdateProgressRequest) {
-    return apiRequest('/user-progress', {
+  async updateProgress(progressData: UpdateProgressRequest): Promise<ProgressResponse> {
+    return apiRequest<ProgressResponse>('/user-progress', {
       method: 'POST',
       body: JSON.stringify(progressData),
     })
   },
 
   // Reset user progress (admin only)
-  async resetProgress(userId: number, courseId?: number) {
+  async resetProgress(userId: number, courseId?: number): Promise<APIResponse> {
     const params = courseId ? `?courseId=${courseId}` : ''
-    return apiRequest(`/user-progress/${userId}${params}`, {
+    return apiRequest<APIResponse>(`/user-progress/${userId}${params}`, {
       method: 'DELETE',
     })
   }

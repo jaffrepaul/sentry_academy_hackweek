@@ -110,7 +110,7 @@ export async function requirePermission(permission: Permission): Promise<void> {
   }
 }
 
-export default {
+const permissionsConfig = {
   UserRole,
   Permission,
   hasPermission,
@@ -119,3 +119,5 @@ export default {
   checkPermission,
   requirePermission,
 }
+
+export default permissionsConfig

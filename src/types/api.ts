@@ -1,5 +1,7 @@
+import type { Course, UserProgress, AIGeneratedContent } from './database'
+
 // API request/response types
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string
@@ -30,12 +32,12 @@ export interface AIContentRequest {
   targetAudience?: string
   difficulty?: string
   duration?: string
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 }
 
 export interface AIContentResponse {
   id: number
-  content: any
+  content: AIGeneratedContent['content']
   status: 'pending' | 'generated' | 'approved'
 }
 
@@ -52,12 +54,14 @@ export interface CreateCourseRequest {
   isPublished?: boolean
 }
 
-export interface UpdateCourseRequest extends Partial<CreateCourseRequest> {}
+export interface UpdateCourseRequest extends Partial<CreateCourseRequest> {
+  // Inherits all optional properties from CreateCourseRequest
+}
 
 export interface CourseResponse {
   success: boolean
-  course?: any
-  courses?: any[]
+  course?: Course
+  courses?: Course[]
   count?: number
   error?: string
 }
@@ -71,7 +75,7 @@ export interface UpdateProgressRequest {
 
 export interface ProgressResponse {
   success: boolean
-  progress?: any
+  progress?: UserProgress
   error?: string
   message?: string
 }
