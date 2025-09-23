@@ -3,7 +3,7 @@
 import React from 'react'
 import { SessionProvider } from 'next-auth/react'
 import { ThemeProvider } from 'next-themes'
-import { RoleProvider } from '@/contexts/RoleContext'
+import { PersonalizedLearningProvider } from '@/contexts/PersonalizedLearningContext'
 import ErrorBoundary from './ErrorBoundary'
 
 interface ProvidersProps {
@@ -15,10 +15,16 @@ interface ProvidersProps {
  * This component handles all context providers that require client-side functionality.
  * By separating providers into their own client component, we keep the root layout
  * as a server component, following Next.js App Router best practices.
- *
+ * 
+ * Provider Hierarchy:
+ * - SessionProvider: Authentication and user sessions
+ * - ThemeProvider: UI theme management (client-only state)
+ * - PersonalizedLearningProvider: Engineer roles, learning paths, and progress tracking
+ * 
  * Features:
  * - Error boundary protection for providers
  * - Proper provider nesting order
+ * - Single responsibility: complete personalized learning journey
  * - Error logging and reporting
  */
 export default function Providers({ children }: ProvidersProps) {
@@ -35,7 +41,9 @@ export default function Providers({ children }: ProvidersProps) {
     <ErrorBoundary onError={handleProviderError}>
       <SessionProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
-          <RoleProvider>{children}</RoleProvider>
+          <PersonalizedLearningProvider>
+            {children}
+          </PersonalizedLearningProvider>
         </ThemeProvider>
       </SessionProvider>
     </ErrorBoundary>

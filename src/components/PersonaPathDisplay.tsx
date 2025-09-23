@@ -3,13 +3,13 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 // Theme handled automatically by Tailwind dark: classes
-import { useRole } from '@/contexts/RoleContext'
-import {
-  CheckCircle,
-  Circle,
-  Lock,
-  ArrowRight,
-  Clock,
+import { usePersonalizedLearning } from '@/contexts/PersonalizedLearningContext';
+import { 
+  CheckCircle, 
+  Circle, 
+  Lock, 
+  ArrowRight, 
+  Clock, 
   Target,
   AlertTriangle,
   BarChart3,
@@ -64,10 +64,10 @@ const featureColors: Record<SentryFeature, string> = {
 
 const PersonaPathDisplay: React.FC = () => {
   // Theme handled automatically by Tailwind dark: classes;
-  const { currentLearningPath, userProgress, resetProgress } = useRole()
-  const router = useRouter()
-  const [showResetConfirm, setShowResetConfirm] = React.useState(false)
-  const [isVisible, setIsVisible] = React.useState(false)
+  const { currentLearningPath, userProgress, resetProgress } = usePersonalizedLearning();
+  const router = useRouter();
+  const [showResetConfirm, setShowResetConfirm] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
 
   // Trigger entrance animation on component mount
   React.useEffect(() => {
