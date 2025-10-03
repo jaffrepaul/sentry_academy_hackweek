@@ -1,5 +1,6 @@
 'use server'
 
+import * as Sentry from '@sentry/nextjs'
 import { db } from '@/lib/db'
 import { ai_generated_content, courses, course_modules } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
@@ -22,92 +23,128 @@ export interface AIContentResponse {
 
 // Generate AI content server action
 export async function generateAIContent(request: AIContentRequest): Promise<AIContentResponse> {
-  try {
-    // Insert the request into the database
-    const [newContent] = await db
-      .insert(ai_generated_content)
-      .values({
-        type: request.type,
-        prompt: request.prompt,
-        status: 'pending',
-        content: null,
-      })
-      .returning()
+  return await Sentry.withServerActionInstrumentation(
+    'generateAIContent',
+    {
+      recordResponse: true,
+    },
+    async () => {
+      try {
+        // Insert the request into the database
+        const [newContent] = await db
+          .insert(ai_generated_content)
+          .values({
+            type: request.type,
+            prompt: request.prompt,
+            status: 'pending',
+            content: null,
+          })
+          .returning()
 
-    if (!newContent) {
-      return {
-        success: false,
-        error: 'Failed to create content record',
+        if (!newContent) {
+          return {
+            success: false,
+            error: 'Failed to create content record',
+          }
+        }
+
+        // Mock AI content generation (replace with actual AI service integration)
+        const mockContent = await generateMockContent(request)
+
+        // Update the content with generated data
+        await db
+          .update(ai_generated_content)
+          .set({
+            content: mockContent,
+            status: 'generated',
+            updated_at: new Date(),
+          })
+          .where(eq(ai_generated_content.id, newContent.id))
+
+        revalidatePath('/admin')
+
+        return {
+          success: true,
+          content: mockContent,
+          id: newContent.id,
+        }
+      } catch (error) {
+        Sentry.captureException(error, {
+          tags: { action: 'generateAIContent', type: request.type },
+          extra: { request },
+        })
+        console.error('Error generating AI content:', error)
+        return {
+          success: false,
+          error: 'Failed to generate AI content',
+        }
       }
     }
-
-    // Mock AI content generation (replace with actual AI service integration)
-    const mockContent = await generateMockContent(request)
-
-    // Update the content with generated data
-    await db
-      .update(ai_generated_content)
-      .set({
-        content: mockContent,
-        status: 'generated',
-        updated_at: new Date(),
-      })
-      .where(eq(ai_generated_content.id, newContent.id))
-
-    revalidatePath('/admin')
-
-    return {
-      success: true,
-      content: mockContent,
-      id: newContent.id,
-    }
-  } catch (error) {
-    console.error('Error generating AI content:', error)
-    return {
-      success: false,
-      error: 'Failed to generate AI content',
-    }
-  }
+  )
 }
 
 // Approve generated content
 export async function approveAIContent(
   contentId: number
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    await db
-      .update(ai_generated_content)
-      .set({
-        status: 'approved',
-        updated_at: new Date(),
-      })
-      .where(eq(ai_generated_content.id, contentId))
+  return await Sentry.withServerActionInstrumentation(
+    'approveAIContent',
+    {
+      recordResponse: true,
+    },
+    async () => {
+      try {
+        await db
+          .update(ai_generated_content)
+          .set({
+            status: 'approved',
+            updated_at: new Date(),
+          })
+          .where(eq(ai_generated_content.id, contentId))
 
-    revalidatePath('/admin')
+        revalidatePath('/admin')
 
-    return { success: true }
-  } catch (error) {
-    console.error('Error approving AI content:', error)
-    return {
-      success: false,
-      error: 'Failed to approve content',
+        return { success: true }
+      } catch (error) {
+        Sentry.captureException(error, {
+          tags: { action: 'approveAIContent', contentId: contentId.toString() },
+          extra: { contentId },
+        })
+        console.error('Error approving AI content:', error)
+        return {
+          success: false,
+          error: 'Failed to approve content',
+        }
+      }
     }
-  }
+  )
 }
 
 // Get AI generated content with pagination
 export async function getAIGeneratedContent(limit: number = 10, offset: number = 0) {
-  try {
-    return await db
-      .select()
-      .from(ai_generated_content)
-      .orderBy(desc(ai_generated_content.created_at))
-      .limit(limit)
-      .offset(offset)
-  } catch (error) {
-    console.error('Error fetching AI content:', error)
-    return []
-  }
+  return await Sentry.withServerActionInstrumentation(
+    'getAIGeneratedContent',
+    {
+      recordResponse: false,
+    },
+    async () => {
+      try {
+        return await db
+          .select()
+          .from(ai_generated_content)
+          .orderBy(desc(ai_generated_content.created_at))
+          .limit(limit)
+          .offset(offset)
+      } catch (error) {
+        Sentry.captureException(error, {
+          tags: { action: 'getAIGeneratedContent' },
+          extra: { limit, offset },
+        })
+        console.error('Error fetching AI content:', error)
+        return []
+      }
+    }
+  )
 }
 
 // Convert approved AI content to actual course
@@ -123,74 +160,86 @@ export async function convertAIContentToCourse(
     imageUrl?: string
   }
 ): Promise<{ success: boolean; courseId?: number; error?: string }> {
-  try {
-    // Get the AI content
-    const [aiContent] = await db
-      .select()
-      .from(ai_generated_content)
-      .where(eq(ai_generated_content.id, contentId))
-      .limit(1)
+  return await Sentry.withServerActionInstrumentation(
+    'convertAIContentToCourse',
+    {
+      recordResponse: true,
+    },
+    async () => {
+      try {
+        // Get the AI content
+        const [aiContent] = await db
+          .select()
+          .from(ai_generated_content)
+          .where(eq(ai_generated_content.id, contentId))
+          .limit(1)
 
-    if (!aiContent || aiContent.status !== 'approved') {
-      return { success: false, error: 'Content not found or not approved' }
-    }
+        if (!aiContent || aiContent.status !== 'approved') {
+          return { success: false, error: 'Content not found or not approved' }
+        }
 
-    // Create the course
-    const [newCourse] = await db
-      .insert(courses)
-      .values({
-        slug: additionalData.slug,
-        title: additionalData.title,
-        description: additionalData.description || '',
-        content: JSON.stringify(aiContent.content),
-        category: additionalData.category || null,
-        difficulty: additionalData.difficulty || null,
-        duration: additionalData.duration || null,
-        image_url: additionalData.imageUrl || null,
-        is_published: false, // Needs manual review before publishing
-      })
-      .returning()
+        // Create the course
+        const [newCourse] = await db
+          .insert(courses)
+          .values({
+            slug: additionalData.slug,
+            title: additionalData.title,
+            description: additionalData.description || '',
+            content: JSON.stringify(aiContent.content),
+            category: additionalData.category || null,
+            difficulty: additionalData.difficulty || null,
+            duration: additionalData.duration || null,
+            image_url: additionalData.imageUrl || null,
+            is_published: false, // Needs manual review before publishing
+          })
+          .returning()
 
-    // If content includes modules, create them
-    if (
-      newCourse &&
-      aiContent.content &&
-      typeof aiContent.content === 'object' &&
-      'modules' in aiContent.content &&
-      Array.isArray(aiContent.content.modules)
-    ) {
-      for (const [index, module] of aiContent.content.modules.entries()) {
-        await db.insert(course_modules).values({
-          course_id: newCourse.id,
-          title: module.title || `Module ${index + 1}`,
-          content: module.content || '',
-          order: index,
-          duration: module.duration || '30 min',
+        // If content includes modules, create them
+        if (
+          newCourse &&
+          aiContent.content &&
+          typeof aiContent.content === 'object' &&
+          'modules' in aiContent.content &&
+          Array.isArray(aiContent.content.modules)
+        ) {
+          for (const [index, module] of aiContent.content.modules.entries()) {
+            await db.insert(course_modules).values({
+              course_id: newCourse.id,
+              title: module.title || `Module ${index + 1}`,
+              content: module.content || '',
+              order: index,
+              duration: module.duration || '30 min',
+            })
+          }
+        }
+
+        revalidatePath('/admin')
+        if (!newCourse) {
+          return {
+            success: false,
+            error: 'Failed to create course',
+          }
+        }
+
+        revalidatePath('/courses')
+
+        return {
+          success: true,
+          courseId: newCourse.id,
+        }
+      } catch (error) {
+        Sentry.captureException(error, {
+          tags: { action: 'convertAIContentToCourse', contentId: contentId.toString() },
+          extra: { contentId, additionalData },
         })
+        console.error('Error converting AI content to course:', error)
+        return {
+          success: false,
+          error: 'Failed to create course from AI content',
+        }
       }
     }
-
-    revalidatePath('/admin')
-    if (!newCourse) {
-      return {
-        success: false,
-        error: 'Failed to create course',
-      }
-    }
-
-    revalidatePath('/courses')
-
-    return {
-      success: true,
-      courseId: newCourse.id,
-    }
-  } catch (error) {
-    console.error('Error converting AI content to course:', error)
-    return {
-      success: false,
-      error: 'Failed to create course from AI content',
-    }
-  }
+  )
 }
 
 // Mock content generation function (replace with actual AI service)
@@ -304,17 +353,29 @@ function generateCourseTitle(prompt: string): string {
 export async function deleteAIContent(
   contentId: number
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    await db.delete(ai_generated_content).where(eq(ai_generated_content.id, contentId))
+  return await Sentry.withServerActionInstrumentation(
+    'deleteAIContent',
+    {
+      recordResponse: true,
+    },
+    async () => {
+      try {
+        await db.delete(ai_generated_content).where(eq(ai_generated_content.id, contentId))
 
-    revalidatePath('/admin')
+        revalidatePath('/admin')
 
-    return { success: true }
-  } catch (error) {
-    console.error('Error deleting AI content:', error)
-    return {
-      success: false,
-      error: 'Failed to delete AI content',
+        return { success: true }
+      } catch (error) {
+        Sentry.captureException(error, {
+          tags: { action: 'deleteAIContent', contentId: contentId.toString() },
+          extra: { contentId },
+        })
+        console.error('Error deleting AI content:', error)
+        return {
+          success: false,
+          error: 'Failed to delete AI content',
+        }
+      }
     }
-  }
+  )
 }
